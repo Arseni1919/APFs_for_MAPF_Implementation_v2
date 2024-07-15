@@ -17,6 +17,7 @@ final_logs
 logs_for_heuristics
 logs_for_graphs
 logs_for_freedom_maps
+logs_for_experiments
 heuristic_tables
 stats
 videos
