@@ -131,7 +131,7 @@ def create_init_solution(
 
         # checks
         runtime = time.time() - start_time
-        print(f'\r[init] | agents: {len(h_priority_agents): <3} / {len(agents)} | {runtime= : .2f} s.',
+        print(f'\r[LNS2 - init] | agents: {len(h_priority_agents): <3} / {len(agents)} | {runtime= : .2f} s.',
               end='\n')  # , end=''
 
 

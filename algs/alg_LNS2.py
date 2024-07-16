@@ -31,7 +31,8 @@ def run_lns2(
     - Finally, MAPF-LNS2 replaces the old plan P with the new plan (P \\ P−) ∪ P+ iff the number of colliding pairs
     (CP) of the paths in the new plan is no larger than that of the old plan.
     """
-    constr_type: bool = params['constr_type']
+    alg_name: str = params['alg_name']
+    constr_type: str = params['constr_type']
     n_neighbourhood: bool = params['n_neighbourhood']
     to_render: bool = params['to_render']
     max_time: bool = params['max_time']
@@ -52,8 +53,10 @@ def run_lns2(
     occupied_from: Dict[str, AgentLNS2] = {a.start_node.xy_name: a for a in agents}
 
     # repairing procedure
-    while cp_len > 0 and time.time() - start_time < max_time:
-        print(f'\n{cp_len=}')
+    while cp_len > 0:
+        if time.time() - start_time >= max_time:
+            return None, {'agents': agents}
+        print(f'[{alg_name}] \n{cp_len=}')
         agents_subset: List[AgentLNS2] = get_agents_subset(cp_graph, cp_graph_names, n_neighbourhood, agents, occupied_from, h_dict)
         old_paths: Dict[str, List[Node]] = {a.name: a.path[:] for a in agents_subset}
         agents_outer: List[AgentLNS2] = [a for a in agents if a not in agents_subset]
@@ -77,7 +80,9 @@ def run_lns2(
     # align_all_paths(agents)
     # for i in range(len(agents[0].path)):
     #     check_vc_ec_neic_iter(agents, i)
-    return {a.name: a.path for a in agents}, {'agents': agents}
+    runtime = time.time() - start_time
+    makespan: int = max([len(a.path) for a in agents])
+    return {a.name: a.path for a in agents}, {'agents': agents, 'time': runtime, 'makespan': makespan}
 
 
 @use_profiler(save_dir='../stats/alg_lns2.pstat')

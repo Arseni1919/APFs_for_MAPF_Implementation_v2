@@ -171,7 +171,9 @@ def run_lacam_star(
     # checks
     # for i in range(len(agents[0].path)):
     #     check_vc_ec_neic_iter(agents, i, to_count=False)
-    return paths_dict, {'agents': agents}
+    runtime = time.time() - start_time
+    makespan: int = max([len(a.path) for a in agents])
+    return paths_dict, {'agents': agents, 'time': runtime, 'makespan': makespan}
 
 
 @use_profiler(save_dir='../stats/alg_lacam_star.pstat')
@@ -183,7 +185,12 @@ def main():
     # to_render = True
     to_render = False
 
-    params = {'max_time': 60, 'alg_name': 'LaCAM', 'flag_star': flag_star, 'to_render': to_render}
+    params = {
+        'max_time': 60,
+        'alg_name': 'LaCAM',
+        'flag_star': flag_star,
+        'to_render': to_render
+    }
     run_mapf_alg(alg=run_lacam_star, params=params)
 
 

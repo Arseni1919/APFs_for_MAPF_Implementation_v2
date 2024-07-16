@@ -53,7 +53,9 @@ def run_lacam(
             # checks
             # for i in range(len(agents[0].path)):
             #     check_vc_ec_neic_iter(agents, i, to_count=False)
-            return paths_dict, {'agents': agents}
+            runtime = time.time() - start_time
+            makespan: int = max([len(a.path) for a in agents])
+            return paths_dict, {'agents': agents, 'time': runtime, 'makespan': makespan}
 
         # low-level search end
         if len(N.tree) == 0:
@@ -133,7 +135,11 @@ def main():
     # to_render = True
     to_render = False
 
-    params = {'max_time': 1000, 'alg_name': 'LaCAM', 'to_render': to_render}
+    params = {
+        'max_time': 1000,
+        'alg_name': 'LaCAM',
+        'to_render': to_render
+    }
     run_mapf_alg(alg=run_lacam, params=params)
 
 
