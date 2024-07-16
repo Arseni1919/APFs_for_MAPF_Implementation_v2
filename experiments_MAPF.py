@@ -38,7 +38,7 @@ def run_mapf_experiments():
     # img_dir = 'room-32-32-4.map'
 
     # n_agents_list = [400]
-    n_agents_list = [50, 100, 150]
+    n_agents_list = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
     # n_agents_list = [100, 200, 300, 400]
     # n_agents_list = [100, 200, 300, 400, 500]
     # n_agents_list = [200, 300, 400, 500, 600]
