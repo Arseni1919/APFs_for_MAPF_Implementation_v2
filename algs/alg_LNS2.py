@@ -56,7 +56,7 @@ def run_lns2(
     while cp_len > 0:
         if time.time() - start_time >= max_time:
             return None, {'agents': agents}
-        print(f'[{alg_name}] \n{cp_len=}')
+        print(f'\n[{alg_name}] {cp_len=}')
         agents_subset: List[AgentLNS2] = get_agents_subset(cp_graph, cp_graph_names, n_neighbourhood, agents, occupied_from, h_dict)
         old_paths: Dict[str, List[Node]] = {a.name: a.path[:] for a in agents_subset}
         agents_outer: List[AgentLNS2] = [a for a in agents if a not in agents_subset]
