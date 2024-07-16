@@ -85,7 +85,10 @@ def run_sipps(
         ec_soft_np: np.ndarray | None,  # x, y, x, y, t -> bool (0/1)
         pc_soft_np: np.ndarray | None,  # x, y -> time (int)
         inf_num: int = int(1e10),
-        agent=None
+        max_final_time: int = int(1e10),
+        max_len: int = int(1e10),
+        agent=None,
+        **kwargs,
 ) -> Tuple[List[Node] | None, dict]:
 
     if pc_hard_np is not None and pc_hard_np[goal_node.x, goal_node.y] == 1:

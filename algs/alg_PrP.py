@@ -1,5 +1,6 @@
 from algs.alg_PrP_functions import *
 from algs.alg_sipps import run_sipps
+from algs.alg_temporal_a_star import run_temporal_a_star
 from run_single_MAPF_func import run_mapf_alg
 
 
@@ -14,6 +15,7 @@ def run_prp(
 ) -> Tuple[Dict[str, List[Node]] | None, dict]:
 
     constr_type: bool = params['constr_type']
+    pf_alg = params['pf_alg']
     to_render: bool = params['to_render']
     max_time: bool = params['max_time']
 
@@ -32,7 +34,7 @@ def run_prp(
         for agent in agents:
             (vc_hard_np, ec_hard_np, pc_hard_np,
              vc_soft_np, ec_soft_np, pc_soft_np) = create_hard_and_soft_constraints(h_priority_agents, map_dim, constr_type)
-            new_path, sipps_info = run_sipps(
+            new_path, sipps_info = pf_alg(
                 agent.start_node, agent.goal_node, nodes, nodes_dict, h_dict,
                 vc_hard_np, ec_hard_np, pc_hard_np, vc_soft_np, ec_soft_np, pc_soft_np, agent=agent
             )
@@ -83,6 +85,8 @@ def main():
         'max_time': 1000,
         'alg_name': 'PrP',
         'constr_type': 'hard',
+        'pf_alg': run_sipps,
+        # 'pf_alg': run_temporal_a_star,
         'to_render': to_render,
 
     }
