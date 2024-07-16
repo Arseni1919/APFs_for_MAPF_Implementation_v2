@@ -15,6 +15,7 @@ def run_prp(
 ) -> Tuple[Dict[str, List[Node]] | None, dict]:
 
     constr_type: bool = params['constr_type']
+    alg_name: bool = params['alg_name']
     pf_alg = params['pf_alg']
     to_render: bool = params['to_render']
     max_time: bool = params['max_time']
@@ -46,7 +47,7 @@ def run_prp(
 
             # checks
             runtime = time.time() - start_time
-            print(f'\r{r_iter=: <3} | agents: {len(h_priority_agents): <3} / {len(agents)} | {runtime= : .2f} s.')  # , end=''
+            print(f'\r[{alg_name}] {r_iter=: <3} | agents: {len(h_priority_agents): <3} / {len(agents)} | {runtime= : .2f} s.')  # , end=''
             collisions: int = 0
             align_all_paths(h_priority_agents)
             for i in range(len(h_priority_agents[0].path)):
@@ -81,12 +82,14 @@ def main():
     # to_render = True
     to_render = False
 
+    pf_alg_tuple = ('SIPPS', run_sipps)
+    # pf_alg_tuple = ('A*', run_temporal_a_star)
+
     params = {
         'max_time': 1000,
-        'alg_name': 'PrP',
+        'alg_name': f'PrP-{pf_alg_tuple[0]}',
         'constr_type': 'hard',
-        'pf_alg': run_sipps,
-        # 'pf_alg': run_temporal_a_star,
+        'pf_alg': pf_alg_tuple[1],
         'to_render': to_render,
 
     }
