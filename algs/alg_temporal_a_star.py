@@ -28,6 +28,8 @@ def run_temporal_a_star(
     max_pc_time = np.max(pc_hard_np)
     if max_pc_time > 0:
         max_final_time = max_pc_time
+    exploded_limit = max(32 * 32, max_pc_time * 150)
+    # exploded_limit = max(1000, max_pc_time * 250)
 
     iteration: int = 0
     while len(open_list) > 0:
@@ -35,7 +37,7 @@ def run_temporal_a_star(
         # print(f'\r[{iteration}] {len(open_list)=}, {len(closed_list_names)=}', end='')
         print(f'\r[{iteration}] max_pc {max_pc_time}', end='')
         # exploded
-        if max_pc_time > 0 and len(closed_list_names) > max_pc_time * 250:
+        if max_pc_time > 0 and len(closed_list_names) > exploded_limit:
             runtime = time.time() - start_time
             return None, {'runtime': runtime, 'open_list': open_list, 'closed_list': closed_list_names}
         next_astr_node: AStarNode = heapq.heappop(open_list)

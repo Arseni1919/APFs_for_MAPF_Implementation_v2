@@ -35,7 +35,7 @@ def run_prp(
         for agent in agents:
             (vc_hard_np, ec_hard_np, pc_hard_np,
              vc_soft_np, ec_soft_np, pc_soft_np) = create_hard_and_soft_constraints(h_priority_agents, map_dim, constr_type)
-            new_path, sipps_info = pf_alg(
+            new_path, alg_info = pf_alg(
                 agent.start_node, agent.goal_node, nodes, nodes_dict, h_dict,
                 vc_hard_np, ec_hard_np, pc_hard_np, vc_soft_np, ec_soft_np, pc_soft_np, agent=agent
             )
@@ -44,17 +44,17 @@ def run_prp(
                 break
             agent.path = new_path[:]
             h_priority_agents.append(agent)
+            align_all_paths(h_priority_agents)
 
             # checks
             runtime = time.time() - start_time
             print(f'\r[{alg_name}] {r_iter=: <3} | agents: {len(h_priority_agents): <3} / {len(agents)} | {runtime= : .2f} s.')  # , end=''
-            collisions: int = 0
-            align_all_paths(h_priority_agents)
-            for i in range(len(h_priority_agents[0].path)):
-                to_count = False if constr_type == 'hard' else True
-                # collisions += check_vc_ec_neic_iter(h_priority_agents, i, to_count)
-            if collisions > 0:
-                print(f'{collisions=} | {sipps_info['c']=}')
+            # collisions: int = 0
+            # for i in range(len(h_priority_agents[0].path)):
+            #     to_count = False if constr_type == 'hard' else True
+            #     # collisions += check_vc_ec_neic_iter(h_priority_agents, i, to_count)
+            # if collisions > 0:
+            #     print(f'{collisions=} | {alg_info['c']=}')
 
         # return check
         to_return = True
@@ -66,7 +66,9 @@ def run_prp(
                 to_return = False
                 break
         if to_return:
-            return {a.name: a.path for a in agents}, {'agents': agents}
+            runtime = time.time() - start_time
+            makespan: int = max([len(a.path) for a in agents])
+            return {a.name: a.path for a in agents}, {'agents': agents, 'time': runtime, 'makespan': makespan}
 
         # reshuffle
         r_iter += 1
