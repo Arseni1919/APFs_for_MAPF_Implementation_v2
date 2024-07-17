@@ -14,7 +14,8 @@ def run_temporal_a_star(
         ec_soft_np: np.ndarray | None,  # x, y, x, y, t -> bool (0/1)
         pc_soft_np: np.ndarray | None,  # x, y -> time (int)
         max_final_time: int = int(1e10),
-        max_len: int = int(1e10),
+        flag_k_limit: bool = False,
+        k_limit: int = int(1e10),
         agent=None,
         **kwargs,
 ) -> Tuple[List[Node] | None, dict]:
@@ -42,9 +43,9 @@ def run_temporal_a_star(
             return None, {'runtime': runtime, 'open_list': open_list, 'closed_list': closed_list_names}
         next_astr_node: AStarNode = heapq.heappop(open_list)
         open_list_names.remove(next_astr_node.xyt_name)
-        if next_astr_node.n == goal_node or next_astr_node.t >= max_len:
+        if next_astr_node.n == goal_node or next_astr_node.t >= k_limit:
             latest_vc_on_node: int = get_latest_vc_on_node(next_astr_node, vc_hard_np)
-            if next_astr_node.t > latest_vc_on_node or next_astr_node.t >= max_len:
+            if next_astr_node.t > latest_vc_on_node or next_astr_node.t >= k_limit:
                 path = reconstruct_path(next_astr_node)
                 runtime = time.time() - start_time
                 return path, {'runtime': runtime, 'open_list': open_list, 'closed_list': closed_list_names}

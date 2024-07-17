@@ -124,7 +124,8 @@ def get_si_table(
     """
     si_table: DefaultDict[str, List[Tuple[int, int]]] = defaultdict(lambda: [])
     # si_table: Dict[str, List[Tuple[int, int]]] = {n.xy_name: deque() for n in nodes}
-    max_t_len = int(max(np.max(pc_hard_np), np.max(pc_soft_np))) + 1
+    # max_t_len = int(max(np.max(pc_hard_np), np.max(pc_soft_np))) + 1
+    max_t_len = vc_hard_np.shape[-1]
     max_t_len = max(max_t_len, 1)  # index starts at 0
 
     vc_sum_np = np.sum(vc_hard_np, axis=2) + np.sum(vc_soft_np, axis=2)

@@ -176,6 +176,32 @@ def run_lacam_star(
     return paths_dict, {'agents': agents, 'time': runtime, 'makespan': makespan}
 
 
+def run_k_lacam_star(
+        start_nodes: List[Node],
+        goal_nodes: List[Node],
+        nodes: List[Node],
+        nodes_dict: Dict[str, Node],
+        h_dict: Dict[str, np.ndarray],
+        map_dim: Tuple[int, int],
+        params: Dict,
+) -> Tuple[Dict[str, List[Node]] | None, dict]:
+    """
+    -> MAPF:
+    - stop condition: all agents at their locations or time is up
+    - behaviour, when agent is at its goal: the goal remains the same
+    - output: success, time, makespan, soc
+    LMAPF:
+    - stop condition: the end of n iterations where every iteration has a time limit
+    - behaviour, when agent is at its goal: agent receives a new goal
+    - output: throughput
+    """
+    pass
+
+
+def run_lifelong_lacam_star():
+    pass
+
+
 @use_profiler(save_dir='../stats/alg_lacam_star.pstat')
 def main():
 

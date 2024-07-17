@@ -86,7 +86,8 @@ def run_sipps(
         pc_soft_np: np.ndarray | None,  # x, y -> time (int)
         inf_num: int = int(1e10),
         max_final_time: int = int(1e10),
-        max_len: int = int(1e10),
+        flag_k_limit: bool = False,
+        k_limit: int = int(1e10),
         agent=None,
         **kwargs,
 ) -> Tuple[List[Node] | None, dict]:
@@ -116,7 +117,7 @@ def run_sipps(
     while len(Q) > 0:
         print(f'\r{len(Q)=}, {len(P)=}', end='')
         next_n: SIPPSNode = heapq.heappop(Q)
-        if next_n.is_goal:
+        if next_n.is_goal or next_n.low >= k_limit:
             nodes_path, sipps_path = extract_path(next_n, agent=agent)
             sipps_path_names = [n.to_print() for n in sipps_path]
             return nodes_path, {

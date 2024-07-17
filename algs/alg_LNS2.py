@@ -85,6 +85,87 @@ def run_lns2(
     return {a.name: a.path for a in agents}, {'agents': agents, 'time': runtime, 'makespan': makespan}
 
 
+def run_k_lns2(
+        start_nodes: List[Node],
+        goal_nodes: List[Node],
+        nodes: List[Node],
+        nodes_dict: Dict[str, Node],
+        h_dict: Dict[str, np.ndarray],
+        map_dim: Tuple[int, int],
+        params: Dict,
+) -> Tuple[Dict[str, List[Node]] | None, dict]:
+    """
+    -> MAPF:
+    - stop condition: all agents at their locations or time is up
+    - behaviour, when agent is at its goal: the goal remains the same
+    - output: success, time, makespan, soc
+    LMAPF:
+    - stop condition: the end of n iterations where every iteration has a time limit
+    - behaviour, when agent is at its goal: agent receives a new goal
+    - output: throughput
+    """
+    alg_name: str = params['alg_name']
+    constr_type: str = params['constr_type']
+    k_limit: bool = params['k_limit']
+    n_neighbourhood: bool = params['n_neighbourhood']
+    to_render: bool = params['to_render']
+    max_time: bool = params['max_time']
+
+    start_time = time.time()
+    # create agents
+    agents: List[AgentLNS2] = []
+    agents_dict: Dict[str, AgentLNS2] = {}
+    for num, (s_node, g_node) in enumerate(zip(start_nodes, goal_nodes)):
+        new_agent = AgentLNS2(num, s_node, g_node)
+        agents.append(new_agent)
+        agents_dict[new_agent.name] = new_agent
+    # vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, k_limit + 1)
+
+    # init solution
+    create_init_solution(agents, nodes, nodes_dict, h_dict, map_dim, constr_type, start_time)
+    cp_graph, cp_graph_names = get_cp_graph(agents)
+    cp_len = len(cp_graph)
+    occupied_from: Dict[str, AgentLNS2] = {a.start_node.xy_name: a for a in agents}
+
+    # repairing procedure
+    while cp_len > 0:
+        if time.time() - start_time >= max_time:
+            return None, {'agents': agents}
+        print(f'\n[{alg_name}] {cp_len=}')
+        agents_subset: List[AgentLNS2] = get_agents_subset(cp_graph, cp_graph_names, n_neighbourhood, agents,
+                                                           occupied_from, h_dict)
+        old_paths: Dict[str, List[Node]] = {a.name: a.path[:] for a in agents_subset}
+        agents_outer: List[AgentLNS2] = [a for a in agents if a not in agents_subset]
+
+        # assert len(set(agents_outer)) == len(agents_outer)
+        # assert len(set(agents_subset)) == len(agents_subset)
+        # assert len(set(agents)) == len(agents)
+        # assert len(agents_subset) + len(agents_outer) == len(agents)
+
+        solve_subset_with_prp(agents_subset, agents_outer, nodes, nodes_dict, h_dict, map_dim, start_time, constr_type,
+                              agents)
+
+        old_cp_graph, old_cp_graph_names = cp_graph, cp_graph_names
+        # cp_graph, cp_graph_names = get_cp_graph(agents)
+        cp_graph, cp_graph_names = get_cp_graph(agents_subset, agents_outer, cp_graph)
+        if len(cp_graph) > cp_len:
+            for agent in agents_subset:
+                agent.path = old_paths[agent.name]
+            cp_graph, cp_graph_names = old_cp_graph, old_cp_graph_names
+            continue
+        cp_len = len(cp_graph)
+    # align_all_paths(agents)
+    # for i in range(len(agents[0].path)):
+    #     check_vc_ec_neic_iter(agents, i)
+    runtime = time.time() - start_time
+    makespan: int = max([len(a.path) for a in agents])
+    return {a.name: a.path for a in agents}, {'agents': agents, 'time': runtime, 'makespan': makespan}
+
+
+def run_lifelong_lns2():
+    pass
+
+
 @use_profiler(save_dir='../stats/alg_lns2.pstat')
 def main():
     # to_render = True

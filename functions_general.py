@@ -153,9 +153,15 @@ def update_constraints(
     return vc_np, ec_np, pc_np
 
 
-def align_all_paths(agents: List) -> int:
+def align_all_paths(agents: List, flag_k_limit: bool = False) -> int:
     if len(agents) == 0:
         return 1
+    if flag_k_limit:
+        max_len = max([len(a.k_path) for a in agents])
+        for a in agents:
+            while len(a.k_path) < max_len:
+                a.k_path.append(a.k_path[-1])
+        return max_len
     max_len = max([len(a.path) for a in agents])
     for a in agents:
         while len(a.path) < max_len:

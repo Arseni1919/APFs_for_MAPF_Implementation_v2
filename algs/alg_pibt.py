@@ -132,6 +132,10 @@ def run_pibt(
     return {a.name: a.path for a in agents}, {'agents': agents, 'time': runtime, 'makespan': iteration}
 
 
+def run_lifelong_pibt():
+    pass
+
+
 @use_profiler(save_dir='../stats/alg_pibt.pstat')
 def main():
     params = {'max_time': 100}
