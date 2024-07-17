@@ -304,3 +304,9 @@ def create_agents(
 def time_is_good(start_time: int | float, max_time: int) -> bool:
     runtime = time.time() - start_time
     return runtime < max_time
+
+
+def align_path(new_path: List[Node], k_limit: int) -> List[Node]:
+    while len(new_path) < k_limit:
+        new_path.append(new_path[-1])
+    return new_path[:k_limit]

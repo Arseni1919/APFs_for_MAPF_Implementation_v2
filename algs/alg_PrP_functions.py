@@ -99,8 +99,3 @@ def get_shuffled_agents(agents: List[AgentPrP]) -> List[AgentPrP]:
     return [*unfinished, *finished]
 
 
-def align_path(new_path: List[Node], k_limit: int) -> List[Node]:
-    while len(new_path) < k_limit:
-        new_path.append(new_path[-1])
-    return new_path[:k_limit]
-

@@ -91,7 +91,7 @@ def run_k_prp(
     - output: throughput
     """
     # constr_type: str = params['constr_type']
-    k_limit: bool = params['k_limit']
+    k_limit: int = params['k_limit']
     alg_name: bool = params['alg_name']
     pf_alg = params['pf_alg']
     to_render: bool = params['to_render']

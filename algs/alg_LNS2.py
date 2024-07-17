@@ -39,12 +39,7 @@ def run_lns2(
 
     start_time = time.time()
     # create agents
-    agents: List[AgentLNS2] = []
-    agents_dict: Dict[str, AgentLNS2] = {}
-    for num, (s_node, g_node) in enumerate(zip(start_nodes, goal_nodes)):
-        new_agent = AgentLNS2(num, s_node, g_node)
-        agents.append(new_agent)
-        agents_dict[new_agent.name] = new_agent
+    agents, agents_dict = create_lns_agents(start_nodes, goal_nodes)
 
     # init solution
     create_init_solution(agents, nodes, nodes_dict, h_dict, map_dim, constr_type, start_time)
@@ -113,53 +108,77 @@ def run_k_lns2(
 
     start_time = time.time()
     # create agents
-    agents: List[AgentLNS2] = []
-    agents_dict: Dict[str, AgentLNS2] = {}
-    for num, (s_node, g_node) in enumerate(zip(start_nodes, goal_nodes)):
-        new_agent = AgentLNS2(num, s_node, g_node)
-        agents.append(new_agent)
-        agents_dict[new_agent.name] = new_agent
+    agents, agents_dict = create_lns_agents(start_nodes, goal_nodes)
     # vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, k_limit + 1)
 
-    # init solution
-    create_init_solution(agents, nodes, nodes_dict, h_dict, map_dim, constr_type, start_time)
-    cp_graph, cp_graph_names = get_cp_graph(agents)
-    cp_len = len(cp_graph)
-    occupied_from: Dict[str, AgentLNS2] = {a.start_node.xy_name: a for a in agents}
+    k_iter: int = 0
+    while True:
+        k_iter += 1
 
-    # repairing procedure
-    while cp_len > 0:
-        if time.time() - start_time >= max_time:
-            return None, {'agents': agents}
-        print(f'\n[{alg_name}] {cp_len=}')
-        agents_subset: List[AgentLNS2] = get_agents_subset(cp_graph, cp_graph_names, n_neighbourhood, agents,
-                                                           occupied_from, h_dict)
-        old_paths: Dict[str, List[Node]] = {a.name: a.path[:] for a in agents_subset}
-        agents_outer: List[AgentLNS2] = [a for a in agents if a not in agents_subset]
+        # ------------------------------ #
+        # Solve k steps
+        # ------------------------------ #
 
-        # assert len(set(agents_outer)) == len(agents_outer)
-        # assert len(set(agents_subset)) == len(agents_subset)
-        # assert len(set(agents)) == len(agents)
-        # assert len(agents_subset) + len(agents_outer) == len(agents)
-
-        solve_subset_with_prp(agents_subset, agents_outer, nodes, nodes_dict, h_dict, map_dim, start_time, constr_type,
-                              agents)
-
-        old_cp_graph, old_cp_graph_names = cp_graph, cp_graph_names
-        # cp_graph, cp_graph_names = get_cp_graph(agents)
-        cp_graph, cp_graph_names = get_cp_graph(agents_subset, agents_outer, cp_graph)
-        if len(cp_graph) > cp_len:
-            for agent in agents_subset:
-                agent.path = old_paths[agent.name]
-            cp_graph, cp_graph_names = old_cp_graph, old_cp_graph_names
-            continue
+        # init solution
+        create_k_limit_init_solution(agents, nodes, nodes_dict, h_dict, map_dim, constr_type, k_limit, start_time)
+        cp_graph, cp_graph_names = get_k_limit_cp_graph(agents)
         cp_len = len(cp_graph)
-    # align_all_paths(agents)
-    # for i in range(len(agents[0].path)):
-    #     check_vc_ec_neic_iter(agents, i)
-    runtime = time.time() - start_time
-    makespan: int = max([len(a.path) for a in agents])
-    return {a.name: a.path for a in agents}, {'agents': agents, 'time': runtime, 'makespan': makespan}
+        occupied_from: Dict[str, AgentLNS2] = {a.curr_node.xy_name: a for a in agents}
+
+        # repairing procedure
+        while cp_len > 0:
+
+            if time.time() - start_time >= max_time:
+                return None, {'agents': agents}
+
+            print(f'\n[{alg_name}] {cp_len=}')
+            agents_subset: List[AgentLNS2] = get_k_limit_agents_subset(cp_graph, cp_graph_names, n_neighbourhood, agents,
+                                                               occupied_from, h_dict)
+            old_paths: Dict[str, List[Node]] = {a.name: a.k_path[:] for a in agents_subset}
+            agents_outer: List[AgentLNS2] = [a for a in agents if a not in agents_subset]
+
+            solve_k_limit_subset_with_prp(agents_subset, agents_outer, nodes, nodes_dict, h_dict, map_dim, start_time, constr_type, k_limit, agents)
+
+            old_cp_graph, old_cp_graph_names = cp_graph, cp_graph_names
+            cp_graph, cp_graph_names = get_k_limit_cp_graph(agents_subset, agents_outer, cp_graph)
+            if len(cp_graph) > cp_len:
+                for agent in agents_subset:
+                    agent.k_path = old_paths[agent.name]
+                cp_graph, cp_graph_names = old_cp_graph, old_cp_graph_names
+                continue
+            cp_len = len(cp_graph)
+
+        # ------------------------------ #
+        # ------------------------------ #
+        # ------------------------------ #
+
+        # align_all_paths(agents)
+        # for i in range(len(agents[0].path)):
+        #     check_vc_ec_neic_iter(agents, i)
+
+        # append paths
+        for agent in agents:
+            if len(agent.path) == 0:
+                agent.path.append(agent.start_node)
+            agent.path.extend(agent.k_path[1:])
+            if len(agent.path) > 0:
+                agent.curr_node = agent.path[-1]
+
+        # print
+        runtime = time.time() - start_time
+        finished: List[AgentLNS2] = [a for a in agents if len(a.path) > 0 and a.path[-1] == a.goal_node]
+        print(f'\r[{alg_name}] {k_iter=: <3} | agents: {len(finished): <3} / {len(agents)} | {runtime=: .2f} s.')  # , end=''
+
+        # return check
+        if solution_is_found(agents):
+            runtime = time.time() - start_time
+            makespan: int = max([len(a.path) for a in agents])
+            return {a.name: a.path for a in agents}, {'agents': agents, 'time': runtime, 'makespan': makespan}
+
+        # reshuffle
+        agents = get_shuffled_agents(agents)
+        for agent in agents:
+            agent.k_path = []
 
 
 def run_lifelong_lns2():
@@ -176,14 +195,25 @@ def main():
 
     n_neighbourhood: int = 5
 
-    params = {
+    # params_lns2 = {
+    #     'max_time': 1000,
+    #     'alg_name': 'LNS2',
+    #     'constr_type': constr_type,
+    #     'n_neighbourhood': n_neighbourhood,
+    #     'to_render': to_render,
+    # }
+    # run_mapf_alg(alg=run_lns2, params=params_lns2)
+
+    params_k_lns2 = {
         'max_time': 1000,
         'alg_name': 'LNS2',
         'constr_type': constr_type,
+        'k_limit': 5,
         'n_neighbourhood': n_neighbourhood,
         'to_render': to_render,
     }
-    run_mapf_alg(alg=run_lns2, params=params)
+
+    run_mapf_alg(alg=run_k_lns2, params=params_k_lns2)
 
 
 if __name__ == '__main__':

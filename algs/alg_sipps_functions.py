@@ -88,11 +88,8 @@ class SIPPSNode:
             return False
         if self.h < other.h:
             return True
-        if self.h > other.h:
+        if self.h >= other.h:
             return False
-        if self.xy_name < other.xy_name:
-            return True
-        return False
 
 
 # -------------------------------------------------------------------------------------------------------------------- #
