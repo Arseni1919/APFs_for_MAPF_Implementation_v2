@@ -152,34 +152,34 @@ def main():
     # --------------------------------------------------------------------- #
     # Lifelong-PrP - A*
     # --------------------------------------------------------------------- #
-    params_lifelong_prp_a_star = {
-        # 'max_iter_time': 5,  # seconds
-        'max_iter_time': 10,  # seconds
-        # 'max_iter_time': 50,  # seconds
-        'n_steps': 50,
-        # 'n_steps': 100,
-        'alg_name': f'k-PrP-A*',
-        'constr_type': 'hard',
-        'k_limit': 5,
-        'pf_alg': run_temporal_a_star,
-        'to_render': to_render,
-    }
-    run_mapf_alg(alg=run_lifelong_prp, params=params_lifelong_prp_a_star)
+    # params_lifelong_prp_a_star = {
+    #     'max_iter_time': 5,  # seconds
+    #     # 'max_iter_time': 10,  # seconds
+    #     # 'max_iter_time': 50,  # seconds
+    #     'n_steps': 50,
+    #     # 'n_steps': 100,
+    #     'alg_name': f'Lifelong-PrP-A*',
+    #     'constr_type': 'hard',
+    #     'k_limit': 5,
+    #     'pf_alg': run_temporal_a_star,
+    #     'to_render': to_render,
+    # }
+    # run_mapf_alg(alg=run_lifelong_prp, params=params_lifelong_prp_a_star)
     # --------------------------------------------------------------------- #
 
     # --------------------------------------------------------------------- #
     # Lifelong-PrP - SIPPS
     # --------------------------------------------------------------------- #
-    # params_lifelong_prp_sipps = {
-    #     'max_iter_time': 5,  # seconds
-    #     'n_steps': 100,
-    #     'alg_name': f'Lifelong-PrP-SIPPS',
-    #     'constr_type': 'soft',
-    #     'k_limit': 5,
-    #     'pf_alg': run_sipps,
-    #     'to_render': to_render,
-    # }
-    # run_mapf_alg(alg=run_lifelong_prp, params=params_lifelong_prp_sipps)
+    params_lifelong_prp_sipps = {
+        'max_iter_time': 5,  # seconds
+        'n_steps': 50,
+        'alg_name': f'Lifelong-PrP-SIPPS',
+        'constr_type': 'soft',
+        'k_limit': 5,
+        'pf_alg': run_sipps,
+        'to_render': to_render,
+    }
+    run_mapf_alg(alg=run_lifelong_prp, params=params_lifelong_prp_sipps)
     # --------------------------------------------------------------------- #
 
 
