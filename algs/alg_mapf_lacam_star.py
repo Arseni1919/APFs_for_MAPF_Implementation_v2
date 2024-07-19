@@ -1,6 +1,6 @@
 import random
 
-from algs.alg_lacam_star_functions import *
+from algs.alg_functions_lacam_star import *
 from run_single_MAPF_func import run_mapf_alg
 
 

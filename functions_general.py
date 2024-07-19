@@ -1,3 +1,5 @@
+import numpy as np
+
 from globals import *
 
 
@@ -289,6 +291,20 @@ def two_plans_have_no_confs(path1: List[Node], path2: List[Node]):
     return True
 
 
+def two_k_paths_have_confs(path1: List[Node], path2: List[Node]):
+    from1 = None
+    from2 = None
+    for i, (to1, to2) in enumerate(zip(path1, path2)):
+        if to1.x == to2.x and to1.y == to2.y:
+            return True
+        if i > 0:
+            if from1.x == to2.x and from1.y == to2.y and to1.x == from2.x and to1.y == from2.y:
+                return True
+        from1 = to1
+        from2 = to2
+    return False
+
+
 def create_agents(
         start_nodes: List[Node], goal_nodes: List[Node]
 ) -> Tuple[List[AgentAlg], Dict[str, AgentAlg]]:
@@ -310,3 +326,11 @@ def align_path(new_path: List[Node], k_limit: int) -> List[Node]:
     while len(new_path) < k_limit:
         new_path.append(new_path[-1])
     return new_path[:k_limit]
+
+
+def manhattan_dist(n1: Node, n2: Node):
+    """
+    The Manhattan Distance between two points (X1, Y1) and (X2, Y2) is given by |X1 – X2| + |Y1 – Y2|.
+    :return:
+    """
+    return np.abs(n1.x - n2.x) + np.abs(n1.y - n2.y)

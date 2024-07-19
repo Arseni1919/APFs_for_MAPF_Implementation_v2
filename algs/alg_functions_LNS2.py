@@ -24,9 +24,6 @@ class AgentLNS2:
         self.path: List[Node] | None = []
         self.k_path: List[Node] | None = None
 
-    def __str__(self):
-        return f'{self.name}'
-
     @property
     def path_names(self):
         return [n.xy_name for n in self.path]
@@ -45,6 +42,12 @@ class AgentLNS2:
 
     def __eq__(self, other):
         return self.num == other.num
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return self.name
 
 
 # -------------------------------------------------------------------------------------------------------------------- #
@@ -302,25 +305,31 @@ def create_k_limit_init_solution(
         nodes_dict: Dict[str, Node],
         h_dict: Dict[str, np.ndarray],
         map_dim: Tuple[int, int],
-        constr_type: str,
+        pf_alg_name: str,
+        pf_alg,
         k_limit: int,
         start_time: int | float
 ):
-    c_sum: int = 0
     h_priority_agents: List[AgentLNS2] = []
     vc_hard_np, ec_hard_np, pc_hard_np = init_constraints(map_dim, k_limit + 1)
     vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, k_limit + 1)
     for agent in agents:
-        new_path, sipps_info = run_sipps(
+        new_path, alg_info = pf_alg(
             agent.curr_node, agent.goal_node, nodes, nodes_dict, h_dict,
             vc_hard_np, ec_hard_np, pc_hard_np, vc_soft_np, ec_soft_np, pc_soft_np,
             flag_k_limit=True, k_limit=k_limit, agent=agent
         )
+        if new_path is None:
+            new_path = [agent.curr_node]
         new_path = align_path(new_path, k_limit + 1)
         agent.k_path = new_path[:]
         h_priority_agents.append(agent)
-        update_constraints(new_path, vc_soft_np, ec_soft_np, pc_soft_np)
-        c_sum += sipps_info['c']
+        if pf_alg_name == 'sipps':
+            update_constraints(new_path, vc_soft_np, ec_soft_np, pc_soft_np)
+        elif pf_alg_name == 'a_star':
+            update_constraints(new_path, vc_hard_np, ec_hard_np, pc_hard_np)
+        else:
+            raise RuntimeError('nono')
 
         # checks
         # runtime = time.time() - start_time
@@ -405,10 +414,12 @@ def get_k_limit_agents_subset(
             rand_agent = random.choice(agents_s)
             outer_agent = get_k_limit_outer_agent_via_random_walk(rand_agent, agents_s, occupied_from)
             agents_s.append(outer_agent)
+        # print(f'\nstrangers, [{agents_s}]')
         return agents_s
     else:
         # add until N agents
         agents_s = get_agent_s_from_random_walk(curr_agent, cp_graph, n_neighbourhood)
+        # print('from neigh')
         return agents_s
 
 
@@ -420,32 +431,45 @@ def solve_k_limit_subset_with_prp(
         h_dict: Dict[str, np.ndarray],
         map_dim: Tuple[int, int],
         start_time: int | float,
-        # constr_type: str = 'hard',
-        constr_type: str = 'soft',
+        pf_alg_name: str,
+        pf_alg,
         k_limit: int = int(1e10),
         agents: List[AgentLNS2] | None = None
 ) -> None:
-    c_sum: int = 0
 
     h_priority_agents: List[AgentLNS2] = outer_agents[:]
     vc_hard_np, ec_hard_np, pc_hard_np = init_constraints(map_dim, k_limit + 1)
     vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, k_limit + 1)
-    for h_agent in h_priority_agents:
-        update_constraints(h_agent.k_path, vc_soft_np, ec_soft_np, pc_soft_np)
-
+    if pf_alg_name == 'sipps':
+        for h_agent in h_priority_agents:
+            update_constraints(h_agent.k_path, vc_soft_np, ec_soft_np, pc_soft_np)
+    elif pf_alg_name == 'a_star':
+        for h_agent in h_priority_agents:
+            update_constraints(h_agent.k_path, vc_hard_np, ec_hard_np, pc_hard_np)
+    else:
+        raise RuntimeError('noooo')
     random.shuffle(agents_subset)
+    # finished = [a for a in agents_subset if a.k_path[-1] == a.goal_node]
+    # unfinished = [a for a in agents_subset if a not in finished]
+    # agents_subset = [*unfinished, *finished]
 
     for agent in agents_subset:
-        new_path, sipps_info = run_sipps(
+        new_path, sipps_info = pf_alg(
             agent.curr_node, agent.goal_node, nodes, nodes_dict, h_dict,
             vc_hard_np, ec_hard_np, pc_hard_np, vc_soft_np, ec_soft_np, pc_soft_np,
             flag_k_limit=True, k_limit=k_limit, agent=agent
         )
+        if new_path is None:
+            new_path = [agent.curr_node]
         new_path = align_path(new_path, k_limit + 1)
         agent.k_path = new_path[:]
         h_priority_agents.append(agent)
-        update_constraints(new_path, vc_soft_np, ec_soft_np, pc_soft_np)
-        c_sum += sipps_info['c']
+        if pf_alg_name == 'sipps':
+            update_constraints(new_path, vc_soft_np, ec_soft_np, pc_soft_np)
+        elif pf_alg_name == 'a_star':
+            update_constraints(new_path, vc_hard_np, ec_hard_np, pc_hard_np)
+        else:
+            raise RuntimeError('nono')
 
         # checks
         # runtime = time.time() - start_time

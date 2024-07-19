@@ -115,7 +115,7 @@ def run_sipps(
     ident_dict[root.ident_str].append(root)
 
     while len(Q) > 0:
-        print(f'\r{len(Q)=}, {len(P)=}', end='')
+        # print(f'\r{len(Q)=}, {len(P)=}', end='')
         next_n: SIPPSNode = heapq.heappop(Q)
         if next_n.is_goal or next_n.low >= k_limit:
             nodes_path, sipps_path = extract_path(next_n, agent=agent)

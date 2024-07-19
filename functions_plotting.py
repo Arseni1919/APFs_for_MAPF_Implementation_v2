@@ -77,7 +77,7 @@ def plot_step_in_env(ax, info):
         title_str += f'Map: {img_dir[:-4]}\n '
     if 'i' in info:
         i = info['i']
-        title_str += f'(iteration: {i + 1})'
+        title_str += f'(iteration: {i + 1})\n'
     title_str += f'{len(agents)} agents '
     ax.set_title(title_str)
 

@@ -1,3 +1,6 @@
+import heapq
+import random
+
 from globals import *
 from functions_general import *
 from functions_plotting import *
@@ -15,11 +18,8 @@ class AgentPrP:
         self.num = num
         self.name = f'agent_{num}'
         self.start_node: Node = start_node
-        self.start_node_name: str = self.start_node.xy_name
         self.curr_node: Node = start_node
-        self.curr_node_name: str = self.curr_node.xy_name
         self.goal_node: Node = goal_node
-        self.goal_node_name: str = self.goal_node.xy_name
         self.path: List[Node] = []
         self.k_path: List[Node] | None = None
 
@@ -47,6 +47,18 @@ class AgentPrP:
 # -------------------------------------------------------------------------------------------------------------------- #
 # -------------------------------------------------------------------------------------------------------------------- #
 # -------------------------------------------------------------------------------------------------------------------- #
+def create_prp_agents(
+        start_nodes: List[Node], goal_nodes: List[Node]
+) -> Tuple[List[AgentPrP], Dict[str, AgentPrP]]:
+    agents: List[AgentPrP] = []
+    agents_dict: Dict[str, AgentPrP] = {}
+    for num, (s_node, g_node) in enumerate(zip(start_nodes, goal_nodes)):
+        new_agent = AgentPrP(num, s_node, g_node)
+        agents.append(new_agent)
+        agents_dict[new_agent.name] = new_agent
+    return agents, agents_dict
+
+
 def create_hard_and_soft_constraints(
         h_priority_agents: List[AgentPrP],
         map_dim: Tuple[int, int],
@@ -98,4 +110,63 @@ def get_shuffled_agents(agents: List[AgentPrP]) -> List[AgentPrP]:
     finished: List[AgentPrP] = [a for a in agents_copy if len(a.path) > 0 and a.path[-1] == a.goal_node]
     return [*unfinished, *finished]
 
+
+def add_k_paths_to_agents(agents: List[AgentPrP]) -> None:
+    for agent in agents:
+        if len(agent.path) == 0:
+            agent.path.append(agent.start_node)
+        agent.path.extend(agent.k_path[1:])
+
+
+def update_goal_nodes(agents: List[AgentPrP], nodes: List[Node]) -> int:
+    finished_goals = 0
+    goal_names: List[str] = [a.goal_node.xy_name for a in agents]
+    heapq.heapify(goal_names)
+    free_nodes: List[Node] = [n for n in nodes if n.xy_name not in goal_names]
+    for agent in agents:
+        if agent.curr_node == agent.goal_node:
+            finished_goals += 1
+            next_goal_node = random.choice(free_nodes)
+            while next_goal_node.xy_name in goal_names:
+                next_goal_node = random.choice(free_nodes)
+            agent.goal_node = next_goal_node
+            heapq.heappush(goal_names, next_goal_node.xy_name)
+    return finished_goals
+
+
+def stay_k_path_agent(agent: AgentPrP, n: Node, k_limit: int) -> None:
+    agent.k_path = [n]
+    while len(agent.k_path) < k_limit:
+        agent.k_path.append(n)
+    agent.k_path = agent.k_path[:k_limit]
+
+
+def repair_agents_k_paths(agents: List[AgentPrP], k_limit: int) -> None:
+    standby_agents_dict: Dict[str, bool] = {}
+    for agent in agents:
+        if agent.k_path is None or len(agent.k_path) == 0:
+            stay_k_path_agent(agent, agent.curr_node, k_limit + 1)
+            standby_agents_dict[agent.name] = True
+        else:
+            standby_agents_dict[agent.name] = False
+
+    all_good = False
+    while not all_good:
+        all_good = True
+        for a1, a2 in combinations(agents, 2):
+            if standby_agents_dict[a1.name] and standby_agents_dict[a2.name]:
+                continue
+            if abs(a1.curr_node.x - a2.curr_node.x) > k_limit:
+                continue
+            if abs(a1.curr_node.y - a2.curr_node.y) > k_limit:
+                continue
+            if two_k_paths_have_confs(a1.k_path, a2.k_path):
+                stay_k_path_agent(a1, a1.curr_node, k_limit + 1)
+                stay_k_path_agent(a2, a2.curr_node, k_limit + 1)
+                standby_agents_dict[a1.name] = True
+                standby_agents_dict[a2.name] = True
+                all_good = False
+                break
+    print(' | repaired')
+    return
 

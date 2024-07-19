@@ -1,8 +1,8 @@
 from globals import *
 from functions_general import *
 from functions_plotting import *
-from algs.alg_pibt import run_procedure_pibt
-from algs.alg_lacam_funcitons import get_init_order, get_order, get_config_name
+from algs.alg_mapf_pibt import run_procedure_pibt
+from algs.alg_functions_lacam import get_init_order, get_order, get_config_name
 
 
 # -------------------------------------------------------------------------------------------------------------------- #

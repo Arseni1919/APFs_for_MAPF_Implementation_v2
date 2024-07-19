@@ -1,4 +1,6 @@
-from algs.alg_LNS2_functions import *
+from algs.alg_functions_LNS2 import *
+from algs.alg_sipps import run_sipps
+from algs.alg_temporal_a_star import run_temporal_a_star
 from run_single_MAPF_func import run_mapf_alg
 
 
@@ -100,11 +102,16 @@ def run_k_lns2(
     - output: throughput
     """
     alg_name: str = params['alg_name']
-    constr_type: str = params['constr_type']
+    pf_alg_name: str = params['pf_alg_name']
+    pf_alg: str = params['pf_alg']
     k_limit: bool = params['k_limit']
     n_neighbourhood: bool = params['n_neighbourhood']
     to_render: bool = params['to_render']
+    img_np: np.ndarray = params['img_np']
     max_time: bool = params['max_time']
+
+    if to_render:
+        fig, ax = plt.subplots(1, 2, figsize=(14, 7))
 
     start_time = time.time()
     # create agents
@@ -120,24 +127,31 @@ def run_k_lns2(
         # ------------------------------ #
 
         # init solution
-        create_k_limit_init_solution(agents, nodes, nodes_dict, h_dict, map_dim, constr_type, k_limit, start_time)
+        create_k_limit_init_solution(
+            agents, nodes, nodes_dict, h_dict, map_dim, pf_alg_name, pf_alg, k_limit, start_time
+        )
         cp_graph, cp_graph_names = get_k_limit_cp_graph(agents)
         cp_len = len(cp_graph)
         occupied_from: Dict[str, AgentLNS2] = {a.curr_node.xy_name: a for a in agents}
 
         # repairing procedure
+        lns_iter = 0
         while cp_len > 0:
-
+            lns_iter += 1
             if time.time() - start_time >= max_time:
                 return None, {'agents': agents}
 
-            print(f'\n[{alg_name}] {cp_len=}')
-            agents_subset: List[AgentLNS2] = get_k_limit_agents_subset(cp_graph, cp_graph_names, n_neighbourhood, agents,
-                                                               occupied_from, h_dict)
+            print(f'\r[{alg_name}] {lns_iter=}, {cp_len=}', end='')
+            agents_subset: List[AgentLNS2] = get_k_limit_agents_subset(
+                cp_graph, cp_graph_names, n_neighbourhood, agents, occupied_from, h_dict
+            )
             old_paths: Dict[str, List[Node]] = {a.name: a.k_path[:] for a in agents_subset}
             agents_outer: List[AgentLNS2] = [a for a in agents if a not in agents_subset]
 
-            solve_k_limit_subset_with_prp(agents_subset, agents_outer, nodes, nodes_dict, h_dict, map_dim, start_time, constr_type, k_limit, agents)
+            solve_k_limit_subset_with_prp(
+                agents_subset, agents_outer, nodes, nodes_dict, h_dict, map_dim, start_time,
+                pf_alg_name, pf_alg, k_limit, agents
+            )
 
             old_cp_graph, old_cp_graph_names = cp_graph, cp_graph_names
             cp_graph, cp_graph_names = get_k_limit_cp_graph(agents_subset, agents_outer, cp_graph)
@@ -151,6 +165,20 @@ def run_k_lns2(
         # ------------------------------ #
         # ------------------------------ #
         # ------------------------------ #
+        if to_render:
+            for i in range(k_limit):
+                for a in agents:
+                    a.curr_node = a.k_path[i]
+                # plot the iteration
+                i_agent = agents[0]
+                plot_info = {
+                    'img_np': img_np,
+                    'agents': agents,
+                    'i_agent': i_agent,
+                }
+                plot_step_in_env(ax[0], plot_info)
+                plt.pause(0.001)
+                # plt.pause(1)
 
         # align_all_paths(agents)
         # for i in range(len(agents[0].path)):
@@ -176,7 +204,7 @@ def run_k_lns2(
             return {a.name: a.path for a in agents}, {'agents': agents, 'time': runtime, 'makespan': makespan}
 
         # reshuffle
-        agents = get_shuffled_agents(agents)
+        # agents = get_shuffled_agents(agents)
         for agent in agents:
             agent.k_path = []
 
@@ -187,13 +215,13 @@ def run_lifelong_lns2():
 
 @use_profiler(save_dir='../stats/alg_lns2.pstat')
 def main():
-    # to_render = True
-    to_render = False
+    to_render = True
+    # to_render = False
 
-    # constr_type: str = 'hard'
-    constr_type: str = 'soft'
+    n_neighbourhood: int = 10
 
-    n_neighbourhood: int = 5
+    k_limit: int = 5
+    # k_limit: int = 20
 
     # params_lns2 = {
     #     'max_time': 1000,
@@ -204,16 +232,28 @@ def main():
     # }
     # run_mapf_alg(alg=run_lns2, params=params_lns2)
 
-    params_k_lns2 = {
+    params_k_lns2_sipps = {
         'max_time': 1000,
-        'alg_name': 'LNS2',
-        'constr_type': constr_type,
-        'k_limit': 5,
+        'alg_name': 'k-LNS2-SIPPS',
+        'pf_alg_name': 'sipps',
+        'pf_alg': run_sipps,
+        'k_limit': k_limit,
         'n_neighbourhood': n_neighbourhood,
         'to_render': to_render,
     }
 
-    run_mapf_alg(alg=run_k_lns2, params=params_k_lns2)
+    params_k_lns2_a_star = {
+        'max_time': 1000,
+        'alg_name': 'k-LNS2-A*',
+        'pf_alg_name': 'a_star',
+        'pf_alg': run_temporal_a_star,
+        'k_limit': k_limit,
+        'n_neighbourhood': n_neighbourhood,
+        'to_render': to_render,
+    }
+
+    run_mapf_alg(alg=run_k_lns2, params=params_k_lns2_sipps)
+    # run_mapf_alg(alg=run_k_lns2, params=params_k_lns2_a_star)
 
 
 if __name__ == '__main__':

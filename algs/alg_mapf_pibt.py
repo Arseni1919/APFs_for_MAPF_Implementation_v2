@@ -1,4 +1,4 @@
-from algs.alg_pibt_funcitons import *
+from algs.alg_functions_pibt import *
 from run_single_MAPF_func import run_mapf_alg
 
 

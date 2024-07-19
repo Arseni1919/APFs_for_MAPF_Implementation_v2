@@ -17,8 +17,9 @@ def run_mapf_alg(alg, params):
     # img_dir = 'maze-32-32-2.map'
     # img_dir = 'maze-32-32-4.map'
 
+    n_agents = 300
     # n_agents = 200
-    n_agents = 170
+    # n_agents = 170
     # n_agents = 50
 
     to_render: bool = True
@@ -67,6 +68,7 @@ def run_mapf_alg(alg, params):
                 'img_np': img_np,
                 'agents': agents,
                 'i_agent': i_agent,
+                'i': i,
             }
             plot_step_in_env(ax[0], plot_info)
             plt.pause(plot_rate)

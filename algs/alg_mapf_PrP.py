@@ -1,4 +1,4 @@
-from algs.alg_PrP_functions import *
+from algs.alg_functions_PrP import *
 from algs.alg_sipps import run_sipps
 from algs.alg_temporal_a_star import run_temporal_a_star
 from run_single_MAPF_func import run_mapf_alg
@@ -137,9 +137,6 @@ def run_k_prp(
         if not all_good:
             for agent in agents:
                 agent.k_path = []
-        else:
-            for agent in agents:
-                assert len(agent.k_path) == k_limit + 1
 
         # append paths
         for agent in agents:
@@ -167,47 +164,40 @@ def run_k_prp(
     return None, {}
 
 
-def run_lifelong_prp():
-    """
-    MAPF:
-    - stop condition: all agents at their locations or time is up
-    - behaviour, when agent is at its goal: the goal remains the same
-    - output: success, time, makespan, soc
-    -> LMAPF:
-    - stop condition: the end of n iterations where every iteration has a time limit
-    - behaviour, when agent is at its goal: agent receives a new goal
-    - output: throughput
-    """
-    pass
-
-
 @use_profiler(save_dir='../stats/alg_prp.pstat')
 def main():
     to_render = True
     # to_render = False
 
+    # --------------------------------------------------------------------- #
     # PrP-A*
-    params_prp_a_star = {
-        'max_time': 1000,
-        'alg_name': f'PrP-A*',
-        'constr_type': 'hard',
-        'pf_alg': run_temporal_a_star,
-        'to_render': to_render,
-    }
-
-    # PrP-SIPPS
-    params_prp_sipps = {
-        'max_time': 1000,
-        'alg_name': f'PrP-SIPPS',
-        'constr_type': 'hard',
-        'pf_alg': run_sipps,
-        'to_render': to_render,
-    }
-
+    # --------------------------------------------------------------------- #
+    # params_prp_a_star = {
+    #     'max_time': 1000,
+    #     'alg_name': f'PrP-A*',
+    #     'constr_type': 'hard',
+    #     'pf_alg': run_temporal_a_star,
+    #     'to_render': to_render,
+    # }
     # run_mapf_alg(alg=run_prp, params=params_prp_a_star)
-    # run_mapf_alg(alg=run_prp, params=params_prp_sipps)
+    # --------------------------------------------------------------------- #
 
+    # --------------------------------------------------------------------- #
+    # PrP-SIPPS
+    # --------------------------------------------------------------------- #
+    # params_prp_sipps = {
+    #     'max_time': 1000,
+    #     'alg_name': f'PrP-SIPPS',
+    #     'constr_type': 'hard',
+    #     'pf_alg': run_sipps,
+    #     'to_render': to_render,
+    # }
+    # run_mapf_alg(alg=run_prp, params=params_prp_sipps)
+    # --------------------------------------------------------------------- #
+
+    # --------------------------------------------------------------------- #
     # k-PrP - A*
+    # --------------------------------------------------------------------- #
     params_k_prp_a_star = {
         'max_time': 1000,
         'alg_name': f'k-PrP-A*',
@@ -216,19 +206,22 @@ def main():
         'pf_alg': run_temporal_a_star,
         'to_render': to_render,
     }
+    run_mapf_alg(alg=run_k_prp, params=params_k_prp_a_star)
+    # --------------------------------------------------------------------- #
 
+    # --------------------------------------------------------------------- #
     # k-PrP - SIPPS
-    params_k_prp_sipps = {
-        'max_time': 1000,
-        'alg_name': f'k-PrP-SIPPS',
-        'constr_type': 'hard',
-        'k_limit': 5,
-        'pf_alg': run_sipps,
-        'to_render': to_render,
-    }
-
-    run_mapf_alg(alg=run_k_prp, params=params_k_prp_sipps)
-    # run_mapf_alg(alg=run_k_prp, params=params_k_prp_a_star)
+    # --------------------------------------------------------------------- #
+    # params_k_prp_sipps = {
+    #     'max_time': 1000,
+    #     'alg_name': f'k-PrP-SIPPS',
+    #     'constr_type': 'hard',
+    #     'k_limit': 5,
+    #     'pf_alg': run_sipps,
+    #     'to_render': to_render,
+    # }
+    # run_mapf_alg(alg=run_k_prp, params=params_k_prp_sipps)
+    # --------------------------------------------------------------------- #
 
 
 if __name__ == '__main__':

@@ -1,4 +1,4 @@
-from algs.alg_lacam_funcitons import *
+from algs.alg_functions_lacam import *
 from run_single_MAPF_func import run_mapf_alg
 
 
@@ -19,7 +19,6 @@ def run_lacam(
 
     if to_render:
         fig, ax = plt.subplots(1, 2, figsize=(14, 7))
-        plot_rate = 0.001
 
     start_time = time.time()
 

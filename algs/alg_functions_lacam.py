@@ -1,7 +1,7 @@
 from globals import *
 from functions_general import *
 from functions_plotting import *
-from algs.alg_pibt import run_procedure_pibt
+from algs.alg_mapf_pibt import run_procedure_pibt
 
 
 # -------------------------------------------------------------------------------------------------------------------- #

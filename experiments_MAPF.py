@@ -4,11 +4,11 @@ from functions_plotting import *
 
 from algs.alg_sipps import run_sipps
 from algs.alg_temporal_a_star import run_temporal_a_star
-from algs.alg_PrP import run_prp
-from algs.alg_LNS2 import run_lns2
-from algs.alg_pibt import run_pibt
-from algs.alg_lacam import run_lacam
-from algs.alg_lacam_star import run_lacam_star
+from algs.alg_mapf_PrP import run_prp
+from algs.alg_mapf_LNS2 import run_lns2
+from algs.alg_mapf_pibt import run_pibt
+from algs.alg_mapf_lacam import run_lacam
+from algs.alg_mapf_lacam_star import run_lacam_star
 
 
 @use_profiler(save_dir='stats/alg_mapf_experiments.pstat')
