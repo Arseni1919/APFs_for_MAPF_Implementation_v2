@@ -9,7 +9,7 @@ from algs.alg_lifelong_LNS2 import run_lifelong_LNS2
 from algs.alg_lifelong_PIBT import run_lifelong_pibt
 
 
-@use_profiler(save_dir='stats/alg_lifelong_mapf_experiments.pstat')
+@use_profiler(save_dir='stats/experiments_lifelong_mapf.pstat')
 def run_mapf_experiments():
     # ------------------------------------------------------------------------------------------------------------ #
     # General params

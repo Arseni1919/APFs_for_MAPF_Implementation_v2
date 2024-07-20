@@ -11,7 +11,7 @@ from algs.alg_mapf_lacam import run_lacam
 from algs.alg_mapf_lacam_star import run_lacam_star
 
 
-@use_profiler(save_dir='stats/alg_mapf_experiments.pstat')
+@use_profiler(save_dir='stats/experiments_mapf.pstat')
 def run_mapf_experiments():
     # ------------------------------------------------------------------------------------------------------------ #
     # General params

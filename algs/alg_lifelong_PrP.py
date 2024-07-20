@@ -40,8 +40,8 @@ def solve_k_prp(
             h_priority_agents.append(agent)
             update_constraints(new_path, vc_hard_np, ec_hard_np, pc_hard_np)
 
-        runtime = time.time() - iter_start_time
-        print(f' | {r_iter=}, {runtime=: .2f} s. ', end='')
+        # runtime = time.time() - iter_start_time
+        # print(f' | {r_iter=}, {runtime=: .2f} s. ', end='')
 
         # if time is up - save the found solution
         if not all_good and time.time() - iter_start_time > max_iter_time:
