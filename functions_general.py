@@ -185,6 +185,24 @@ def shorten_back_all_paths(agents: List) -> None:
             minus_2_node = a.path[-2]
 
 
+def check_one_vc_ec_neic_iter(path: List[Node], agent_name, other_paths: Dict[str, List[Node]], iteration: int) -> None:
+    collisions: int = 0
+    for agent_other_name, other_path in other_paths.items():
+        # vertex conf
+        assert path[iteration] != other_path[iteration], f'[i: {iteration}] vertex conf: {path[iteration].xy_name}'
+        # edge conf
+        prev_node1 = path[max(0, iteration - 1)]
+        curr_node1 = path[iteration]
+        prev_node2 = other_path[max(0, iteration - 1)]
+        curr_node2 = other_path[iteration]
+        edge1 = (prev_node1.x, prev_node1.y, curr_node1.x, curr_node1.y)
+        edge2 = (curr_node2.x, curr_node2.y, prev_node2.x, prev_node2.y)
+        # nei conf
+        assert path[iteration].xy_name in path[max(0, iteration - 1)].neighbours, f'[i: {iteration}] wow wow wow! Not nei pos!'
+        assert edge1 != edge2, f'[i: {iteration}] edge collision: {edge1}'
+    assert path[iteration].xy_name in path[max(0, iteration - 1)].neighbours, f'[i: {iteration}] wow wow wow! Not nei pos!'
+
+
 def check_vc_ec_neic_iter(agents: list | Deque, iteration: int, to_count: bool = False) -> int:
     collisions: int = 0
     for a1, a2 in combinations(agents, 2):
@@ -291,7 +309,8 @@ def two_plans_have_no_confs(path1: List[Node], path2: List[Node]):
     return True
 
 
-def two_k_paths_have_confs(path1: List[Node], path2: List[Node]):
+def two_equal_paths_have_confs(path1: List[Node], path2: List[Node]):
+    assert len(path1) == len(path2)
     from1 = None
     from2 = None
     for i, (to1, to2) in enumerate(zip(path1, path2)):
@@ -404,7 +423,7 @@ def repair_agents_k_paths(agents: List[AgentAlg] | list, k_limit: int) -> None:
                 continue
             if exceeds_k_dist(a1.curr_node, a2.curr_node, k_limit):
                 continue
-            if two_k_paths_have_confs(a1.k_path, a2.k_path):
+            if two_equal_paths_have_confs(a1.k_path, a2.k_path):
                 stay_k_path_agent(a1, a1.curr_node, k_limit + 1)
                 stay_k_path_agent(a2, a2.curr_node, k_limit + 1)
                 standby_agents_dict[a1.name] = True

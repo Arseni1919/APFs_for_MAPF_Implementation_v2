@@ -13,7 +13,7 @@ from functions_plotting import *
 
 
 class SIPPSNode:
-    def __init__(self, n: Node, si: Tuple[int, int], given_id: int, is_goal: bool, parent: Self | None = None):
+    def __init__(self, n: Node, si: Tuple[int, int, str], given_id: int, is_goal: bool, parent: Self | None = None):
         self.x: int = n.x
         self.y: int = n.y
         self.n = n
@@ -22,6 +22,7 @@ class SIPPSNode:
         # self.xy_name: str = f'{self.x}_{self.y}'
         self.xy_name: str = self.n.xy_name
         self.si: List[int] = [si[0], si[1]]
+        self.si_type = si[2]
         self.given_id: int = given_id
         self.is_goal: bool = is_goal
         self.parent: Self = parent
@@ -63,7 +64,7 @@ class SIPPSNode:
         return f'{self.xy_name}_{self.given_id}_{self.is_goal}'
 
     def to_print(self):
-        return f'SNode: {self.xy_name}, id={self.given_id}, (l={self.low}, h={self.high}), c={self.c}, g={self.g}, h={self.h}'
+        return f'SNode: {self.xy_name}, id={self.given_id}, (l={self.low}, h={self.high}), c={self.c}, g={self.g}, h={self.h}, f={self.f}'
 
     def __str__(self):
         return self.to_print()
@@ -101,148 +102,160 @@ class SIPPSNode:
 # -------------------------------------------------------------------------------------------------------------------- #
 
 
-# def update_si_table_hard(
-#         new_path: List[Node],
-#         si_table: Dict[str, List[Tuple[int, int]]],
-#         nodes: List[Node],
-#         inf_num: int,
-# ):
-#     pass
-
-
 def init_si_table(
         nodes: List[Node],
-        inf_num: int,
-) -> Dict[str, List[Tuple[int, int]]]:
-    si_table: Dict[str, List[Tuple[int, int]]] = {}
+        inf_num: int = int(1e10),
+) -> Dict[str, List[Tuple[int, int, str]]]:
+    """
+    f - free
+    s - soft
+    """
+    si_table: Dict[str, List[Tuple[int, int, str]]] = {}
     for node in nodes:
-        si_table[node.xy_name].append((0, inf_num))
+        si_table[node.xy_name] = [(0, inf_num, 'f')]
+    return si_table
+
+
+def update_si_table_hard(
+        new_path: List[Node],
+        si_table: Dict[str, List[Tuple[int, int, str]]],
+        consider_pc: bool = True
+):
+    # all vc
+    iter_path = new_path[:-1] if consider_pc else new_path[:]
+    for i, n in enumerate(iter_path):
+        si_list = si_table[n.xy_name]
+        new_si_list = []
+        for si_from, si_to, si_type in si_list:
+            if si_from <= i < si_to:
+                if si_from < i:
+                    new_si_list.append([si_from, i, si_type])
+                if i + 1 < si_to:
+                    new_si_list.append([i + 1, si_to, si_type])
+                continue
+            new_si_list.append([si_from, si_to, si_type])
+        si_table[n.xy_name] = [(i[0], i[1], i[2]) for i in new_si_list]
+    if consider_pc:
+        # pc
+        last_n = new_path[-1]
+        si_list = si_table[last_n.xy_name]
+        i = len(new_path) - 1
+        new_si_list = []
+        for si_from, si_to, si_type in si_list:
+            if si_from <= i < si_to:
+                if si_from < i:
+                    new_si_list.append((si_from, i, si_type))
+                break
+            new_si_list.append((si_from, si_to, si_type))
+        si_table[last_n.xy_name] = new_si_list
     return si_table
 
 
 def update_si_table_soft(
         new_path: List[Node],
-        si_table: Dict[str, List[Tuple[int, int]]],
-        nodes: List[Node],
-        inf_num: int,
-):
-    pass
+        si_table: Dict[str, List[Tuple[int, int, str]]],
+        inf_num: int = int(1e10),
+        consider_pc: bool = True
+) -> Dict[str, List[Tuple[int, int, str]]]:
+    # all vc
+    iter_path = new_path[:-1] if consider_pc else new_path[:]
+    for i, n in enumerate(iter_path):
+        si_list = si_table[n.xy_name]
+        new_si_list = []
+        for si_from, si_to, si_type in si_list:
+            if si_from <= i < si_to and si_type == 'f':
+                if si_from < i:
+                    new_si_list.append([si_from, i, 'f'])
+                new_si_list.append([i, i+1, 's'])
+                if i+1 < si_to:
+                    new_si_list.append([i+1, si_to, 'f'])
+                continue
+            new_si_list.append([si_from, si_to, si_type])
 
-
-def get_si_table(
-        nodes: List[Node],
-        nodes_dict: Dict[str, Node],
-        vc_hard_np: np.ndarray | None,  # x, y, t -> bool (0/1)
-        pc_hard_np: np.ndarray | None,  # x, y -> time (int)
-        vc_soft_np: np.ndarray | None,  # x, y, t -> bool (0/1)
-        pc_soft_np: np.ndarray | None,  # x, y -> time (int)
-        inf_num: int,
-) -> Dict[str, List[Tuple[int, int]]]:
-    """
-    safe interval for a vertex is a contiguous period of time during which:
-    (1) there are no hard vertex obstacles and no hard target obstacles
-    and
-    (2) there is either
-        (a) a soft vertex or target obstacle at every timestep
-        or
-        (b) no soft vertex obstacles and no soft target obstacles at any timestep.
-    """
-    si_table: DefaultDict[str, List[Tuple[int, int]]] = defaultdict(lambda: [])
-    # si_table: Dict[str, List[Tuple[int, int]]] = {n.xy_name: deque() for n in nodes}
-    # max_t_len = int(max(np.max(pc_hard_np), np.max(pc_soft_np))) + 1
-    max_t_len = vc_hard_np.shape[-1]
-    max_t_len = max(max_t_len, 1)  # index starts at 0
-
-    vc_sum_np = np.sum(vc_hard_np, axis=2) + np.sum(vc_soft_np, axis=2)
-    indices = np.argwhere(vc_sum_np == 0)
-    for i, pos in enumerate(indices):
-        xy_name = f'{pos[0]}_{pos[1]}'
-        si_table[xy_name].append((0, inf_num))
-
-    v_line_nps: np.ndarray = np.zeros((vc_hard_np.shape[0], vc_hard_np.shape[1], max_t_len + 2))
-
-    mask = vc_soft_np == 1
-    v_line_nps[:, :, :max_t_len][mask] = 0.5
-
-    indices = np.argwhere(pc_soft_np > -1)
-    values = pc_soft_np[indices[:, 0], indices[:, 1]]
-    for i, pos in enumerate(indices):
-        v_line_nps[pos[0], pos[1], int(values[i]):] = 0.5
-
-    mask = vc_hard_np == 1
-    v_line_nps[:, :, :max_t_len][mask] = 1
-
-    indices = np.argwhere(pc_hard_np > -1)
-    values = pc_hard_np[indices[:, 0], indices[:, 1]]
-    for i, pos in enumerate(indices):
-        v_line_nps[pos[0], pos[1], int(values[i]):] = 1
-
-    v_line_nps[:, :, -1] = inf_num
-
-    for n in nodes:
-        if vc_sum_np[n.x, n.y] == 0:
-            continue
-        v_line: np.ndarray = v_line_nps[n.x, n.y, :]
-
-        # --- #
-        start_si_time = 0
-        started_si = False
-        si_type = 0
-        for i_time, i_value in enumerate(v_line):
-            if i_value == inf_num:
-                assert i_time == len(v_line) - 1
-                if v_line[i_time-1] == 1:
+        polished = False
+        while not polished:
+            polished = True
+            for a, b in itertools.pairwise(new_si_list):
+                if a[1] == b[0] and a[2] == b[2]:
+                    a[1] = b[1]
+                    new_si_list.remove(b)
+                    polished = False
                     break
-                # CLOSE
-                si_table[n.xy_name].append((start_si_time, inf_num))
+        si_table[n.xy_name] = [(i[0], i[1], i[2]) for i in new_si_list]
+    if consider_pc:
+        # pc
+        last_n = new_path[-1]
+        si_list = si_table[last_n.xy_name]
+        i = len(new_path) - 1
+        new_si_list = []
+        for si_from, si_to, si_type in si_list:
+            if si_from <= i < si_to:
+                if si_type == 'f':
+                    if si_from < i:
+                        new_si_list.append((si_from, i, 'f'))
+                    new_si_list.append((i, inf_num, 's'))
+                elif si_type == 's':
+                    new_si_list.append((si_from, inf_num, 's'))
+                else:
+                    raise RuntimeError('uuuuu')
                 break
-            if i_value == 1:
-                if started_si:
-                    # CLOSE
-                    si_table[n.xy_name].append((start_si_time, i_time))
-                started_si = False
-                continue
-            if not started_si:
-                started_si = True
-                start_si_time = i_time
-                si_type = i_value
-                continue
-            # if you here -> the i is 0.5 / 0 / inf
-            if si_type != i_value:
-                # CLOSE
-                si_table[n.xy_name].append((start_si_time, i_time))
-                start_si_time = i_time
-                si_type = i_value
-
-        # print(f'{n.xy_name}: {v_line} -> {si_table[n.xy_name]}')
+            new_si_list.append((si_from, si_to, si_type))
+        si_table[last_n.xy_name] = new_si_list
     return si_table
 
 
-def get_vc_list(
+def get_T(
         node: Node,
-        vc_np: np.ndarray,  # x, y, t -> bool (0/1)
-) -> List[int]:
-    filter_arr = np.argwhere(vc_np[node.x, node.y, :] > 0)
-    vc_list = [int(x[0]) for x in filter_arr]
-    return vc_list
+        si_table: Dict[str, List[Tuple[int, int, str]]],
+        inf_num: int = int(1e10),
+) -> int:
+    si_list = si_table[node.xy_name]
+    last_si_from, last_si_to, last_si_type = si_list[-1]
+    if last_si_to >= inf_num:
+        return last_si_from
+    if last_si_to < inf_num:
+        return inf_num
+    raise RuntimeError('iiihaaa')
+
+
+def get_T_tag(
+        node: Node,
+        si_table: Dict[str, List[Tuple[int, int, str]]],
+        inf_num: int = int(1e10),
+) -> int:
+    si_list = si_table[node.xy_name]
+    last_si_from, last_si_to, last_si_type = si_list[-1]
+    if last_si_type == 'f':
+        return last_si_from
+    if last_si_type == 's':
+        return last_si_from
+    raise RuntimeError('iiihaaa')
 
 
 def get_c_p(
         sipps_node: SIPPSNode,
-        pc_soft_np: np.ndarray,  # x, y -> time (int)
+        si_table: Dict[str, List[Tuple[int, int, str]]],
+        inf_num: int = int(1e10)
 ):
-    return int(sipps_node.low <= pc_soft_np[sipps_node.x, sipps_node.y] < sipps_node.high)
+    si_list = si_table[sipps_node.xy_name]
+    si_from, si_to, si_type = si_list[-1]
+    if si_to < inf_num:
+        return 1
+    if si_type == 's':
+        return 1
+    return 0
 
 
 def get_c_v(
         sipps_node: SIPPSNode,
-        vc_soft_np: np.ndarray,  # x, y, t -> bool (0/1)
+        si_table: Dict[str, List[Tuple[int, int, str]]]
 ) -> int:
-    # vc_si_list = vc_soft_np[sipps_node.x, sipps_node.y, sipps_node.low: sipps_node.high]
-    # return int(np.any(vc_si_list))
-    for i in vc_soft_np[sipps_node.x, sipps_node.y, sipps_node.low: sipps_node.high]:
-        if i == 1:
-            return 1
+    si_list = si_table[sipps_node.xy_name]
+    for si_from, si_to, si_type in si_list:
+        if si_from <= sipps_node.high - 1:
+            if sipps_node.low <= si_to - 1:
+                if si_type == 's':
+                    return 1
     return 0
     # return int(np.any(vc_si_list))
 
@@ -263,9 +276,8 @@ def compute_c_g_h_f_values(
         goal_np: np.ndarray,
         T: int,
         T_tag: int,
-        vc_soft_np: np.ndarray,  # x, y, t -> bool (0/1)
         ec_soft_np: np.ndarray,  # x, y, x, y, t -> bool (0/1)
-        pc_soft_np: np.ndarray,  # x, y -> time (int)
+        si_table: Dict[str, List[Tuple[int, int, str]]],
 ) -> None:
     # c
     """
@@ -277,10 +289,10 @@ def compute_c_g_h_f_values(
     and ce is 1 if ((n`.v, n.v), n.low) ∈ Os and 0 otherwise.
     If n is the root curr_node (i.e., n` does not exist), c(n) = cv.
     """
-    c_v = get_c_v(sipps_node, vc_soft_np)
+    c_v = get_c_v(sipps_node, si_table)
     c_v_p = c_v
     if c_v == 0:
-        c_p = get_c_p(sipps_node, pc_soft_np)
+        c_p = get_c_p(sipps_node, si_table)
         c_v_p = max(c_v, c_p)
     if sipps_node.parent is None:
         # sipps_node.c = c_v + c_p
@@ -336,15 +348,15 @@ def extract_path(next_sipps_node: SIPPSNode, agent=None) -> Tuple[List[Node], De
 def get_c_future(
         goal_node: Node,
         t: int,
-        vc_soft_np: np.ndarray,
-        pc_soft_np: np.ndarray
+        si_table: Dict[str, List[Tuple[int, int, str]]]
 ) -> int:
     out_value = 0
-    pc_value = pc_soft_np[goal_node.x, goal_node.y]
-    if pc_value != -1:
-        out_value += 1
-    vc_values = vc_soft_np[goal_node.x, goal_node.y, t:]
-    out_value += np.sum(vc_values)
+    si_list = si_table[goal_node.xy_name]
+    for si_from, si_to, si_type in si_list:
+        if si_from > t:
+            continue
+        if si_type == 's':
+            out_value += 1
     return out_value
 
 
@@ -367,7 +379,7 @@ def duplicate_sipps_node(node: SIPPSNode) -> SIPPSNode:
     """
     return_node = SIPPSNode(
         node.n,
-        (node.si[0], node.si[1]),
+        (node.si[0], node.si[1], node.si_type),
         node.id,
         node.is_goal,
         node.parent
@@ -412,7 +424,7 @@ def get_identical_nodes(
 def get_I_group(
         node: SIPPSNode,
         nodes_dict: Dict[str, Node],
-        si_table: Dict[str, List[Tuple[int, int]]],
+        si_table: Dict[str, List[Tuple[int, int, str]]],
         agent=None
 ) -> List[Tuple[Node, int]]:
     I_group: List[Tuple[Node, int]] = []
@@ -446,7 +458,7 @@ def get_low_without_hard_ec(
         if i_t > prev_sipps_node.high:
             return None
         if i_t >= ec_hard_np.shape[4]:
-            return prev_sipps_node.g + 1
+            return max(i_t, prev_sipps_node.g)
         if ec_hard_np[to_node.x, to_node.y, from_node.x, from_node.y, i_t] == 0:
             return i_t
     return None
@@ -467,7 +479,7 @@ def get_low_without_hard_and_soft_ec(
         if i_t > prev_sipps_node.high:
             return None
         if i_t >= ec_hard_np.shape[4]:
-            return prev_sipps_node.g + 1
+            return max(i_t, prev_sipps_node.g)
         no_in_h = ec_hard_np[to_node.x, to_node.y, from_node.x, from_node.y, i_t] == 0
         no_in_s = ec_soft_np[to_node.x, to_node.y, from_node.x, from_node.y, i_t] == 0
         if no_in_h and no_in_s:
@@ -483,3 +495,109 @@ def get_low_without_hard_and_soft_ec(
 # -------------------------------------------------------------------------------------------------------------------- #
 # -------------------------------------------------------------------------------------------------------------------- #
 
+# def get_si_table(
+#         nodes: List[Node],
+#         nodes_dict: Dict[str, Node],
+#         vc_hard_np: np.ndarray | None,  # x, y, t -> bool (0/1)
+#         pc_hard_np: np.ndarray | None,  # x, y -> time (int)
+#         vc_soft_np: np.ndarray | None,  # x, y, t -> bool (0/1)
+#         pc_soft_np: np.ndarray | None,  # x, y -> time (int)
+#         inf_num: int,
+# ) -> Dict[str, List[Tuple[int, int]]]:
+#     """
+#     safe interval for a vertex is a contiguous period of time during which:
+#     (1) there are no hard vertex obstacles and no hard target obstacles
+#     and
+#     (2) there is either
+#         (a) a soft vertex or target obstacle at every timestep
+#         or
+#         (b) no soft vertex obstacles and no soft target obstacles at any timestep.
+#     """
+#     si_table: DefaultDict[str, List[Tuple[int, int]]] = defaultdict(lambda: [])
+#     # si_table: Dict[str, List[Tuple[int, int]]] = {n.xy_name: deque() for n in nodes}
+#     # max_t_len = int(max(np.max(pc_hard_np), np.max(pc_soft_np))) + 1
+#     max_t_len = vc_hard_np.shape[-1]
+#     max_t_len = max(max_t_len, 1)  # index starts at 0
+#
+#     vc_sum_np = np.sum(vc_hard_np, axis=2) + np.sum(vc_soft_np, axis=2)
+#     indices = np.argwhere(vc_sum_np == 0)
+#     for i, pos in enumerate(indices):
+#         xy_name = f'{pos[0]}_{pos[1]}'
+#         si_table[xy_name].append((0, inf_num))
+#
+#     v_line_nps: np.ndarray = np.zeros((vc_hard_np.shape[0], vc_hard_np.shape[1], max_t_len + 2))
+#
+#     mask = vc_soft_np == 1
+#     v_line_nps[:, :, :max_t_len][mask] = 0.5
+#
+#     indices = np.argwhere(pc_soft_np > -1)
+#     values = pc_soft_np[indices[:, 0], indices[:, 1]]
+#     for i, pos in enumerate(indices):
+#         v_line_nps[pos[0], pos[1], int(values[i]):] = 0.5
+#
+#     mask = vc_hard_np == 1
+#     v_line_nps[:, :, :max_t_len][mask] = 1
+#
+#     indices = np.argwhere(pc_hard_np > -1)
+#     values = pc_hard_np[indices[:, 0], indices[:, 1]]
+#     for i, pos in enumerate(indices):
+#         v_line_nps[pos[0], pos[1], int(values[i]):] = 1
+#
+#     v_line_nps[:, :, -1] = inf_num
+#
+#     for n in nodes:
+#         if vc_sum_np[n.x, n.y] == 0:
+#             continue
+#         v_line: np.ndarray = v_line_nps[n.x, n.y, :]
+#
+#         # --- #
+#         start_si_time = 0
+#         started_si = False
+#         si_type = 0
+#         for i_time, i_value in enumerate(v_line):
+#             if i_value == inf_num:
+#                 assert i_time == len(v_line) - 1
+#                 if v_line[i_time-1] == 1:
+#                     break
+#                 # CLOSE
+#                 si_table[n.xy_name].append((start_si_time, inf_num))
+#                 break
+#             if i_value == 1:
+#                 if started_si:
+#                     # CLOSE
+#                     si_table[n.xy_name].append((start_si_time, i_time))
+#                 started_si = False
+#                 continue
+#             if not started_si:
+#                 started_si = True
+#                 start_si_time = i_time
+#                 si_type = i_value
+#                 continue
+#             # if you here -> the i is 0.5 / 0 / inf
+#             if si_type != i_value:
+#                 # CLOSE
+#                 si_table[n.xy_name].append((start_si_time, i_time))
+#                 start_si_time = i_time
+#                 si_type = i_value
+#
+#         # print(f'{n.xy_name}: {v_line} -> {si_table[n.xy_name]}')
+#     return si_table
+
+
+# def get_max_vc(
+#         node: Node,
+#         # vc_np: np.ndarray,  # x, y, t -> bool (0/1)
+#         si_table: Dict[str, List[Tuple[int, int, str]]],
+#         inf_num: int = int(1e10),
+# ) -> int:
+#     si_list = si_table[node.xy_name]
+#     last_si_from, last_si_to, last_si_type = si_list[-1]
+#     if last_si_type == 'f' and last_si_to >= inf_num:
+#         return last_si_from
+#     if last_si_type == 'f' and last_si_to < inf_num:
+#         return inf_num
+#     if last_si_type == 's' and last_si_to >= inf_num:
+#         return last_si_from
+#     if last_si_type == 's' and last_si_to < inf_num:
+#         return inf_num
+#     raise RuntimeError('iiihaaa')

@@ -210,10 +210,6 @@ def run_k_lns2(
             agent.k_path = []
 
 
-def run_lifelong_lns2():
-    pass
-
-
 @use_profiler(save_dir='../stats/alg_lns2.pstat')
 def main():
     to_render = True
@@ -221,7 +217,7 @@ def main():
 
     n_neighbourhood: int = 10
 
-    k_limit: int = 5
+    k_limit: int = 10
     # k_limit: int = 20
 
     params_lns2 = {
@@ -231,28 +227,28 @@ def main():
         'n_neighbourhood': n_neighbourhood,
         'to_render': to_render,
     }
-    # run_mapf_alg(alg=run_lns2, params=params_lns2)
+    run_mapf_alg(alg=run_lns2, params=params_lns2)
 
-    params_k_lns2_sipps = {
-        'max_time': 1000,
-        'alg_name': 'k-LNS2-SIPPS',
-        'pf_alg_name': 'sipps',
-        'pf_alg': run_sipps,
-        'k_limit': k_limit,
-        'n_neighbourhood': n_neighbourhood,
-        'to_render': to_render,
-    }
-    run_mapf_alg(alg=run_k_lns2, params=params_k_lns2_sipps)
+    # params_k_lns2_sipps = {
+    #     'max_time': 1000,
+    #     'alg_name': 'k-LNS2-SIPPS',
+    #     'pf_alg_name': 'sipps',
+    #     'pf_alg': run_sipps,
+    #     'k_limit': k_limit,
+    #     'n_neighbourhood': n_neighbourhood,
+    #     'to_render': to_render,
+    # }
+    # run_mapf_alg(alg=run_k_lns2, params=params_k_lns2_sipps)
 
-    params_k_lns2_a_star = {
-        'max_time': 1000,
-        'alg_name': 'k-LNS2-A*',
-        'pf_alg_name': 'a_star',
-        'pf_alg': run_temporal_a_star,
-        'k_limit': k_limit,
-        'n_neighbourhood': n_neighbourhood,
-        'to_render': to_render,
-    }
+    # params_k_lns2_a_star = {
+    #     'max_time': 1000,
+    #     'alg_name': 'k-LNS2-A*',
+    #     'pf_alg_name': 'a_star',
+    #     'pf_alg': run_temporal_a_star,
+    #     'k_limit': k_limit,
+    #     'n_neighbourhood': n_neighbourhood,
+    #     'to_render': to_render,
+    # }
     # run_mapf_alg(alg=run_k_lns2, params=params_k_lns2_a_star)
 
 

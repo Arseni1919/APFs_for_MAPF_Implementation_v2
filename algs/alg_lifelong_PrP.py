@@ -1,5 +1,6 @@
 from algs.alg_functions_PrP import *
 from algs.alg_sipps import run_sipps
+from algs.alg_sipps_functions import init_si_table, update_si_table_soft, update_si_table_hard
 from algs.alg_temporal_a_star import run_temporal_a_star
 from run_single_MAPF_func import run_mapf_alg
 
@@ -16,21 +17,27 @@ def solve_k_prp(
     k_limit: int = params['k_limit']
     max_iter_time: int = params['max_iter_time']
     pf_alg = params['pf_alg']
+    pf_alg_name = params['pf_alg_name']
     iter_start_time = time.time()
 
     # main loop
     r_iter = 0
     while time.time() - iter_start_time <= max_iter_time:
         r_iter += 1
+
+        si_table: Dict[str, List[Tuple[int, int, str]]] = init_si_table(nodes)
+        vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, k_limit + 1)
+        vc_hard_np, ec_hard_np, pc_hard_np = init_constraints(map_dim, k_limit + 1)
+
         # calc k paths
         all_good: bool = True
         h_priority_agents: List[AgentPrP] = []
-        vc_hard_np, ec_hard_np, pc_hard_np = init_constraints(map_dim, k_limit + 1)
+
         for agent in agents:
             new_path, alg_info = pf_alg(
                 agent.curr_node, agent.goal_node, nodes, nodes_dict, h_dict,
                 vc_hard_np, ec_hard_np, pc_hard_np, vc_soft_np, ec_soft_np, pc_soft_np,
-                flag_k_limit=True, k_limit=k_limit, agent=agent
+                flag_k_limit=True, k_limit=k_limit, agent=agent, si_table=si_table
             )
             if new_path is None or len(new_path) == 0:
                 all_good = False
@@ -38,7 +45,14 @@ def solve_k_prp(
             new_path = align_path(new_path, k_limit + 1)
             agent.k_path = new_path[:]
             h_priority_agents.append(agent)
-            update_constraints(new_path, vc_hard_np, ec_hard_np, pc_hard_np)
+
+            if pf_alg_name == 'sipps':
+                update_constraints(new_path, vc_hard_np, ec_hard_np, pc_hard_np)
+                si_table = update_si_table_hard(new_path, si_table, consider_pc=False)
+            elif pf_alg_name == 'a_star':
+                update_constraints(new_path, vc_hard_np, ec_hard_np, pc_hard_np)
+            else:
+                raise RuntimeError('nono')
 
         # runtime = time.time() - iter_start_time
         # print(f' | {r_iter=}, {runtime=: .2f} s. ', end='')
@@ -163,6 +177,7 @@ def main():
     #     'constr_type': 'hard',
     #     'k_limit': 5,
     #     'pf_alg': run_temporal_a_star,
+    #     'pf_alg_name': 'a_star',
     #     'to_render': to_render,
     # }
     # run_mapf_alg(alg=run_lifelong_prp, params=params_lifelong_prp_a_star)
@@ -171,16 +186,17 @@ def main():
     # --------------------------------------------------------------------- #
     # Lifelong-PrP - SIPPS
     # --------------------------------------------------------------------- #
-    params_lifelong_prp_sipps = {
-        'max_iter_time': 5,  # seconds
-        'n_steps': 50,
-        'alg_name': f'Lifelong-PrP-SIPPS',
-        'constr_type': 'soft',
-        'k_limit': 5,
-        'pf_alg': run_sipps,
-        'to_render': to_render,
-    }
-    run_mapf_alg(alg=run_lifelong_prp, params=params_lifelong_prp_sipps)
+    # params_lifelong_prp_sipps = {
+    #     'max_iter_time': 5,  # seconds
+    #     'n_steps': 50,
+    #     'alg_name': f'Lifelong-PrP-SIPPS',
+    #     'constr_type': 'soft',
+    #     'k_limit': 5,
+    #     'pf_alg': run_sipps,
+    #     'pf_alg_name': 'sipps',
+    #     'to_render': to_render,
+    # }
+    # run_mapf_alg(alg=run_lifelong_prp, params=params_lifelong_prp_sipps)
     # --------------------------------------------------------------------- #
 
 

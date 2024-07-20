@@ -10,12 +10,11 @@ def run_sipps_insert_node(
         goal_np: np.ndarray,
         T: int,
         T_tag: int,
-        vc_soft_np: np.ndarray,  # x, y, t -> bool (0/1)
         ec_soft_np: np.ndarray,  # x, y, x, y, t -> bool (0/1)
-        pc_soft_np: np.ndarray,  # x, y -> time (int)
+        si_table: Dict[str, List[Tuple[int, int, str]]],
         agent=None,
 ) -> None:
-    compute_c_g_h_f_values(node, goal_node, goal_np, T, T_tag, vc_soft_np, ec_soft_np, pc_soft_np)
+    compute_c_g_h_f_values(node, goal_node, goal_np, T, T_tag, ec_soft_np, si_table)
     identical_nodes = get_identical_nodes(node, Q, P, ident_dict)
     for q in identical_nodes:
         if q.low <= node.low and q.c <= node.c:
@@ -43,33 +42,31 @@ def run_sipps_expand_node(
         Q: List[SIPPSNode],
         P: List[SIPPSNode],
         ident_dict: DefaultDict[str, List[SIPPSNode]],
-        si_table: Dict[str, List[Tuple[int, int]]],
+        si_table: Dict[str, List[Tuple[int, int, str]]],
         goal_node: Node,
         goal_np: np.ndarray,
         T: int,
         T_tag: int,
         ec_hard_np: np.ndarray,  # x, y, x, y, t -> bool (0/1)
-        vc_soft_np: np.ndarray,  # x, y, t -> bool (0/1)
         ec_soft_np: np.ndarray,  # x, y, x, y, t -> bool (0/1)
-        pc_soft_np: np.ndarray,  # x, y -> time (int)
         agent=None
 ):
     I_group: List[Tuple[Node, int]] = get_I_group(node, nodes_dict, si_table, agent)
     # I_group_names = [(v.xy_name, i, si_table[v.xy_name][i]) for v, i in I_group]
     for v_node, si_id in I_group:
-        init_low, init_high = si_table[v_node.xy_name][si_id]
+        init_low, init_high, init_type = si_table[v_node.xy_name][si_id]
         new_low = get_low_without_hard_ec(node, node.n, v_node, init_low, init_high, ec_hard_np, agent)
         if new_low is None:
             continue
         new_low_tag = get_low_without_hard_and_soft_ec(node, node.n, v_node, new_low, init_high, ec_hard_np, ec_soft_np)
         if new_low_tag is not None and new_low < new_low_tag < init_high:
-            n_1 = SIPPSNode(v_node, (new_low, new_low_tag), si_id, False, parent=node)
-            run_sipps_insert_node(n_1, Q, P, ident_dict, goal_node, goal_np, T, T_tag, vc_soft_np, ec_soft_np, pc_soft_np)
-            n_2 = SIPPSNode(v_node, (new_low_tag, init_high), si_id, False, parent=node)
-            run_sipps_insert_node(n_2, Q, P, ident_dict, goal_node, goal_np, T, T_tag, vc_soft_np, ec_soft_np, pc_soft_np)
+            n_1 = SIPPSNode(v_node, (new_low, new_low_tag, init_type), si_id, False, parent=node)
+            run_sipps_insert_node(n_1, Q, P, ident_dict, goal_node, goal_np, T, T_tag, ec_soft_np, si_table)
+            n_2 = SIPPSNode(v_node, (new_low_tag, init_high, init_type), si_id, False, parent=node)
+            run_sipps_insert_node(n_2, Q, P, ident_dict, goal_node, goal_np, T, T_tag, ec_soft_np, si_table)
         else:
-            n_3 = SIPPSNode(v_node, (new_low, init_high), si_id, False, parent=node)
-            run_sipps_insert_node(n_3, Q, P, ident_dict, goal_node, goal_np, T, T_tag, vc_soft_np, ec_soft_np, pc_soft_np)
+            n_3 = SIPPSNode(v_node, (new_low, init_high, init_type), si_id, False, parent=node)
+            run_sipps_insert_node(n_3, Q, P, ident_dict, goal_node, goal_np, T, T_tag, ec_soft_np, si_table)
 
 
 def run_sipps(
@@ -89,24 +86,21 @@ def run_sipps(
         flag_k_limit: bool = False,
         k_limit: int = int(1e10),
         agent=None,
+        si_table: Dict[str, List[Tuple[int, int, str]]] | None = None,
         **kwargs,
 ) -> Tuple[List[Node] | None, dict]:
 
-    if pc_hard_np is not None and pc_hard_np[goal_node.x, goal_node.y] == 1:
+    T = get_T(goal_node, si_table)
+    if T >= inf_num:
         return None, {}
 
-    si_table: Dict[str, List[Tuple[int, int]]] = get_si_table(nodes, nodes_dict, vc_hard_np, pc_hard_np, vc_soft_np, pc_soft_np, inf_num)
     root = SIPPSNode(start_node, si_table[start_node.xy_name][0], 0, False)
-    T = 0
-    goal_vc_times_list = get_vc_list(goal_node, vc_hard_np)
-    if len(goal_vc_times_list) > 0:
-        T = max(goal_vc_times_list) + 1
-    goal_vc_times_list = get_vc_list(goal_node, vc_soft_np)
-    T_tag = T
-    if len(goal_vc_times_list) > 0:
-        T_tag = max(T, max(goal_vc_times_list) + 1)
+    # goal_vc_times_list = get_vc_list(goal_node, vc_hard_np)
+    # if len(goal_vc_times_list) > 0:
+    #     T = max(goal_vc_times_list) + 1
+    T_tag = get_T_tag(goal_node, si_table)
     goal_np: np.ndarray = h_dict[goal_node.xy_name]
-    compute_c_g_h_f_values(root, goal_node, goal_np, T, T_tag, vc_soft_np, ec_soft_np, pc_soft_np)
+    compute_c_g_h_f_values(root, goal_node, goal_np, T, T_tag, ec_soft_np, si_table)
 
     Q: List[SIPPSNode] = []
     P: List[SIPPSNode] = []
@@ -125,7 +119,7 @@ def run_sipps(
                 'sipps_path': sipps_path, 'sipps_path_names': sipps_path_names, 'c': next_n.c,
             }
         if next_n.n == goal_node and next_n.low >= T:
-            c_future = get_c_future(goal_node, next_n.low, vc_soft_np, pc_soft_np)
+            c_future = get_c_future(goal_node, next_n.low, si_table)
             if c_future == 0:
                 nodes_path, sipps_path = extract_path(next_n, agent=agent)
                 # nodes_path_names = [n.xy_name for n in nodes_path]
@@ -137,12 +131,14 @@ def run_sipps(
             n_tag = duplicate_sipps_node(next_n)
             n_tag.is_goal = True
             n_tag.c += c_future
-            run_sipps_insert_node(n_tag, Q, P, ident_dict, goal_node, goal_np, T,  T_tag, vc_soft_np, ec_soft_np, pc_soft_np)
+            run_sipps_insert_node(n_tag, Q, P, ident_dict, goal_node, goal_np, T,  T_tag, ec_soft_np, si_table)
         run_sipps_expand_node(next_n, nodes_dict, Q, P, ident_dict, si_table, goal_node, goal_np, T,  T_tag,
-                              ec_hard_np, vc_soft_np, ec_soft_np, pc_soft_np, agent)
+                              ec_hard_np, ec_soft_np, agent)
         heapq.heappush(P, next_n)
         ident_dict[next_n.ident_str].append(next_n)
-    return None, {}
+    return None, {
+                    'T': T, 'T_tag': T_tag, 'Q': Q, 'P': P, 'si_table': si_table,
+                }
 
 
 @use_profiler(save_dir='../stats/alg_sipps.pstat')
