@@ -89,15 +89,15 @@ def plot_sr(ax, info):
     n_agents_list = info['n_agents_list']
     img_dir = info['img_dir']
 
-    for i_alg in alg_names:
+    for alg_name in alg_names:
         sr_list = []
         x_list = []
         for n_a in n_agents_list:
-            if len(info[i_alg][f'{n_a}']['sr']) > 0:
-                sr_list.append(np.sum(info[i_alg][f'{n_a}']['sr']) / len(info[i_alg][f'{n_a}']['sr']))
+            if len(info[alg_name][f'{n_a}']['sr']) > 0:
+                sr_list.append(np.sum(info[alg_name][f'{n_a}']['sr']) / len(info[alg_name][f'{n_a}']['sr']))
                 x_list.append(n_a)
-        ax.plot(x_list, sr_list, markers_lines_dict[i_alg], color=colors_dict[i_alg],
-                alpha=0.5, label=f'{i_alg}', linewidth=5, markersize=20)
+        ax.plot(x_list, sr_list, markers_lines_dict[alg_name], color=colors_dict[alg_name],
+                alpha=0.5, label=f'{alg_name}', linewidth=5, markersize=20)
     ax.set_xlim([min(n_agents_list) - 20, max(n_agents_list) + 20])
     ax.set_ylim([0, 1 + 0.1])
     ax.set_xticks(n_agents_list)
@@ -120,15 +120,15 @@ def plot_time_metric(ax, info):
 
     # x_list = n_agents_list[:4]
     x_list = n_agents_list
-    for i_alg in alg_names:
+    for alg_name in alg_names:
         soc_list = []
         res_str = ''
         for n_a in x_list:
-            soc_list.append(np.mean(info[i_alg][f'{n_a}']['time']))
+            soc_list.append(np.mean(info[alg_name][f'{n_a}']['time']))
             res_str += f'\t{n_a} - {soc_list[-1]: .2f}, '
-        ax.plot(x_list, soc_list, markers_lines_dict[i_alg], color=colors_dict[i_alg],
-                alpha=0.5, label=f'{i_alg}', linewidth=5, markersize=20)
-        # print(f'{i_alg}\t\t\t: {res_str}')
+        ax.plot(x_list, soc_list, markers_lines_dict[alg_name], color=colors_dict[alg_name],
+                alpha=0.5, label=f'{alg_name}', linewidth=5, markersize=20)
+        # print(f'{alg_name}\t\t\t: {res_str}')
     ax.set_xlim([min(x_list) - 20, max(x_list) + 20])
     ax.set_xticks(x_list)
     ax.set_xlabel('N agents', fontsize=15)
@@ -158,4 +158,26 @@ def plot_makespan(ax, info):
     # ax.set_title(f'{img_dir[:-4]} Map | time limit: {time_to_think_limit} sec.')
     set_plot_title(ax, f'{img_dir[:-4]} Map | time limit: {max_time} sec.',
                    size=10)
+    set_legend(ax, size=12)
+
+
+def plot_throughput(ax, info):
+    ax.cla()
+    alg_names = info['alg_names']
+    n_agents_list = info['n_agents_list']
+    img_dir = info['img_dir']
+    n_steps = info['n_steps']
+
+    for alg_name in alg_names:
+        throughput_list = []
+        for n_a in n_agents_list:
+            throughput_list.append(np.mean(info[alg_name][f'{n_a}']['throughput']))
+        ax.plot(n_agents_list, throughput_list, markers_lines_dict[alg_name], color=colors_dict[alg_name],
+                alpha=0.5, label=f'{alg_name}', linewidth=5, markersize=20)
+    ax.set_xlim([min(n_agents_list) - 20, max(n_agents_list) + 20])
+    ax.set_xticks(n_agents_list)
+    ax.set_xlabel('N agents', fontsize=15)
+    ax.set_ylabel('Throughput', fontsize=15)
+    # ax.set_title(f'{img_dir[:-4]} Map | time limit: {time_to_think_limit} sec.')
+    set_plot_title(ax, f'{img_dir[:-4]} Map | n_steps: {n_steps}', size=10)
     set_legend(ax, size=12)

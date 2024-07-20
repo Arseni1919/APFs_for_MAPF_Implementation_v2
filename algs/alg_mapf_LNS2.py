@@ -224,13 +224,13 @@ def main():
     k_limit: int = 5
     # k_limit: int = 20
 
-    # params_lns2 = {
-    #     'max_time': 1000,
-    #     'alg_name': 'LNS2',
-    #     'constr_type': constr_type,
-    #     'n_neighbourhood': n_neighbourhood,
-    #     'to_render': to_render,
-    # }
+    params_lns2 = {
+        'max_time': 1000,
+        'alg_name': 'LNS2',
+        'constr_type': 'soft',
+        'n_neighbourhood': n_neighbourhood,
+        'to_render': to_render,
+    }
     # run_mapf_alg(alg=run_lns2, params=params_lns2)
 
     params_k_lns2_sipps = {
@@ -242,6 +242,7 @@ def main():
         'n_neighbourhood': n_neighbourhood,
         'to_render': to_render,
     }
+    run_mapf_alg(alg=run_k_lns2, params=params_k_lns2_sipps)
 
     params_k_lns2_a_star = {
         'max_time': 1000,
@@ -252,8 +253,6 @@ def main():
         'n_neighbourhood': n_neighbourhood,
         'to_render': to_render,
     }
-
-    run_mapf_alg(alg=run_k_lns2, params=params_k_lns2_sipps)
     # run_mapf_alg(alg=run_k_lns2, params=params_k_lns2_a_star)
 
 

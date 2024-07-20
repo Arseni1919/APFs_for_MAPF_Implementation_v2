@@ -49,7 +49,7 @@ color_names = [
 
 markers = ['-^', '-1', '-2', '-X', '-d', '-v', '-o']
 markers_iter = iter(markers)
-markers_lines_dict = defaultdict(lambda: next(markers_iter))
+markers_lines_dict = defaultdict(lambda: random.choice(markers))
 colors_dict: DefaultDict[str, str | None] = defaultdict(lambda: None)
 
 

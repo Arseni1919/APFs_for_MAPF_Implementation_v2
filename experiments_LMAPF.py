@@ -4,14 +4,12 @@ from functions_plotting import *
 
 from algs.alg_sipps import run_sipps
 from algs.alg_temporal_a_star import run_temporal_a_star
-from algs.alg_mapf_PrP import run_prp, run_k_prp
-from algs.alg_mapf_LNS2 import run_lns2, run_k_lns2
-from algs.alg_mapf_pibt import run_pibt
-from algs.alg_mapf_lacam import run_lacam
-from algs.alg_mapf_lacam_star import run_lacam_star
+from algs.alg_lifelong_PrP import run_lifelong_prp
+from algs.alg_lifelong_LNS2 import run_lifelong_LNS2
+from algs.alg_lifelong_PIBT import run_lifelong_pibt
 
 
-@use_profiler(save_dir='stats/alg_mapf_experiments.pstat')
+@use_profiler(save_dir='stats/alg_lifelong_mapf_experiments.pstat')
 def run_mapf_experiments():
     # ------------------------------------------------------------------------------------------------------------ #
     # General params
@@ -38,8 +36,8 @@ def run_mapf_experiments():
     # img_dir = 'room-32-32-4.map'
 
     # n_agents_list = [400]
-    n_agents_list = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-    # n_agents_list = [100, 200, 300, 400]
+    # n_agents_list = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+    n_agents_list = [100, 200, 300, 400]
     # n_agents_list = [100, 200, 300, 400, 500]
     # n_agents_list = [200, 300, 400, 500, 600]
     # n_agents_list = [300, 400, 500, 600, 700]
@@ -47,99 +45,60 @@ def run_mapf_experiments():
     i_problems = 5
 
     alg_list = [
-        # ------------------------------------------------ #
-        # PrP Family
-        # ------------------------------------------------ #
-        (run_prp, {
-            'alg_name': f'PrP-SIPPS',
-            'constr_type': 'hard',
+        (run_lifelong_prp, {
+            'alg_name': f'L-PrP-SIPPS',
+            'constr_type': 'soft',
             'pf_alg': run_sipps,
-            'to_render': False,
-        }),
-        (run_prp, {
-            'alg_name': f'PrP-A*',
-            'constr_type': 'hard',
-            'pf_alg': run_temporal_a_star,
-            'to_render': False,
-        }),
-        (run_k_prp, {
-            'alg_name': f'k-PrP-A*',
-            'constr_type': 'hard',
             'k_limit': 5,
-            'pf_alg': run_temporal_a_star,
             'to_render': False,
         }),
-        (run_k_prp, {
-            'alg_name': f'k-PrP-SIPPS',
+        (run_lifelong_prp, {
+            'alg_name': f'L-PrP-A*',
+            'constr_type': 'hard',
+            'pf_alg': run_temporal_a_star,
+            'k_limit': 5,
+            'to_render': False,
+        }),
+        (run_lifelong_LNS2, {
+            'alg_name': f'L-LNS2-SIPPS',
             'constr_type': 'soft',
             'k_limit': 5,
-            'pf_alg': run_sipps,
-            'to_render': False,
-        }),
-        # ------------------------------------------------ #
-
-        # ------------------------------------------------ #
-        # LNS2 Family
-        # ------------------------------------------------ #
-        (run_lns2, {
-            'alg_name': f'LNS2',
-            'constr_type': 'soft',
             'n_neighbourhood': 5,
-            'to_render': False,
-        }),
-        (run_k_lns2, {
-            'alg_name': 'k-LNS2-A*',
-            'pf_alg_name': 'a_star',
-            'pf_alg': run_temporal_a_star,
-            'k_limit': 5,
-            'n_neighbourhood': 5,
-            'to_render': False,
-        }),
-        (run_k_lns2, {
-            'alg_name': 'k-LNS2-SIPPS',
             'pf_alg_name': 'sipps',
             'pf_alg': run_sipps,
+            'to_render': False,
+        }),
+        (run_lifelong_LNS2, {
+            'alg_name': f'L-LNS2-A*',
+            'constr_type': 'hard',
             'k_limit': 5,
             'n_neighbourhood': 5,
+            'pf_alg_name': 'a_star',
+            'pf_alg': run_temporal_a_star,
             'to_render': False,
         }),
-
-        # ------------------------------------------------ #
-        # PIBT, LaCAM Family
-        # ------------------------------------------------ #
-        (run_pibt, {
-            'alg_name': f'PIBT',
-            'to_render': False,
-        }),
-        (run_lacam, {
-            'alg_name': f'LaCAM',
-            'to_render': False,
-        }),
-        (run_lacam_star, {
-            'alg_name': f'LaCAM*',
-            'flag_star': False,
+        (run_lifelong_pibt, {
+            'alg_name': f'L-PIBT',
             'to_render': False,
         }),
     ]
 
     # limits
-    # max_time = 1e7  # seconds
-    # max_time = 60  # seconds
-    max_time = 10  # seconds
+    max_iter_time = 5
+    n_steps = 50
+
     # debug
     # to_assert = True
     to_assert = False
+
     # rendering
     to_render = True
     # to_render = False
 
-    logs_dict = {
+    logs_dict: Dict[str, Any] = {
         params['alg_name']: {
             f'{n_agents}': {
-                'soc': [],
-                'makespan': [],
-                'sr': [],
-                'time': [],
+                'throughput': [],
             } for n_agents in n_agents_list
         } for alg, params in alg_list
     }
@@ -147,14 +106,14 @@ def run_mapf_experiments():
     logs_dict['n_agents_list'] = n_agents_list
     logs_dict['i_problems'] = i_problems
     logs_dict['img_dir'] = img_dir
-    logs_dict['max_time'] = max_time
+    logs_dict['max_iter_time'] = max_iter_time
+    logs_dict['n_steps'] = n_steps
 
     # ------------------------------------------------------------------------------------------------------------ #
     # ------------------------------------------------------------------------------------------------------------ #
     # ------------------------------------------------------------------------------------------------------------ #
 
-    fig, ax = plt.subplots(2, 2, figsize=(8, 8))
-    to_continue_dict = {params['alg_name']: True for alg, params in alg_list}
+    fig, ax = plt.subplots(1, 1, figsize=(8, 8))
 
     path_to_maps: str = 'maps'
     path_to_heuristics: str = 'logs_for_heuristics'
@@ -175,37 +134,23 @@ def run_mapf_experiments():
 
                 # preps
                 params['img_np'] = img_np
-                params['max_time'] = max_time
+                params['max_iter_time'] = max_iter_time
+                params['n_steps'] = n_steps
                 alg_name = params['alg_name']
 
-                solved, alg_info = False, {}
-                if to_continue_dict[alg_name]:
-                    # the run
-                    paths_dict, alg_info = alg(
-                        start_nodes, goal_nodes, nodes, nodes_dict, h_dict, map_dim, params
-                    )
-                    solved = paths_dict is not None
+                # the run
+                paths_dict, alg_info = alg(
+                    start_nodes, goal_nodes, nodes, nodes_dict, h_dict, map_dim, params
+                )
 
-                if solved:
-                    logs_dict[alg_name][f'{n_agents}']['sr'].append(1)
-                    logs_dict[alg_name][f'{n_agents}']['time'].append(alg_info['time'])
-                    logs_dict[alg_name][f'{n_agents}']['makespan'].append(alg_info['makespan'])
-                else:
-                    logs_dict[alg_name][f'{n_agents}']['sr'].append(0)
-                print(f'\n{n_agents=}, {i_problem=}, {alg_name=}')
+                logs_dict[alg_name][f'{n_agents}']['throughput'].append(alg_info['throughput'])
+                print(f'\n{n_agents=}, {i_problem=}, {alg_name=}, throughput={alg_info['throughput']}')
 
             # plot
-            plot_sr(ax[0, 0], info=logs_dict)
-            plot_time_metric(ax[0, 1], info=logs_dict)
-            plot_makespan(ax[1, 1], info=logs_dict)
+            plot_throughput(ax, info=logs_dict)
             plt.pause(0.001)
 
-        # check if solved all the prev problems
-        for alg, params in alg_list:
-            if sum(logs_dict[params['alg_name']][f'{n_agents}']['sr']) == 0:
-                to_continue_dict[params['alg_name']] = False
-
-    print('\n[INFO]: finished BIG MAPF experiments')
+    print('\n[INFO]: finished BIG Lifelong MAPF experiments')
     plt.show()
 
 # if to_render:

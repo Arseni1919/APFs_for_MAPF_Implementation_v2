@@ -212,14 +212,14 @@ def main():
     # --------------------------------------------------------------------- #
     # k-PrP - SIPPS
     # --------------------------------------------------------------------- #
-    # params_k_prp_sipps = {
-    #     'max_time': 1000,
-    #     'alg_name': f'k-PrP-SIPPS',
-    #     'constr_type': 'hard',
-    #     'k_limit': 5,
-    #     'pf_alg': run_sipps,
-    #     'to_render': to_render,
-    # }
+    params_k_prp_sipps = {
+        'max_time': 1000,
+        'alg_name': f'k-PrP-SIPPS',
+        'constr_type': 'hard',
+        'k_limit': 5,
+        'pf_alg': run_sipps,
+        'to_render': to_render,
+    }
     # run_mapf_alg(alg=run_k_prp, params=params_k_prp_sipps)
     # --------------------------------------------------------------------- #
 
