@@ -131,7 +131,7 @@ def run_k_lns2(
             agents, nodes, nodes_dict, h_dict, map_dim, pf_alg_name, pf_alg, k_limit, start_time,
             vc_empty_np, ec_empty_np, pc_empty_np
         )
-        cp_graph, cp_graph_names = get_k_limit_cp_graph(agents)
+        cp_graph, cp_graph_names = get_k_limit_cp_graph(agents, k_limit=k_limit)
         cp_len = len(cp_graph)
         occupied_from: Dict[str, AgentLNS2] = {a.curr_node.xy_name: a for a in agents}
 
@@ -155,7 +155,7 @@ def run_k_lns2(
             )
 
             old_cp_graph, old_cp_graph_names = cp_graph, cp_graph_names
-            cp_graph, cp_graph_names = get_k_limit_cp_graph(agents_subset, agents_outer, cp_graph)
+            cp_graph, cp_graph_names = get_k_limit_cp_graph(agents_subset, agents_outer, cp_graph, k_limit=k_limit)
             if len(cp_graph) > cp_len:
                 for agent in agents_subset:
                     agent.k_path = old_paths[agent.name]

@@ -20,7 +20,7 @@ def run_mapf_experiments():
     # set_seed(random_seed_bool=True)
 
     # ------------------------------------------------------------------------------------------------------------ #
-    # MAPF
+    # LMAPF
     # ------------------------------------------------------------------------------------------------------------ #
     # img_dir = '10_10_my_rand.map'
     # img_dir = '15-15-two-rooms.map'
@@ -43,6 +43,10 @@ def run_mapf_experiments():
     # n_agents_list = [300, 400, 500, 600, 700]
 
     i_problems = 5
+
+    # limits
+    max_iter_time = 10
+    n_steps = 50
 
     alg_list = [
         (run_lifelong_prp, {
@@ -82,10 +86,6 @@ def run_mapf_experiments():
             'to_render': False,
         }),
     ]
-
-    # limits
-    max_iter_time = 5
-    n_steps = 50
 
     # debug
     # to_assert = True

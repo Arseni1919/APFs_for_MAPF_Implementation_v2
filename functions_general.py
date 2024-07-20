@@ -375,6 +375,18 @@ def stay_k_path_agent(agent: AgentAlg | Any, n: Node, k_limit: int) -> None:
     agent.k_path = agent.k_path[:k_limit]
 
 
+def exceeds_k_dist(n1: Node, n2: Node, k_limit: int) -> bool:
+    dist_x = abs(n1.x - n2.x)
+    if dist_x > k_limit:
+        return True
+    dist_y = abs(n1.y - n2.y)
+    if dist_y > k_limit:
+        return True
+    if dist_x + dist_y > k_limit:
+        return True
+    return False
+
+
 def repair_agents_k_paths(agents: List[AgentAlg] | list, k_limit: int) -> None:
     standby_agents_dict: Dict[str, bool] = {}
     for agent in agents:
@@ -390,9 +402,7 @@ def repair_agents_k_paths(agents: List[AgentAlg] | list, k_limit: int) -> None:
         for a1, a2 in combinations(agents, 2):
             if standby_agents_dict[a1.name] and standby_agents_dict[a2.name]:
                 continue
-            if abs(a1.curr_node.x - a2.curr_node.x) > k_limit:
-                continue
-            if abs(a1.curr_node.y - a2.curr_node.y) > k_limit:
+            if exceeds_k_dist(a1.curr_node, a2.curr_node, k_limit):
                 continue
             if two_k_paths_have_confs(a1.k_path, a2.k_path):
                 stay_k_path_agent(a1, a1.curr_node, k_limit + 1)

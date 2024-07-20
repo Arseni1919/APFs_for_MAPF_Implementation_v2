@@ -347,13 +347,16 @@ def get_k_limit_cp_graph(
         agents: List[AgentLNS2],
         other_agents: List[AgentLNS2] | None = None,
         prev_cp_graph: Dict[str, List[AgentLNS2]] | None = None,
+        k_limit: int = int(1e10)
 ) -> Tuple[Dict[str, List[AgentLNS2]], Dict[str, List[str]]]:
     if other_agents is None:
         other_agents = []
     # align_all_paths(agents)
     cp_graph: Dict[str, List[AgentLNS2]] = {}
     for a1, a2 in combinations(agents, 2):
-        if not two_plans_have_no_confs(a1.k_path, a2.k_path):
+        if exceeds_k_dist(a1.curr_node, a2.curr_node, k_limit):
+            continue
+        if two_k_paths_have_confs(a1.k_path, a2.k_path):
             if a1.name not in cp_graph:
                 cp_graph[a1.name] = []
             if a2.name not in cp_graph:
@@ -368,7 +371,9 @@ def get_k_limit_cp_graph(
                 if nei not in agents:
                     cp_graph[other_a.name].append(nei)
         for a in agents:
-            if not two_plans_have_no_confs(other_a.k_path, a.k_path):
+            if exceeds_k_dist(other_a.curr_node, a.curr_node, k_limit):
+                continue
+            if two_k_paths_have_confs(other_a.k_path, a.k_path):
                 if other_a.name not in cp_graph:
                     cp_graph[other_a.name] = []
                 if a.name not in cp_graph:

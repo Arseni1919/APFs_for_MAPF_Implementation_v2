@@ -98,6 +98,7 @@ def run_lifelong_prp(
     # create agents
     agents, agents_dict = create_prp_agents(start_nodes, goal_nodes)
     vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, k_limit + 1)
+    n_agents = len(agents)
 
     # main loop
     path_len = 0
@@ -124,7 +125,7 @@ def run_lifelong_prp(
 
         # print
         global_runtime = time.time() - global_start_time
-        print(f'\r[{alg_name}] {step_iter=: <3} / {n_steps} | {global_runtime=: .2f} s. | {throughput=}')  # , end=''
+        print(f'\r[{alg_name}] {n_agents=}, {step_iter=: <3} / {n_steps} | {global_runtime=: .2f} s. | {throughput=}')  # , end=''
         # ------------------------------ #
         # ------------------------------ #
         # ------------------------------ #
