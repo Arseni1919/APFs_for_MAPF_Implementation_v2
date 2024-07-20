@@ -344,9 +344,9 @@ def create_k_limit_init_solution(
         agent.k_path = new_path[:]
         h_priority_agents.append(agent)
 
-        si_table = update_si_table_soft(new_path, si_table)
         if pf_alg_name == 'sipps':
             update_constraints(new_path, vc_soft_np, ec_soft_np, pc_soft_np)
+            si_table = update_si_table_soft(new_path, si_table, consider_pc=False)
         elif pf_alg_name == 'a_star':
             update_constraints(new_path, vc_hard_np, ec_hard_np, pc_hard_np)
         else:
@@ -467,7 +467,7 @@ def solve_k_limit_subset_with_prp(
         vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, k_limit + 1)
         for h_agent in h_priority_agents:
             update_constraints(h_agent.k_path, vc_soft_np, ec_soft_np, pc_soft_np)
-            si_table = update_si_table_soft(h_agent.k_path, si_table)
+            si_table = update_si_table_soft(h_agent.k_path, si_table, consider_pc=False)
     elif pf_alg_name == 'a_star':
         vc_hard_np, ec_hard_np, pc_hard_np = init_constraints(map_dim, k_limit + 1)
         vc_soft_np, ec_soft_np, pc_soft_np = vc_empty_np, ec_empty_np, pc_empty_np
@@ -489,9 +489,9 @@ def solve_k_limit_subset_with_prp(
         agent.k_path = new_path[:]
         h_priority_agents.append(agent)
 
-        si_table = update_si_table_soft(new_path, si_table)
         if pf_alg_name == 'sipps':
             update_constraints(new_path, vc_soft_np, ec_soft_np, pc_soft_np)
+            si_table = update_si_table_soft(new_path, si_table, consider_pc=False)
         elif pf_alg_name == 'a_star':
             update_constraints(new_path, vc_hard_np, ec_hard_np, pc_hard_np)
         else:

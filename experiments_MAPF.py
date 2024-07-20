@@ -4,7 +4,7 @@ from functions_plotting import *
 
 from algs.alg_sipps import run_sipps
 from algs.alg_temporal_a_star import run_temporal_a_star
-from algs.alg_mapf_PrP import run_prp, run_k_prp
+from algs.alg_mapf_PrP import run_prp_sipps, run_prp_a_star, run_k_prp
 from algs.alg_mapf_LNS2 import run_lns2, run_k_lns2
 from algs.alg_mapf_pibt import run_pibt
 from algs.alg_mapf_lacam import run_lacam
@@ -50,32 +50,34 @@ def run_mapf_experiments():
         # ------------------------------------------------ #
         # PrP Family
         # ------------------------------------------------ #
-        (run_prp, {
+        (run_prp_sipps, {
             'alg_name': f'PrP-SIPPS',
             'constr_type': 'hard',
             'pf_alg': run_sipps,
+            'pf_alg_name': 'sipps',
             'to_render': False,
         }),
-        (run_prp, {
-            'alg_name': f'PrP-A*',
-            'constr_type': 'hard',
-            'pf_alg': run_temporal_a_star,
-            'to_render': False,
-        }),
-        (run_k_prp, {
-            'alg_name': f'k-PrP-A*',
-            'constr_type': 'hard',
-            'k_limit': 5,
-            'pf_alg': run_temporal_a_star,
-            'to_render': False,
-        }),
-        (run_k_prp, {
-            'alg_name': f'k-PrP-SIPPS',
-            'constr_type': 'soft',
-            'k_limit': 5,
-            'pf_alg': run_sipps,
-            'to_render': False,
-        }),
+        # (run_prp_a_star, {
+        #     'alg_name': f'PrP-A*',
+        #     'constr_type': 'hard',
+        #     'pf_alg': run_temporal_a_star,
+        #     'pf_alg_name': 'a_star',
+        #     'to_render': False,
+        # }),
+        # (run_k_prp, {
+        #     'alg_name': f'k-PrP-A*',
+        #     'constr_type': 'hard',
+        #     'k_limit': 5,
+        #     'pf_alg': run_temporal_a_star,
+        #     'to_render': False,
+        # }),
+        # (run_k_prp, {
+        #     'alg_name': f'k-PrP-SIPPS',
+        #     'constr_type': 'soft',
+        #     'k_limit': 5,
+        #     'pf_alg': run_sipps,
+        #     'to_render': False,
+        # }),
         # ------------------------------------------------ #
 
         # ------------------------------------------------ #
@@ -87,22 +89,22 @@ def run_mapf_experiments():
             'n_neighbourhood': 5,
             'to_render': False,
         }),
-        (run_k_lns2, {
-            'alg_name': 'k-LNS2-A*',
-            'pf_alg_name': 'a_star',
-            'pf_alg': run_temporal_a_star,
-            'k_limit': 5,
-            'n_neighbourhood': 5,
-            'to_render': False,
-        }),
-        (run_k_lns2, {
-            'alg_name': 'k-LNS2-SIPPS',
-            'pf_alg_name': 'sipps',
-            'pf_alg': run_sipps,
-            'k_limit': 5,
-            'n_neighbourhood': 5,
-            'to_render': False,
-        }),
+        # (run_k_lns2, {
+        #     'alg_name': 'k-LNS2-A*',
+        #     'pf_alg_name': 'a_star',
+        #     'pf_alg': run_temporal_a_star,
+        #     'k_limit': 5,
+        #     'n_neighbourhood': 5,
+        #     'to_render': False,
+        # }),
+        # (run_k_lns2, {
+        #     'alg_name': 'k-LNS2-SIPPS',
+        #     'pf_alg_name': 'sipps',
+        #     'pf_alg': run_sipps,
+        #     'k_limit': 5,
+        #     'n_neighbourhood': 5,
+        #     'to_render': False,
+        # }),
 
         # ------------------------------------------------ #
         # PIBT, LaCAM Family
