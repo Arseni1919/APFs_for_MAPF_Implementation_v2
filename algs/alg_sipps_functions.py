@@ -101,6 +101,34 @@ class SIPPSNode:
 # -------------------------------------------------------------------------------------------------------------------- #
 
 
+# def update_si_table_hard(
+#         new_path: List[Node],
+#         si_table: Dict[str, List[Tuple[int, int]]],
+#         nodes: List[Node],
+#         inf_num: int,
+# ):
+#     pass
+
+
+def init_si_table(
+        nodes: List[Node],
+        inf_num: int,
+) -> Dict[str, List[Tuple[int, int]]]:
+    si_table: Dict[str, List[Tuple[int, int]]] = {}
+    for node in nodes:
+        si_table[node.xy_name].append((0, inf_num))
+    return si_table
+
+
+def update_si_table_soft(
+        new_path: List[Node],
+        si_table: Dict[str, List[Tuple[int, int]]],
+        nodes: List[Node],
+        inf_num: int,
+):
+    pass
+
+
 def get_si_table(
         nodes: List[Node],
         nodes_dict: Dict[str, Node],
