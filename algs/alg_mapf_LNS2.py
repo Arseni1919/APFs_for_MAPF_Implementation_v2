@@ -116,7 +116,7 @@ def run_k_lns2(
     start_time = time.time()
     # create agents
     agents, agents_dict = create_lns_agents(start_nodes, goal_nodes)
-    # vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, k_limit + 1)
+    vc_empty_np, ec_empty_np, pc_empty_np = init_constraints(map_dim, k_limit + 1)
 
     k_iter: int = 0
     while True:
@@ -128,7 +128,8 @@ def run_k_lns2(
 
         # init solution
         create_k_limit_init_solution(
-            agents, nodes, nodes_dict, h_dict, map_dim, pf_alg_name, pf_alg, k_limit, start_time
+            agents, nodes, nodes_dict, h_dict, map_dim, pf_alg_name, pf_alg, k_limit, start_time,
+            vc_empty_np, ec_empty_np, pc_empty_np
         )
         cp_graph, cp_graph_names = get_k_limit_cp_graph(agents)
         cp_len = len(cp_graph)
@@ -150,7 +151,7 @@ def run_k_lns2(
 
             solve_k_limit_subset_with_prp(
                 agents_subset, agents_outer, nodes, nodes_dict, h_dict, map_dim, start_time,
-                pf_alg_name, pf_alg, k_limit, agents
+                pf_alg_name, pf_alg, vc_empty_np, ec_empty_np, pc_empty_np, k_limit, agents
             )
 
             old_cp_graph, old_cp_graph_names = cp_graph, cp_graph_names

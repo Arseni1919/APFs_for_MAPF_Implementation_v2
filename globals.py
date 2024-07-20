@@ -114,6 +114,7 @@ class AgentAlg:
         self.goal_node: Node = goal_node
         self.goal_node_name: str = self.goal_node.xy_name
         self.path: List[Node] | None = [self.start_node]
+        self.k_path: List[Node] | None = [self.start_node]
         self.init_priority: float = random.random()
         self.priority: float = self.init_priority
 

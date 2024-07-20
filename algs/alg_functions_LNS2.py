@@ -308,11 +308,18 @@ def create_k_limit_init_solution(
         pf_alg_name: str,
         pf_alg,
         k_limit: int,
-        start_time: int | float
+        start_time: int | float,
+        vc_empty_np, ec_empty_np, pc_empty_np
 ):
     h_priority_agents: List[AgentLNS2] = []
-    vc_hard_np, ec_hard_np, pc_hard_np = init_constraints(map_dim, k_limit + 1)
-    vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, k_limit + 1)
+    if pf_alg_name == 'sipps':
+        vc_hard_np, ec_hard_np, pc_hard_np = vc_empty_np, ec_empty_np, pc_empty_np
+        vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, k_limit + 1)
+    elif pf_alg_name == 'a_star':
+        vc_hard_np, ec_hard_np, pc_hard_np = init_constraints(map_dim, k_limit + 1)
+        vc_soft_np, ec_soft_np, pc_soft_np = vc_empty_np, ec_empty_np, pc_empty_np
+    else:
+        raise RuntimeError('nono')
     for agent in agents:
         new_path, alg_info = pf_alg(
             agent.curr_node, agent.goal_node, nodes, nodes_dict, h_dict,
@@ -433,25 +440,25 @@ def solve_k_limit_subset_with_prp(
         start_time: int | float,
         pf_alg_name: str,
         pf_alg,
+        vc_empty_np, ec_empty_np, pc_empty_np,
         k_limit: int = int(1e10),
-        agents: List[AgentLNS2] | None = None
+        agents: List[AgentLNS2] | None = None,
 ) -> None:
 
     h_priority_agents: List[AgentLNS2] = outer_agents[:]
-    vc_hard_np, ec_hard_np, pc_hard_np = init_constraints(map_dim, k_limit + 1)
-    vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, k_limit + 1)
     if pf_alg_name == 'sipps':
+        vc_hard_np, ec_hard_np, pc_hard_np = vc_empty_np, ec_empty_np, pc_empty_np
+        vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, k_limit + 1)
         for h_agent in h_priority_agents:
             update_constraints(h_agent.k_path, vc_soft_np, ec_soft_np, pc_soft_np)
     elif pf_alg_name == 'a_star':
+        vc_hard_np, ec_hard_np, pc_hard_np = init_constraints(map_dim, k_limit + 1)
+        vc_soft_np, ec_soft_np, pc_soft_np = vc_empty_np, ec_empty_np, pc_empty_np
         for h_agent in h_priority_agents:
             update_constraints(h_agent.k_path, vc_hard_np, ec_hard_np, pc_hard_np)
     else:
-        raise RuntimeError('noooo')
+        raise RuntimeError('nono')
     random.shuffle(agents_subset)
-    # finished = [a for a in agents_subset if a.k_path[-1] == a.goal_node]
-    # unfinished = [a for a in agents_subset if a not in finished]
-    # agents_subset = [*unfinished, *finished]
 
     for agent in agents_subset:
         new_path, sipps_info = pf_alg(
