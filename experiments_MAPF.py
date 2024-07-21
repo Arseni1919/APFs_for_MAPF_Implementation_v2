@@ -39,7 +39,9 @@ def run_mapf_experiments():
 
     # n_agents_list = [400]
     # n_agents_list = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-    n_agents_list = [50, 100, 150, 200, 250, 300, 350]
+    # n_agents_list = [50, 100, 150, 200, 250, 300, 350]
+    # n_agents_list = [150, 200, 250, 300, 350]
+    n_agents_list = [200, 250, 300, 350, 400]
     # n_agents_list = [100, 200, 300, 400, 500]
     # n_agents_list = [200, 300, 400, 500, 600]
     # n_agents_list = [300, 400, 500, 600, 700]
@@ -50,13 +52,13 @@ def run_mapf_experiments():
         # ------------------------------------------------ #
         # PrP Family
         # ------------------------------------------------ #
-        (run_prp_sipps, {
-            'alg_name': f'PrP-SIPPS',
-            'constr_type': 'hard',
-            'pf_alg_name': 'sipps',
-            'pf_alg': run_sipps,
-            'to_render': False,
-        }),
+        # (run_prp_sipps, {
+        #     'alg_name': f'PrP-SIPPS',
+        #     'constr_type': 'hard',
+        #     'pf_alg_name': 'sipps',
+        #     'pf_alg': run_sipps,
+        #     'to_render': False,
+        # }),
         # (run_prp_a_star, {
         #     'alg_name': f'PrP-A*',
         #     'constr_type': 'hard',
@@ -67,15 +69,15 @@ def run_mapf_experiments():
         # (run_k_prp, {
         #     'alg_name': f'k-PrP-A*',
         #     'constr_type': 'hard',
-        #     'k_limit': 10,
+        #     'k_limit': 15,
         #     'pf_alg_name': 'a_star',
         #     'pf_alg': run_temporal_a_star,
         #     'to_render': False,
         # }),
         # (run_k_prp, {
         #     'alg_name': f'k-PrP-SIPPS',
-        #     'constr_type': 'soft',
-        #     'k_limit': 10,
+        #     'constr_type': 'hard',
+        #     'k_limit': 15,
         #     'pf_alg_name': 'sipps',
         #     'pf_alg': run_sipps,
         #     'to_render': False,
@@ -85,46 +87,46 @@ def run_mapf_experiments():
         # ------------------------------------------------ #
         # LNS2 Family
         # ------------------------------------------------ #
-        (run_lns2, {
-            'alg_name': f'LNS2(3)',
-            'constr_type': 'soft',
-            'n_neighbourhood': 3,
-            'to_render': False,
-        }),
-        (run_lns2, {
-            'alg_name': f'LNS2(5)',
-            'constr_type': 'soft',
-            'n_neighbourhood': 5,
-            'to_render': False,
-        }),
-        (run_lns2, {
-            'alg_name': f'LNS2(10)',
-            'constr_type': 'soft',
-            'n_neighbourhood': 10,
-            'to_render': False,
-        }),
-        (run_lns2, {
-            'alg_name': f'LNS2(15)',
-            'constr_type': 'soft',
-            'n_neighbourhood': 15,
-            'to_render': False,
-        }),
-        # (run_k_lns2, {
-        #     'alg_name': 'k-LNS2-A*',
-        #     'pf_alg_name': 'a_star',
-        #     'pf_alg': run_temporal_a_star,
-        #     'k_limit': 10,
+        # (run_lns2, {
+        #     'alg_name': f'LNS2(3)',
+        #     'constr_type': 'soft',
+        #     'n_neighbourhood': 3,
+        #     'to_render': False,
+        # }),
+        # (run_lns2, {
+        #     'alg_name': f'LNS2(5)',
+        #     'constr_type': 'soft',
+        #     'n_neighbourhood': 5,
+        #     'to_render': False,
+        # }),
+        # (run_lns2, {
+        #     'alg_name': f'LNS2(10)',
+        #     'constr_type': 'soft',
         #     'n_neighbourhood': 10,
         #     'to_render': False,
         # }),
-        # (run_k_lns2, {
-        #     'alg_name': 'k-LNS2-SIPPS',
-        #     'pf_alg_name': 'sipps',
-        #     'pf_alg': run_sipps,
-        #     'k_limit': 10,
-        #     'n_neighbourhood': 10,
+        # (run_lns2, {
+        #     'alg_name': f'LNS2(15)',
+        #     'constr_type': 'soft',
+        #     'n_neighbourhood': 15,
         #     'to_render': False,
         # }),
+        (run_k_lns2, {
+            'k_limit': (k_limit := 15),
+            'alg_name': f'k-LNS2({k_limit})-A*',
+            'pf_alg_name': 'a_star',
+            'pf_alg': run_temporal_a_star,
+            'n_neighbourhood': k_limit,
+            'to_render': False,
+        }),
+        (run_k_lns2, {
+            'k_limit': (k_limit := 15),
+            'alg_name': f'k-LNS2({k_limit})-SIPPS',
+            'pf_alg_name': 'sipps',
+            'pf_alg': run_sipps,
+            'n_neighbourhood': k_limit,
+            'to_render': False,
+        }),
 
         # ------------------------------------------------ #
         # PIBT, LaCAM Family
@@ -133,15 +135,15 @@ def run_mapf_experiments():
         #     'alg_name': f'PIBT',
         #     'to_render': False,
         # }),
-        # (run_lacam, {
-        #     'alg_name': f'LaCAM',
-        #     'to_render': False,
-        # }),
-        # (run_lacam_star, {
-        #     'alg_name': f'LaCAM*',
-        #     'flag_star': False,
-        #     'to_render': False,
-        # }),
+        (run_lacam, {
+            'alg_name': f'LaCAM',
+            'to_render': False,
+        }),
+        (run_lacam_star, {
+            'alg_name': f'LaCAM*',
+            'flag_star': False,
+            'to_render': False,
+        }),
     ]
 
     # limits
@@ -231,12 +233,10 @@ def run_mapf_experiments():
     print('\n[INFO]: finished BIG MAPF experiments')
     plt.show()
 
+
 # if to_render:
 #     fig, ax = plt.subplots(1, 2, figsize=(14, 7))
 
 
 if __name__ == '__main__':
     run_mapf_experiments()
-
-
-

@@ -17,7 +17,6 @@ def run_prp_sipps(
 
     constr_type: str = params['constr_type']
     alg_name: bool = params['alg_name']
-    pf_alg = params['pf_alg']
     to_render: bool = params['to_render']
     max_time: bool = params['max_time']
 
@@ -54,9 +53,14 @@ def run_prp_sipps(
                 None, ec_hard_np, None, None, ec_soft_np, None,
                 agent=agent, si_table=si_table
             )
+
+            if time.time() - start_time > max_time:
+                return None, {}
+
             if new_path is None:
                 agent.path = None
                 break
+
             agent.path = new_path[:]
             h_priority_agents.append(agent)
             align_all_paths(h_priority_agents)
@@ -149,6 +153,10 @@ def run_prp_a_star(
                 vc_hard_np, ec_hard_np, pc_hard_np, vc_soft_np, ec_soft_np, pc_soft_np,
                 agent=agent,
             )
+
+            if time.time() - start_time > max_time:
+                return None, {}
+
             if new_path is None:
                 agent.path = None
                 break
@@ -183,6 +191,7 @@ def run_prp_a_star(
         # reshuffle
         r_iter += 1
         random.shuffle(agents)
+        # agents = get_shuffled_agents(agents) # - no meaning
         for agent in agents:
             agent.path = []
 
@@ -310,8 +319,8 @@ def run_k_prp(
 
         # reshuffle
         k_iter += 1
-        random.shuffle(agents)
-        # agents = get_shuffled_agents(agents)
+        # random.shuffle(agents)
+        agents = get_shuffled_agents(agents)
         for agent in agents:
             agent.k_path = []
 

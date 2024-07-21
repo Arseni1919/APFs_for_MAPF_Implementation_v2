@@ -22,6 +22,7 @@ def solve_k_LNS2(
     iter_start_time = time.time()
 
     # init solution
+    agents = get_shuffled_agents(agents)
     create_k_limit_init_solution(
         agents, nodes, nodes_dict, h_dict, map_dim, pf_alg_name, pf_alg, k_limit, iter_start_time,
         vc_empty_np, ec_empty_np, pc_empty_np
@@ -36,13 +37,13 @@ def solve_k_LNS2(
         lns_iter += 1
 
         runtime = time.time() - iter_start_time
-        print(f'\r[{alg_name}] {lns_iter=}, {cp_len=}, {runtime=: .2f} s. ', end='')
 
         agents_subset: List[AgentLNS2] = get_k_limit_agents_subset(
             cp_graph, cp_graph_names, n_neighbourhood, agents, occupied_from, h_dict
         )
         old_paths: Dict[str, List[Node]] = {a.name: a.k_path[:] for a in agents_subset}
         agents_outer: List[AgentLNS2] = [a for a in agents if a not in agents_subset]
+        print(f'\r[{alg_name}] {lns_iter=}, {cp_len=}, {runtime=: .2f} s., {agents_subset=} ', end='')
 
         solve_k_limit_subset_with_prp(
             agents_subset, agents_outer, nodes, nodes_dict, h_dict, map_dim, iter_start_time,
@@ -161,35 +162,35 @@ def main():
     # --------------------------------------------------------------------- #
     # Lifelong-LNS - A*
     # --------------------------------------------------------------------- #
-    params_lifelong_lns_a_star = {
-        'max_iter_time': 5,  # seconds
-        'n_steps': 50,
-        'alg_name': f'Lifelong-LNS2-A*',
-        'constr_type': 'hard',
-        'k_limit': k_limit,
-        'n_neighbourhood': n_neighbourhood,
-        'pf_alg_name': 'a_star',
-        'pf_alg': run_temporal_a_star,
-        'to_render': to_render,
-    }
-    run_mapf_alg(alg=run_lifelong_LNS2, params=params_lifelong_lns_a_star)
+    # params_lifelong_lns_a_star = {
+    #     'max_iter_time': 5,  # seconds
+    #     'n_steps': 100,
+    #     'alg_name': f'Lifelong-LNS2-A*',
+    #     'constr_type': 'hard',
+    #     'k_limit': k_limit,
+    #     'n_neighbourhood': n_neighbourhood,
+    #     'pf_alg_name': 'a_star',
+    #     'pf_alg': run_temporal_a_star,
+    #     'to_render': to_render,
+    # }
+    # run_mapf_alg(alg=run_lifelong_LNS2, params=params_lifelong_lns_a_star)
     # --------------------------------------------------------------------- #
 
     # --------------------------------------------------------------------- #
     # Lifelong-LNS - SIPPS
     # --------------------------------------------------------------------- #
-    # params_lifelong_lns_sipps = {
-    #     'max_iter_time': 5,  # seconds
-    #     'n_steps': 50,
-    #     'alg_name': f'Lifelong-LNS2-SIPPS',
-    #     'constr_type': 'soft',
-    #     'k_limit': k_limit,
-    #     'n_neighbourhood': n_neighbourhood,
-    #     'pf_alg_name': 'sipps',
-    #     'pf_alg': run_sipps,
-    #     'to_render': to_render,
-    # }
-    # run_mapf_alg(alg=run_lifelong_LNS2, params=params_lifelong_lns_sipps)
+    params_lifelong_lns_sipps = {
+        'max_iter_time': 5,  # seconds
+        'n_steps': 100,
+        'alg_name': f'Lifelong-LNS2-SIPPS',
+        'constr_type': 'soft',
+        'k_limit': k_limit,
+        'n_neighbourhood': n_neighbourhood,
+        'pf_alg_name': 'sipps',
+        'pf_alg': run_sipps,
+        'to_render': to_render,
+    }
+    run_mapf_alg(alg=run_lifelong_LNS2, params=params_lifelong_lns_sipps)
     # --------------------------------------------------------------------- #
 
 

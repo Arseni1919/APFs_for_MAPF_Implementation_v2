@@ -170,7 +170,7 @@ def update_constraints(
     # pc
     last_node = path[-1]
     last_time = len(path) - 1
-    pc_np[last_node.x, last_node.y] = max(pc_np[last_node.x, last_node.y], last_time)
+    pc_np[last_node.x, last_node.y] = max(int(pc_np[last_node.x, last_node.y]), last_time)
     prev_n = path[0]
     for t, n in enumerate(path):
         # vc
@@ -447,7 +447,7 @@ def repair_agents_k_paths(agents: List[AgentAlg] | list, k_limit: int) -> None:
         for a1, a2 in combinations(agents, 2):
             if standby_agents_dict[a1.name] and standby_agents_dict[a2.name]:
                 continue
-            if exceeds_k_dist(a1.curr_node, a2.curr_node, k_limit):
+            if exceeds_k_dist(a1.curr_node, a2.curr_node, k_limit + 1):
                 continue
             if two_equal_paths_have_confs(a1.k_path, a2.k_path):
                 stay_k_path_agent(a1, a1.curr_node, k_limit + 1)

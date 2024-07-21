@@ -16,6 +16,7 @@ def run_temporal_a_star(
         max_final_time: int = int(1e10),
         flag_k_limit: bool = False,
         k_limit: int = int(1e10),
+        inf_num: int = int(1e10),
         agent=None,
         **kwargs,
 ) -> Tuple[List[Node] | None, dict]:
@@ -27,23 +28,26 @@ def run_temporal_a_star(
     open_list_names: List[str] = [start_astr_node.xyt_name]
     closed_list_names: List[str] = []
     max_pc_time = np.max(pc_hard_np)
-    if max_pc_time > 0:
-        max_final_time = max_pc_time
     exploded_limit = max(32 * 32, max_pc_time * 150)
     # exploded_limit = max(1000, max_pc_time * 250)
+    if max_pc_time > 0:
+        max_final_time = max_pc_time
+    if k_limit < inf_num:
+        max_final_time = k_limit
+        exploded_limit = inf_num
 
     iteration: int = 0
     while len(open_list) > 0:
         iteration += 1
         # print(f'\r[{iteration}] {len(open_list)=}, {len(closed_list_names)=}', end='')
-        print(f'\r[{iteration}] max_pc {max_pc_time}', end='')
+        # print(f'\r[{iteration}] max_pc {max_pc_time}', end='')
         # exploded
         if max_pc_time > 0 and len(closed_list_names) > exploded_limit:
             runtime = time.time() - start_time
             return None, {'runtime': runtime, 'open_list': open_list, 'closed_list': closed_list_names}
         next_astr_node: AStarNode = heapq.heappop(open_list)
         open_list_names.remove(next_astr_node.xyt_name)
-        if next_astr_node.n == goal_node or next_astr_node.t >= k_limit:
+        if next_astr_node.n == goal_node or next_astr_node.t > k_limit:
             latest_vc_on_node: int = get_latest_vc_on_node(next_astr_node, vc_hard_np)
             if next_astr_node.t > latest_vc_on_node or next_astr_node.t >= k_limit:
                 path = reconstruct_path(next_astr_node)
@@ -52,9 +56,9 @@ def run_temporal_a_star(
 
         for nei_node in next_astr_node.neighbours_nodes:
             new_t = next_astr_node.t + 1
-            nei_astr_name = f'{nei_node.x}_{nei_node.y}_{new_t}'
             if next_astr_node.t >= max_final_time:
                 new_t = max_final_time + 1
+            nei_astr_name = f'{nei_node.x}_{nei_node.y}_{new_t}'
             if nei_astr_name == next_astr_node.xyt_name:
                 continue
             if nei_astr_name in open_list_names:

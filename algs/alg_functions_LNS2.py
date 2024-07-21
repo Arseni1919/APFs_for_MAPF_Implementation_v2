@@ -1,3 +1,5 @@
+import random
+
 from globals import *
 from functions_general import *
 from functions_plotting import *
@@ -97,7 +99,9 @@ def create_init_solution(
         map_dim: Tuple[int, int],
         constr_type: str,
         start_time: int | float,
+        params: dict
 ):
+    alg_name: str = params['alg_name']
     c_sum: int = 0
     h_priority_agents: List[AgentLNS2] = []
     longest_len = 1
@@ -138,7 +142,7 @@ def create_init_solution(
 
         # checks
         runtime = time.time() - start_time
-        print(f'\r[LNS2 - init] | agents: {len(h_priority_agents): <3} / {len(agents)} | {runtime= : .2f} s.',
+        print(f'\r[{alg_name} - init] | agents: {len(h_priority_agents): <3} / {len(agents)} | {runtime= : .2f} s.',
               end='\n')  # , end=''
 
 
@@ -271,7 +275,7 @@ def get_agent_s_from_random_walk(
     while len(out_list) < n_neighbourhood:
         nei_agents = cp_graph[next_nei.name]
         next_nei = random.choice(nei_agents)
-        if next_nei not in out_list:
+        if next_nei not in out_list and random.random() < 0.7:
             out_list.append(next_nei)
     return out_list
 
@@ -376,7 +380,7 @@ def get_k_limit_cp_graph(
     # align_all_paths(agents)
     cp_graph: Dict[str, List[AgentLNS2]] = {}
     for a1, a2 in combinations(agents, 2):
-        if exceeds_k_dist(a1.curr_node, a2.curr_node, k_limit):
+        if exceeds_k_dist(a1.curr_node, a2.curr_node, k_limit + 1):
             continue
         if two_equal_paths_have_confs(a1.k_path, a2.k_path):
             if a1.name not in cp_graph:
@@ -393,7 +397,7 @@ def get_k_limit_cp_graph(
                 if nei not in agents:
                     cp_graph[other_a.name].append(nei)
         for a in agents:
-            if exceeds_k_dist(other_a.curr_node, a.curr_node, k_limit):
+            if exceeds_k_dist(other_a.curr_node, a.curr_node, k_limit + 1):
                 continue
             if two_equal_paths_have_confs(other_a.k_path, a.k_path):
                 if other_a.name not in cp_graph:
@@ -412,7 +416,7 @@ def get_k_limit_outer_agent_via_random_walk(
 ) -> AgentLNS2:
     next_node: Node = random.choice(rand_agent.k_path)
     while True:
-        if next_node.xy_name in occupied_from and occupied_from[next_node.xy_name] not in agents_s:
+        if next_node.xy_name in occupied_from and occupied_from[next_node.xy_name] not in agents_s and random.random() < 0.7:
             return occupied_from[next_node.xy_name]
         next_node = random.choice(next_node.neighbours_nodes)
 
