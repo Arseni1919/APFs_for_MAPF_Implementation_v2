@@ -146,11 +146,12 @@ def plot_makespan(ax, info):
     img_dir = info['img_dir']
     max_time = info['max_time']
 
-    for i_alg in alg_names:
+    for alg_name in alg_names:
         makespan_list = []
         for n_a in n_agents_list:
-            makespan_list.append(np.mean(info[i_alg][f'{n_a}']['makespan']))
-        ax.plot(n_agents_list, makespan_list, '-^', label=f'{i_alg}')
+            makespan_list.append(np.mean(info[alg_name][f'{n_a}']['makespan']))
+        ax.plot(n_agents_list, makespan_list, markers_lines_dict[alg_name], color=colors_dict[alg_name],
+                alpha=0.5, label=f'{alg_name}', linewidth=5, markersize=20)
     ax.set_xlim([min(n_agents_list) - 20, max(n_agents_list) + 20])
     ax.set_xticks(n_agents_list)
     ax.set_xlabel('N agents', fontsize=15)

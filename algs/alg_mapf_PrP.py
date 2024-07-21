@@ -30,16 +30,20 @@ def run_prp_sipps(
         agents.append(new_agent)
 
     longest_len = 1
-    vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, longest_len)
-    vc_hard_np, ec_hard_np, pc_hard_np = init_constraints(map_dim, longest_len)
+    # vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, longest_len)
+    # vc_hard_np, ec_hard_np, pc_hard_np = init_constraints(map_dim, longest_len)
+    ec_hard_np = init_ec_table(map_dim, longest_len)
+    ec_soft_np = init_ec_table(map_dim, longest_len)
 
     r_iter = 0
     while time.time() - start_time < max_time:
         # preps
         if constr_type == 'hard':
-            vc_hard_np, ec_hard_np, pc_hard_np = init_constraints(map_dim, longest_len)
+            # vc_hard_np, ec_hard_np, pc_hard_np = init_constraints(map_dim, longest_len)
+            ec_hard_np = init_ec_table(map_dim, longest_len)
         elif constr_type == 'soft':
-            vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, longest_len)
+            # vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, longest_len)
+            ec_soft_np = init_ec_table(map_dim, longest_len)
         si_table: Dict[str, List[Tuple[int, int, str]]] = init_si_table(nodes)
 
         # calc paths
@@ -47,7 +51,7 @@ def run_prp_sipps(
         for agent in agents:
             new_path, alg_info = run_sipps(
                 agent.start_node, agent.goal_node, nodes, nodes_dict, h_dict,
-                vc_hard_np, ec_hard_np, pc_hard_np, vc_soft_np, ec_soft_np, pc_soft_np,
+                None, ec_hard_np, None, None, ec_soft_np, None,
                 agent=agent, si_table=si_table
             )
             if new_path is None:
@@ -64,19 +68,25 @@ def run_prp_sipps(
 
             if longest_len < len(new_path):
                 longest_len = len(new_path)
-                vc_hard_np, ec_hard_np, pc_hard_np = init_constraints(map_dim, longest_len)
-                vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, longest_len)
+                # vc_hard_np, ec_hard_np, pc_hard_np = init_constraints(map_dim, longest_len)
+                # vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, longest_len)
+                ec_hard_np = init_ec_table(map_dim, longest_len)
+                ec_soft_np = init_ec_table(map_dim, longest_len)
                 if constr_type == 'hard':
                     for h_agent in h_priority_agents:
-                        update_constraints(h_agent.path, vc_hard_np, ec_hard_np, pc_hard_np)
+                        # update_constraints(h_agent.path, vc_hard_np, ec_hard_np, pc_hard_np)
+                        update_ec_table(h_agent.path, ec_hard_np)
                 elif constr_type == 'soft':
                     for h_agent in h_priority_agents:
-                        update_constraints(h_agent.path, vc_soft_np, ec_soft_np, pc_soft_np)
+                        # update_constraints(h_agent.path, vc_soft_np, ec_soft_np, pc_soft_np)
+                        update_ec_table(h_agent.path, ec_soft_np)
             else:
                 if constr_type == 'hard':
-                    update_constraints(new_path, vc_hard_np, ec_hard_np, pc_hard_np)
+                    # update_constraints(new_path, vc_hard_np, ec_hard_np, pc_hard_np)
+                    update_ec_table(new_path, ec_hard_np)
                 elif constr_type == 'soft':
-                    update_constraints(new_path, vc_soft_np, ec_soft_np, pc_soft_np)
+                    # update_constraints(new_path, vc_soft_np, ec_soft_np, pc_soft_np)
+                    update_ec_table(new_path, ec_soft_np)
 
 
             # checks

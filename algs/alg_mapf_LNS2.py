@@ -44,7 +44,9 @@ def run_lns2(
     agents, agents_dict = create_lns_agents(start_nodes, goal_nodes)
 
     # init solution
-    create_init_solution(agents, nodes, nodes_dict, h_dict, map_dim, constr_type, start_time)
+    create_init_solution(
+        agents, nodes, nodes_dict, h_dict, map_dim, constr_type, start_time,
+    )
     cp_graph, cp_graph_names = get_cp_graph(agents)
     cp_len = len(cp_graph)
     occupied_from: Dict[str, AgentLNS2] = {a.start_node.xy_name: a for a in agents}
@@ -63,7 +65,10 @@ def run_lns2(
         # assert len(set(agents)) == len(agents)
         # assert len(agents_subset) + len(agents_outer) == len(agents)
 
-        solve_subset_with_prp(agents_subset, agents_outer, nodes, nodes_dict, h_dict, map_dim, start_time, constr_type, agents)
+        solve_subset_with_prp(
+            agents_subset, agents_outer, nodes, nodes_dict, h_dict, map_dim, start_time,
+            constr_type, agents,
+        )
 
         old_cp_graph, old_cp_graph_names = cp_graph, cp_graph_names
         # cp_graph, cp_graph_names = get_cp_graph(agents)
@@ -121,6 +126,9 @@ def run_k_lns2(
     k_iter: int = 0
     while True:
         k_iter += 1
+
+        if time.time() - start_time >= max_time:
+            return None, {'agents': agents}
 
         # ------------------------------ #
         # Solve k steps

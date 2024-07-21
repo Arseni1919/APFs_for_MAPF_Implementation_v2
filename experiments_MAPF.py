@@ -38,8 +38,8 @@ def run_mapf_experiments():
     # img_dir = 'room-32-32-4.map'
 
     # n_agents_list = [400]
-    n_agents_list = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-    # n_agents_list = [100, 200, 300, 400]
+    # n_agents_list = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+    n_agents_list = [50, 100, 150, 200, 250, 300, 350]
     # n_agents_list = [100, 200, 300, 400, 500]
     # n_agents_list = [200, 300, 400, 500, 600]
     # n_agents_list = [300, 400, 500, 600, 700]
@@ -53,28 +53,30 @@ def run_mapf_experiments():
         (run_prp_sipps, {
             'alg_name': f'PrP-SIPPS',
             'constr_type': 'hard',
-            'pf_alg': run_sipps,
             'pf_alg_name': 'sipps',
+            'pf_alg': run_sipps,
             'to_render': False,
         }),
         # (run_prp_a_star, {
         #     'alg_name': f'PrP-A*',
         #     'constr_type': 'hard',
-        #     'pf_alg': run_temporal_a_star,
         #     'pf_alg_name': 'a_star',
+        #     'pf_alg': run_temporal_a_star,
         #     'to_render': False,
         # }),
         # (run_k_prp, {
         #     'alg_name': f'k-PrP-A*',
         #     'constr_type': 'hard',
-        #     'k_limit': 5,
+        #     'k_limit': 10,
+        #     'pf_alg_name': 'a_star',
         #     'pf_alg': run_temporal_a_star,
         #     'to_render': False,
         # }),
         # (run_k_prp, {
         #     'alg_name': f'k-PrP-SIPPS',
         #     'constr_type': 'soft',
-        #     'k_limit': 5,
+        #     'k_limit': 10,
+        #     'pf_alg_name': 'sipps',
         #     'pf_alg': run_sipps,
         #     'to_render': False,
         # }),
@@ -84,50 +86,69 @@ def run_mapf_experiments():
         # LNS2 Family
         # ------------------------------------------------ #
         (run_lns2, {
-            'alg_name': f'LNS2',
+            'alg_name': f'LNS2(3)',
+            'constr_type': 'soft',
+            'n_neighbourhood': 3,
+            'to_render': False,
+        }),
+        (run_lns2, {
+            'alg_name': f'LNS2(5)',
             'constr_type': 'soft',
             'n_neighbourhood': 5,
+            'to_render': False,
+        }),
+        (run_lns2, {
+            'alg_name': f'LNS2(10)',
+            'constr_type': 'soft',
+            'n_neighbourhood': 10,
+            'to_render': False,
+        }),
+        (run_lns2, {
+            'alg_name': f'LNS2(15)',
+            'constr_type': 'soft',
+            'n_neighbourhood': 15,
             'to_render': False,
         }),
         # (run_k_lns2, {
         #     'alg_name': 'k-LNS2-A*',
         #     'pf_alg_name': 'a_star',
         #     'pf_alg': run_temporal_a_star,
-        #     'k_limit': 5,
-        #     'n_neighbourhood': 5,
+        #     'k_limit': 10,
+        #     'n_neighbourhood': 10,
         #     'to_render': False,
         # }),
         # (run_k_lns2, {
         #     'alg_name': 'k-LNS2-SIPPS',
         #     'pf_alg_name': 'sipps',
         #     'pf_alg': run_sipps,
-        #     'k_limit': 5,
-        #     'n_neighbourhood': 5,
+        #     'k_limit': 10,
+        #     'n_neighbourhood': 10,
         #     'to_render': False,
         # }),
 
         # ------------------------------------------------ #
         # PIBT, LaCAM Family
         # ------------------------------------------------ #
-        (run_pibt, {
-            'alg_name': f'PIBT',
-            'to_render': False,
-        }),
-        (run_lacam, {
-            'alg_name': f'LaCAM',
-            'to_render': False,
-        }),
-        (run_lacam_star, {
-            'alg_name': f'LaCAM*',
-            'flag_star': False,
-            'to_render': False,
-        }),
+        # (run_pibt, {
+        #     'alg_name': f'PIBT',
+        #     'to_render': False,
+        # }),
+        # (run_lacam, {
+        #     'alg_name': f'LaCAM',
+        #     'to_render': False,
+        # }),
+        # (run_lacam_star, {
+        #     'alg_name': f'LaCAM*',
+        #     'flag_star': False,
+        #     'to_render': False,
+        # }),
     ]
 
     # limits
     # max_time = 1e7  # seconds
-    # max_time = 60  # seconds
-    max_time = 10  # seconds
+    max_time = 60  # seconds
+    # max_time = 30  # seconds
+    # max_time = 10  # seconds
     # debug
     # to_assert = True
     to_assert = False
@@ -200,7 +221,7 @@ def run_mapf_experiments():
             plot_sr(ax[0, 0], info=logs_dict)
             plot_time_metric(ax[0, 1], info=logs_dict)
             plot_makespan(ax[1, 1], info=logs_dict)
-            plt.pause(0.001)
+            plt.pause(0.01)
 
         # check if solved all the prev problems
         for alg, params in alg_list:

@@ -133,6 +133,32 @@ def init_constraints(
     return vc_np, ec_np, pc_np
 
 
+def init_ec_table(
+        map_dim: Tuple[int, int], max_path_len: int
+) -> np.ndarray | None:
+    """
+    ec_np: edge constraints [x, y, x, y, t] = bool
+    """
+    if max_path_len == 0:
+        return None, None, None
+    ec_np = np.zeros((map_dim[0], map_dim[1], map_dim[0], map_dim[1], max_path_len))
+    return ec_np
+
+
+def update_ec_table(
+        path: List[Node], ec_np: np.ndarray
+) -> np.ndarray | None:
+    """
+    ec_np: edge constraints [x, y, x, y, t] = bool
+    """
+    prev_n = path[0]
+    for t, n in enumerate(path):
+        # ec
+        ec_np[prev_n.x, prev_n.y, n.x, n.y, t] = 1
+        prev_n = n
+    return ec_np
+
+
 def update_constraints(
         path: List[Node], vc_np: np.ndarray, ec_np: np.ndarray, pc_np: np.ndarray
 ) -> Tuple[np.ndarray | None, np.ndarray | None, np.ndarray | None]:
