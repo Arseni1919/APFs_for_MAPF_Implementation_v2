@@ -480,9 +480,10 @@ def solve_k_limit_subset_with_prp(
     si_table: Dict[str, List[Tuple[int, int, str]]] = init_si_table(nodes)
     if pf_alg_name == 'sipps':
         vc_hard_np, ec_hard_np, pc_hard_np = vc_empty_np, ec_empty_np, pc_empty_np
-        vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, k_limit + 1)
+        vc_soft_np, pc_soft_np = vc_empty_np, pc_empty_np
+        ec_soft_np = init_ec_table(map_dim, k_limit + 1)
         for h_agent in h_priority_agents:
-            update_constraints(h_agent.k_path, vc_soft_np, ec_soft_np, pc_soft_np)
+            update_ec_table(h_agent.k_path, ec_soft_np)
             si_table = update_si_table_soft(h_agent.k_path, si_table, consider_pc=False)
     elif pf_alg_name == 'a_star':
         vc_hard_np, ec_hard_np, pc_hard_np = init_constraints(map_dim, k_limit + 1)
@@ -491,8 +492,8 @@ def solve_k_limit_subset_with_prp(
             update_constraints(h_agent.k_path, vc_hard_np, ec_hard_np, pc_hard_np)
     else:
         raise RuntimeError('nono')
-    random.shuffle(agents_subset)
 
+    random.shuffle(agents_subset)
     for agent in agents_subset:
         new_path, sipps_info = pf_alg(
             agent.curr_node, agent.goal_node, nodes, nodes_dict, h_dict,
@@ -506,7 +507,7 @@ def solve_k_limit_subset_with_prp(
         h_priority_agents.append(agent)
 
         if pf_alg_name == 'sipps':
-            update_constraints(new_path, vc_soft_np, ec_soft_np, pc_soft_np)
+            update_ec_table(new_path, ec_soft_np)
             si_table = update_si_table_soft(new_path, si_table, consider_pc=False)
         elif pf_alg_name == 'a_star':
             update_constraints(new_path, vc_hard_np, ec_hard_np, pc_hard_np)

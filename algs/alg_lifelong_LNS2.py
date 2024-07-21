@@ -43,7 +43,8 @@ def solve_k_LNS2(
         )
         old_paths: Dict[str, List[Node]] = {a.name: a.k_path[:] for a in agents_subset}
         agents_outer: List[AgentLNS2] = [a for a in agents if a not in agents_subset]
-        print(f'\r[{alg_name}] {lns_iter=}, {cp_len=}, {runtime=: .2f} s., {agents_subset=} ', end='')
+        # print(f'\r[{alg_name}] {lns_iter=}, {cp_len=}, {runtime=: .2f} s., {agents_subset=} ', end='')
+        print(f'\r[{alg_name}] {lns_iter=}, {cp_len=}, {runtime=: .2f} s. ', end='')
 
         solve_k_limit_subset_with_prp(
             agents_subset, agents_outer, nodes, nodes_dict, h_dict, map_dim, iter_start_time,

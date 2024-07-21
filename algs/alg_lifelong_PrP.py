@@ -11,7 +11,7 @@ def solve_k_prp(
         nodes_dict: Dict[str, Node],
         h_dict: Dict[str, np.ndarray],
         map_dim: Tuple[int, int],
-        vc_soft_np, ec_soft_np, pc_soft_np,
+        vc_empty_np, ec_empty_np, pc_empty_np,
         params: dict,
 ) -> None:
     k_limit: int = params['k_limit']
@@ -26,8 +26,15 @@ def solve_k_prp(
         r_iter += 1
 
         si_table: Dict[str, List[Tuple[int, int, str]]] = init_si_table(nodes)
-        vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, k_limit + 1)
-        vc_hard_np, ec_hard_np, pc_hard_np = init_constraints(map_dim, k_limit + 1)
+        if pf_alg_name == 'sipps':
+            vc_hard_np, ec_hard_np, pc_hard_np = vc_empty_np, ec_empty_np, pc_empty_np
+            vc_soft_np, pc_soft_np = vc_empty_np, pc_empty_np
+            ec_soft_np = init_ec_table(map_dim, k_limit + 1)
+        elif pf_alg_name == 'a_star':
+            vc_hard_np, ec_hard_np, pc_hard_np = init_constraints(map_dim, k_limit + 1)
+            vc_soft_np, ec_soft_np, pc_soft_np = vc_empty_np, ec_empty_np, pc_empty_np
+        else:
+            raise RuntimeError('nono')
 
         # calc k paths
         all_good: bool = True
@@ -47,7 +54,7 @@ def solve_k_prp(
             h_priority_agents.append(agent)
 
             if pf_alg_name == 'sipps':
-                update_constraints(new_path, vc_hard_np, ec_hard_np, pc_hard_np)
+                update_ec_table(new_path, ec_soft_np)
                 si_table = update_si_table_hard(new_path, si_table, consider_pc=False)
             elif pf_alg_name == 'a_star':
                 update_constraints(new_path, vc_hard_np, ec_hard_np, pc_hard_np)
@@ -111,7 +118,7 @@ def run_lifelong_prp(
 
     # create agents
     agents, agents_dict = create_prp_agents(start_nodes, goal_nodes)
-    vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, k_limit + 1)
+    vc_empty_np, ec_empty_np, pc_empty_np = init_constraints(map_dim, k_limit + 1)
     n_agents = len(agents)
 
     # main loop
@@ -124,7 +131,7 @@ def run_lifelong_prp(
             # create k paths
             agents = get_shuffled_agents(agents)
             solve_k_prp(
-                agents, nodes, nodes_dict, h_dict, map_dim, vc_soft_np, ec_soft_np, pc_soft_np, params
+                agents, nodes, nodes_dict, h_dict, map_dim, vc_empty_np, ec_empty_np, pc_empty_np, params
             )
             # append paths
             add_k_paths_to_agents(agents)
