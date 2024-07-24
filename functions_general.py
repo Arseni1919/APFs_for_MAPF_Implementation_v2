@@ -215,7 +215,7 @@ def check_one_vc_ec_neic_iter(path: List[Node], agent_name, other_paths: Dict[st
     collisions: int = 0
     for agent_other_name, other_path in other_paths.items():
         # vertex conf
-        assert path[iteration] != other_path[iteration], f'[i: {iteration}] vertex conf: {path[iteration].xy_name}'
+        assert path[iteration] != other_path[iteration], f'[i: {iteration}] vertex conf: {path[iteration].xy_name} {agent_name}-{agent_other_name}'
         # edge conf
         prev_node1 = path[max(0, iteration - 1)]
         curr_node1 = path[iteration]
@@ -225,7 +225,7 @@ def check_one_vc_ec_neic_iter(path: List[Node], agent_name, other_paths: Dict[st
         edge2 = (curr_node2.x, curr_node2.y, prev_node2.x, prev_node2.y)
         # nei conf
         assert path[iteration].xy_name in path[max(0, iteration - 1)].neighbours, f'[i: {iteration}] wow wow wow! Not nei pos!'
-        assert edge1 != edge2, f'[i: {iteration}] edge collision: {edge1}'
+        assert edge1 != edge2, f'[i: {iteration}] edge collision: {edge1} {agent_name}-{agent_other_name}'
     assert path[iteration].xy_name in path[max(0, iteration - 1)].neighbours, f'[i: {iteration}] wow wow wow! Not nei pos!'
 
 
@@ -456,5 +456,5 @@ def repair_agents_k_paths(agents: List[AgentAlg] | list, k_limit: int) -> None:
                 standby_agents_dict[a2.name] = True
                 all_good = False
                 break
-    print(' | repaired')
+    # print(' | repaired')
     return

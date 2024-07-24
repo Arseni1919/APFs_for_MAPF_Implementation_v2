@@ -2,6 +2,7 @@ from algs.alg_functions_PrP import *
 from algs.alg_sipps import run_sipps
 from algs.alg_temporal_a_star import run_temporal_a_star
 from algs.alg_sipps_functions import init_si_table, update_si_table_soft, update_si_table_hard
+from algs.alg_functions_APFs import *
 from run_single_MAPF_func import run_mapf_alg
 
 
@@ -130,7 +131,12 @@ def run_prp_a_star(
     alg_name: bool = params['alg_name']
     to_render: bool = params['to_render']
     max_time: bool = params['max_time']
-
+    # APFS:
+    # w, d_max, gamma = get_apfs_params(params)
+    # w: float = 0.5
+    # d_max: int = 4
+    # gamma: int = 2
+    # ---
     start_time = time.time()
 
     # create agents
@@ -146,12 +152,13 @@ def run_prp_a_star(
         longest_len = 1
         vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, longest_len)
         vc_hard_np, ec_hard_np, pc_hard_np = init_constraints(map_dim, longest_len)
+        apfs_np = init_apfs_map(map_dim, longest_len, params)
 
         for agent in agents:
             new_path, alg_info = run_temporal_a_star(
                 agent.start_node, agent.goal_node, nodes, nodes_dict, h_dict,
                 vc_hard_np, ec_hard_np, pc_hard_np, vc_soft_np, ec_soft_np, pc_soft_np,
-                agent=agent,
+                agent=agent, apfs_np=apfs_np,
             )
 
             if time.time() - start_time > max_time:
@@ -167,10 +174,13 @@ def run_prp_a_star(
                 longest_len = len(new_path)
                 vc_hard_np, ec_hard_np, pc_hard_np = init_constraints(map_dim, longest_len)
                 vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, longest_len)
+                apfs_np = init_apfs_map(map_dim, longest_len, params)
                 for h_agent in h_priority_agents:
                     update_constraints(h_agent.path, vc_hard_np, ec_hard_np, pc_hard_np)
+                    update_apfs_map(h_agent.path, apfs_np, params)
             else:
                 update_constraints(new_path, vc_hard_np, ec_hard_np, pc_hard_np)
+                update_apfs_map(new_path, apfs_np, params)
 
             # checks
             runtime = time.time() - start_time
@@ -186,7 +196,8 @@ def run_prp_a_star(
         if solution_is_found(agents):
             runtime = time.time() - start_time
             makespan: int = max([len(a.path) for a in agents])
-            return {a.name: a.path for a in agents}, {'agents': agents, 'time': runtime, 'makespan': makespan}
+            return {a.name: a.path for a in agents}, {'agents': agents, 'time': runtime, 'makespan': makespan,
+                                                      'apfs_np': apfs_np}
 
         # reshuffle
         r_iter += 1
@@ -225,6 +236,12 @@ def run_k_prp(
     to_render: bool = params['to_render']
     max_time: bool = params['max_time']
     img_np: np.ndarray = params['img_np']
+    # APFS:
+    # w, d_max, gamma = get_apfs_params(params)
+    # w: float = 0.5
+    # d_max: int = 4
+    # gamma: int = 2
+    # ---
 
     if to_render:
         fig, ax = plt.subplots(1, 2, figsize=(14, 7))
@@ -232,12 +249,7 @@ def run_k_prp(
     start_time = time.time()
 
     # create agents
-    agents: List[AgentPrP] = []
-    for num, (s_node, g_node) in enumerate(zip(start_nodes, goal_nodes)):
-        new_agent = AgentPrP(num, s_node, g_node)
-        agents.append(new_agent)
-
-
+    agents, agents_dict = create_prp_agents(start_nodes, goal_nodes)
 
     # main loop
     k_iter = 0
@@ -246,29 +258,33 @@ def run_k_prp(
         si_table: Dict[str, List[Tuple[int, int, str]]] = init_si_table(nodes)
         vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, k_limit + 1)
         vc_hard_np, ec_hard_np, pc_hard_np = init_constraints(map_dim, k_limit + 1)
+        apfs_np = init_apfs_map(map_dim, k_limit + 1, params)
 
         # calc k paths
         all_good: bool = True
         h_priority_agents: List[AgentPrP] = []
+        random.shuffle(agents)
 
         for agent in agents:
             new_path, alg_info = pf_alg(
                 agent.curr_node, agent.goal_node, nodes, nodes_dict, h_dict,
                 vc_hard_np, ec_hard_np, pc_hard_np, vc_soft_np, ec_soft_np, pc_soft_np,
-                flag_k_limit=True, k_limit=k_limit, agent=agent, si_table=si_table
+                flag_k_limit=True, k_limit=k_limit, agent=agent, apfs_np=apfs_np, si_table=si_table
             )
             if new_path is None:
-                all_good = False
-                break
+                # all_good = False
+                # break
+                new_path = [agent.curr_node]
+
             new_path = align_path(new_path, k_limit + 1)
             agent.k_path = new_path[:]
+            h_priority_agents.append(agent)
             # checks
             # for i in range(k_limit + 1):
             #     other_paths = {a.name: a.k_path for a in h_priority_agents if a != agent}
             #     check_one_vc_ec_neic_iter(agent.k_path, agent.name, other_paths, i)
-            h_priority_agents.append(agent)
 
-
+            update_apfs_map(new_path, apfs_np, params)
             if pf_alg_name == 'sipps':
                 update_constraints(new_path, vc_hard_np, ec_hard_np, pc_hard_np)
                 si_table = update_si_table_hard(new_path, si_table, consider_pc=False)
@@ -277,26 +293,36 @@ def run_k_prp(
             else:
                 raise RuntimeError('nono')
 
+        repair_agents_k_paths(agents, k_limit)
+        # checks
+        # for agent1, agent2 in combinations(agents, 2):
+        #     for i in range(k_limit + 1):
+        #         other_paths = {agent2.name: agent2.k_path}
+        #         check_one_vc_ec_neic_iter(agent1.k_path, agent1.name, other_paths, i)
         # reset k paths if not good
-        if not all_good:
-            for agent in agents:
-                agent.k_path = []
+        # if not all_good:
+        #     for agent in agents:
+        #         agent.k_path = []
 
         # ------------------------------ #
         # ------------------------------ #
         # ------------------------------ #
-        if all_good and to_render:
+        # if all_good and to_render:
+        if to_render:
             for i in range(k_limit):
                 for a in agents:
                     a.curr_node = a.k_path[i]
                 # plot the iteration
-                i_agent = agents[0]
+                i_agent = agents_dict['agent_0']
                 plot_info = {
                     'img_np': img_np,
                     'agents': agents,
                     'i_agent': i_agent,
+                    'apfs_np': apfs_np,
+                    'i': i,
                 }
                 plot_step_in_env(ax[0], plot_info)
+                plot_apfs(ax[1], plot_info)
                 plt.pause(0.001)
                 # plt.pause(1)
 
@@ -315,7 +341,7 @@ def run_k_prp(
         if solution_is_found(agents):
             runtime = time.time() - start_time
             makespan: int = max([len(a.path) for a in agents])
-            return {a.name: a.path for a in agents}, {'agents': agents, 'time': runtime, 'makespan': makespan}
+            return {a.name: a.path for a in agents}, {'agents': agents, 'time': runtime, 'makespan': makespan,}
 
         # reshuffle
         k_iter += 1
@@ -341,6 +367,7 @@ def main():
     #     'constr_type': 'hard',
     #     'pf_alg': run_temporal_a_star,
     #     'to_render': to_render,
+    #     'w': 0.5, 'd_max': 4, 'gamma': 2
     # }
     # run_mapf_alg(alg=run_prp_a_star, params=params_prp_a_star)
     # --------------------------------------------------------------------- #
@@ -370,6 +397,7 @@ def main():
     #     'pf_alg_name': 'a_star',
     #     'pf_alg': run_temporal_a_star,
     #     'to_render': to_render,
+    #     'w': 0.5, 'd_max': 4, 'gamma': 2
     # }
     # run_mapf_alg(alg=run_k_prp, params=params_k_prp_a_star)
     # --------------------------------------------------------------------- #
@@ -385,6 +413,7 @@ def main():
         'pf_alg_name': 'sipps',
         'pf_alg': run_sipps,
         'to_render': to_render,
+        'w': 0.5, 'd_max': 4, 'gamma': 2
     }
     run_mapf_alg(alg=run_k_prp, params=params_k_prp_sipps)
     # --------------------------------------------------------------------- #

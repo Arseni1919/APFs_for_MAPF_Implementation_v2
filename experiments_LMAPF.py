@@ -40,7 +40,7 @@ def run_mapf_experiments():
     # n_agents_list = [400]
     # n_agents_list = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
     # n_agents_list = [100, 200, 300, 400]
-    n_agents_list = [50, 100, 150, 200, 250, 300, 350, 400]
+    n_agents_list = [50, 100, 150, 200, 250, 300, 350, 400, 450]
     # n_agents_list = [100, 200, 300, 400, 500]
     # n_agents_list = [200, 300, 400, 500, 600]
     # n_agents_list = [300, 400, 500, 600, 700]
@@ -55,8 +55,8 @@ def run_mapf_experiments():
     max_iter_time = 5
     # max_iter_time = 10
 
-    # n_steps = 50
-    n_steps = 100
+    n_steps = 50
+    # n_steps = 100
 
     # ------------------------------------------------- #
 

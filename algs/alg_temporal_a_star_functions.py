@@ -13,13 +13,14 @@ from functions_plotting import *
 # -------------------------------------------------------------------------------------------------------------------- #
 # -------------------------------------------------------------------------------------------------------------------- #
 class AStarNode:
-    def __init__(self, n: Node, t: int, h: int, parent: Self | None = None):
+    def __init__(self, n: Node, g: int | float, t: int, h: int, parent: Self | None = None):
         self.n: Node = n
         self.x: int = n.x
         self.y: int = n.y
         self.t: int = t
+        self.g: int = g
         self.h: int = h
-        self.f: int = t + h
+        self.f: int = g + h
         self.parent: Self | None = parent
         self.neighbours: List[str] = n.neighbours[:]
         self.neighbours_nodes: List[Node] = n.neighbours_nodes[:]

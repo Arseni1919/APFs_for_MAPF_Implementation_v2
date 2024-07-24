@@ -17,9 +17,12 @@ def run_mapf_alg(alg, params):
     # img_dir = 'maze-32-32-2.map'
     # img_dir = 'maze-32-32-4.map'
 
+    # n_agents = 450
+    # n_agents = 400
+    # n_agents = 350
     # n_agents = 300
-    # n_agents = 250
-    n_agents = 200
+    n_agents = 250
+    # n_agents = 200
     # n_agents = 150
     # n_agents = 100
     # n_agents = 50
@@ -50,6 +53,10 @@ def run_mapf_alg(alg, params):
         start_nodes, goal_nodes, nodes, nodes_dict, h_dict, map_dim, params
     )
 
+    # defaults:
+    if 'apfs_np' not in info:
+        info['apfs_np'] = None
+
     # plot
     if to_render and paths_dict is not None:
         agents: List = info['agents']
@@ -71,8 +78,10 @@ def run_mapf_alg(alg, params):
                 'agents': agents,
                 'i_agent': i_agent,
                 'i': i,
+                'apfs_np': info['apfs_np']
             }
             plot_step_in_env(ax[0], plot_info)
+            plot_apfs(ax[1], plot_info)
             plt.pause(plot_rate)
         plt.show()
 

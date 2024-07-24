@@ -278,6 +278,7 @@ def compute_c_g_h_f_values(
         T_tag: int,
         ec_soft_np: np.ndarray,  # x, y, x, y, t -> bool (0/1)
         si_table: Dict[str, List[Tuple[int, int, str]]],
+        apfs_np: np.ndarray,
 ) -> None:
     # c
     """
@@ -289,8 +290,11 @@ def compute_c_g_h_f_values(
     and ce is 1 if ((n`.v, n.v), n.low) ∈ Os and 0 otherwise.
     If n is the root curr_node (i.e., n` does not exist), c(n) = cv.
     """
+    # c
     c_v = get_c_v(sipps_node, si_table)
     c_v_p = c_v
+    # if apfs_np is not None and sipps_node.low < apfs_np.shape[2]:
+    #     c_v_p += apfs_np[sipps_node.x, sipps_node.y, sipps_node.low]
     if c_v == 0:
         c_p = get_c_p(sipps_node, si_table)
         c_v_p = max(c_v, c_p)
@@ -308,6 +312,8 @@ def compute_c_g_h_f_values(
     else:
         # sipps_node.g = max(sipps_node.low, sipps_node.parent.g + 1)
         sipps_node.g = sipps_node.low
+    if apfs_np is not None and sipps_node.low < apfs_np.shape[2]:
+        sipps_node.g += apfs_np[sipps_node.x, sipps_node.y, sipps_node.low]
 
     # h
     if sipps_node.xy_name != goal_node.xy_name:
@@ -458,7 +464,8 @@ def get_low_without_hard_ec(
         if i_t > prev_sipps_node.high:
             return None
         if i_t >= ec_hard_np.shape[4]:
-            return max(i_t, prev_sipps_node.g)
+            # return max(i_t, prev_sipps_node.g)
+            return max(i_t, prev_sipps_node.low)
         if ec_hard_np[to_node.x, to_node.y, from_node.x, from_node.y, i_t] == 0:
             return i_t
     return None
@@ -479,7 +486,8 @@ def get_low_without_hard_and_soft_ec(
         if i_t > prev_sipps_node.high:
             return None
         if i_t >= ec_hard_np.shape[4]:
-            return max(i_t, prev_sipps_node.g)
+            # return max(i_t, prev_sipps_node.g)
+            return max(i_t, prev_sipps_node.low)
         no_in_h = ec_hard_np[to_node.x, to_node.y, from_node.x, from_node.y, i_t] == 0
         no_in_s = ec_soft_np[to_node.x, to_node.y, from_node.x, from_node.y, i_t] == 0
         if no_in_h and no_in_s:

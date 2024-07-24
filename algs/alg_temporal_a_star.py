@@ -1,3 +1,5 @@
+import numpy as np
+
 from algs.alg_temporal_a_star_functions import *
 
 
@@ -18,12 +20,13 @@ def run_temporal_a_star(
         k_limit: int = int(1e10),
         inf_num: int = int(1e10),
         agent=None,
+        apfs_np: np.ndarray | None = None,
         **kwargs,
 ) -> Tuple[List[Node] | None, dict]:
     start_time = time.time()
     goal_h_dict: np.ndarray = h_dict[goal_node.xy_name]
     initial_h = int(goal_h_dict[start_node.x, start_node.y])
-    start_astr_node = AStarNode(start_node, 0, initial_h)
+    start_astr_node = AStarNode(start_node, 0, 0, initial_h)
     open_list: List[AStarNode] = [start_astr_node]
     open_list_names: List[str] = [start_astr_node.xyt_name]
     closed_list_names: List[str] = []
@@ -73,7 +76,18 @@ def run_temporal_a_star(
             if pc_value != -1 and new_t >= pc_value:
                 continue
             new_h = int(goal_h_dict[nei_node.x, nei_node.y])
-            nei_astr_node = AStarNode(nei_node, new_t, new_h, parent=next_astr_node)
+            # -------------------------------------- #
+            # APFs part
+            # -------------------------------------- #
+            if apfs_np is not None:
+                if new_t < apfs_np.shape[2]:
+                    new_g = next_astr_node.g + 1 + apfs_np[nei_node.x, nei_node.y, new_t]
+                else:
+                    new_g = next_astr_node.g + 1
+            else:
+                new_g = new_t
+            # -------------------------------------- #
+            nei_astr_node = AStarNode(nei_node, new_g, new_t, new_h, parent=next_astr_node)
             heapq.heappush(open_list, nei_astr_node)
             heapq.heappush(open_list_names, nei_astr_node.xyt_name)
         heapq.heappush(closed_list_names, next_astr_node.xyt_name)

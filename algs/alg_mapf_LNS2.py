@@ -1,6 +1,7 @@
 from algs.alg_functions_LNS2 import *
 from algs.alg_sipps import run_sipps
 from algs.alg_temporal_a_star import run_temporal_a_star
+from algs.alg_functions_APFs import *
 from run_single_MAPF_func import run_mapf_alg
 
 
@@ -136,9 +137,9 @@ def run_k_lns2(
 
         # init solution
         agents = get_shuffled_agents(agents)
-        create_k_limit_init_solution(
+        apfs_np = create_k_limit_init_solution(
             agents, nodes, nodes_dict, h_dict, map_dim, pf_alg_name, pf_alg, k_limit, start_time,
-            vc_empty_np, ec_empty_np, pc_empty_np
+            vc_empty_np, ec_empty_np, pc_empty_np, params,
         )
         cp_graph, cp_graph_names = get_k_limit_cp_graph(agents, k_limit=k_limit)
         cp_len = len(cp_graph)
@@ -158,9 +159,9 @@ def run_k_lns2(
             agents_outer: List[AgentLNS2] = [a for a in agents if a not in agents_subset]
             print(f'\r[{alg_name}] {lns_iter=}, {cp_len=}', end='')
 
-            solve_k_limit_subset_with_prp(
+            apfs_np = solve_k_limit_subset_with_prp(
                 agents_subset, agents_outer, nodes, nodes_dict, h_dict, map_dim, start_time,
-                pf_alg_name, pf_alg, vc_empty_np, ec_empty_np, pc_empty_np, k_limit, agents
+                pf_alg_name, pf_alg, vc_empty_np, ec_empty_np, pc_empty_np, params, k_limit, agents,
             )
 
             old_cp_graph, old_cp_graph_names = cp_graph, cp_graph_names
@@ -185,8 +186,11 @@ def run_k_lns2(
                     'img_np': img_np,
                     'agents': agents,
                     'i_agent': i_agent,
+                    'apfs_np': apfs_np,
+                    'i': i,
                 }
                 plot_step_in_env(ax[0], plot_info)
+                plot_apfs(ax[1], plot_info)
                 plt.pause(0.001)
                 # plt.pause(1)
 
@@ -257,6 +261,8 @@ def main():
         'k_limit': k_limit,
         'n_neighbourhood': n_neighbourhood,
         'to_render': to_render,
+        # 'w': 0.5, 'd_max': 4, 'gamma': 2,
+        'w': 2, 'd_max': 4, 'gamma': 2
     }
     run_mapf_alg(alg=run_k_lns2, params=params_k_lns2_a_star)
 

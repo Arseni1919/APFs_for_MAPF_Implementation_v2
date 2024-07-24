@@ -12,9 +12,10 @@ def run_sipps_insert_node(
         T_tag: int,
         ec_soft_np: np.ndarray,  # x, y, x, y, t -> bool (0/1)
         si_table: Dict[str, List[Tuple[int, int, str]]],
+        apfs_np: np.ndarray,
         agent=None,
 ) -> None:
-    compute_c_g_h_f_values(node, goal_node, goal_np, T, T_tag, ec_soft_np, si_table)
+    compute_c_g_h_f_values(node, goal_node, goal_np, T, T_tag, ec_soft_np, si_table, apfs_np)
     identical_nodes = get_identical_nodes(node, Q, P, ident_dict)
     for q in identical_nodes:
         if q.low <= node.low and q.c <= node.c:
@@ -49,6 +50,7 @@ def run_sipps_expand_node(
         T_tag: int,
         ec_hard_np: np.ndarray,  # x, y, x, y, t -> bool (0/1)
         ec_soft_np: np.ndarray,  # x, y, x, y, t -> bool (0/1)
+        apfs_np: np.ndarray,
         agent=None
 ):
     I_group: List[Tuple[Node, int]] = get_I_group(node, nodes_dict, si_table, agent)
@@ -61,12 +63,12 @@ def run_sipps_expand_node(
         new_low_tag = get_low_without_hard_and_soft_ec(node, node.n, v_node, new_low, init_high, ec_hard_np, ec_soft_np)
         if new_low_tag is not None and new_low < new_low_tag < init_high:
             n_1 = SIPPSNode(v_node, (new_low, new_low_tag, init_type), si_id, False, parent=node)
-            run_sipps_insert_node(n_1, Q, P, ident_dict, goal_node, goal_np, T, T_tag, ec_soft_np, si_table)
+            run_sipps_insert_node(n_1, Q, P, ident_dict, goal_node, goal_np, T, T_tag, ec_soft_np, si_table, apfs_np)
             n_2 = SIPPSNode(v_node, (new_low_tag, init_high, init_type), si_id, False, parent=node)
-            run_sipps_insert_node(n_2, Q, P, ident_dict, goal_node, goal_np, T, T_tag, ec_soft_np, si_table)
+            run_sipps_insert_node(n_2, Q, P, ident_dict, goal_node, goal_np, T, T_tag, ec_soft_np, si_table, apfs_np)
         else:
             n_3 = SIPPSNode(v_node, (new_low, init_high, init_type), si_id, False, parent=node)
-            run_sipps_insert_node(n_3, Q, P, ident_dict, goal_node, goal_np, T, T_tag, ec_soft_np, si_table)
+            run_sipps_insert_node(n_3, Q, P, ident_dict, goal_node, goal_np, T, T_tag, ec_soft_np, si_table, apfs_np)
 
 
 def run_sipps(
@@ -86,6 +88,7 @@ def run_sipps(
         flag_k_limit: bool = False,
         k_limit: int = int(1e10),
         agent=None,
+        apfs_np: np.ndarray | None = None,
         si_table: Dict[str, List[Tuple[int, int, str]]] | None = None,
         **kwargs,
 ) -> Tuple[List[Node] | None, dict]:
@@ -100,7 +103,7 @@ def run_sipps(
     #     T = max(goal_vc_times_list) + 1
     T_tag = get_T_tag(goal_node, si_table)
     goal_np: np.ndarray = h_dict[goal_node.xy_name]
-    compute_c_g_h_f_values(root, goal_node, goal_np, T, T_tag, ec_soft_np, si_table)
+    compute_c_g_h_f_values(root, goal_node, goal_np, T, T_tag, ec_soft_np, si_table, apfs_np)
 
     Q: List[SIPPSNode] = []
     P: List[SIPPSNode] = []
@@ -131,9 +134,9 @@ def run_sipps(
             n_tag = duplicate_sipps_node(next_n)
             n_tag.is_goal = True
             n_tag.c += c_future
-            run_sipps_insert_node(n_tag, Q, P, ident_dict, goal_node, goal_np, T,  T_tag, ec_soft_np, si_table)
+            run_sipps_insert_node(n_tag, Q, P, ident_dict, goal_node, goal_np, T,  T_tag, ec_soft_np, si_table, apfs_np)
         run_sipps_expand_node(next_n, nodes_dict, Q, P, ident_dict, si_table, goal_node, goal_np, T,  T_tag,
-                              ec_hard_np, ec_soft_np, agent)
+                              ec_hard_np, ec_soft_np, apfs_np, agent)
         heapq.heappush(P, next_n)
         ident_dict[next_n.ident_str].append(next_n)
     return None, {
