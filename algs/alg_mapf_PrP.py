@@ -45,6 +45,7 @@ def run_prp_sipps(
             # vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, longest_len)
             ec_soft_np = init_ec_table(map_dim, longest_len)
         si_table: Dict[str, List[Tuple[int, int, str]]] = init_si_table(nodes)
+        apfs_np = init_apfs_map(map_dim, longest_len, params)
 
         # calc paths
         h_priority_agents: List[AgentPrP] = []
@@ -52,7 +53,7 @@ def run_prp_sipps(
             new_path, alg_info = run_sipps(
                 agent.start_node, agent.goal_node, nodes, nodes_dict, h_dict,
                 None, ec_hard_np, None, None, ec_soft_np, None,
-                agent=agent, si_table=si_table
+                agent=agent, apfs_np=apfs_np, si_table=si_table
             )
 
             if time.time() - start_time > max_time:
@@ -63,6 +64,7 @@ def run_prp_sipps(
                 break
 
             agent.path = new_path[:]
+            agent.k_apfs = get_k_apfs(new_path, map_dim, max(longest_len, len(new_path)), params)
             h_priority_agents.append(agent)
             align_all_paths(h_priority_agents)
 
@@ -77,21 +79,26 @@ def run_prp_sipps(
                 # vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, longest_len)
                 ec_hard_np = init_ec_table(map_dim, longest_len)
                 ec_soft_np = init_ec_table(map_dim, longest_len)
+                apfs_np = init_apfs_map(map_dim, longest_len, params)
                 if constr_type == 'hard':
                     for h_agent in h_priority_agents:
                         # update_constraints(h_agent.path, vc_hard_np, ec_hard_np, pc_hard_np)
                         update_ec_table(h_agent.path, ec_hard_np)
+                        append_apfs(apfs_np, h_agent, params)
                 elif constr_type == 'soft':
                     for h_agent in h_priority_agents:
                         # update_constraints(h_agent.path, vc_soft_np, ec_soft_np, pc_soft_np)
                         update_ec_table(h_agent.path, ec_soft_np)
+                        append_apfs(apfs_np, h_agent, params)
             else:
                 if constr_type == 'hard':
                     # update_constraints(new_path, vc_hard_np, ec_hard_np, pc_hard_np)
                     update_ec_table(new_path, ec_hard_np)
+                    append_apfs(apfs_np, agent, params)
                 elif constr_type == 'soft':
                     # update_constraints(new_path, vc_soft_np, ec_soft_np, pc_soft_np)
                     update_ec_table(new_path, ec_soft_np)
+                    append_apfs(apfs_np, agent, params)
 
 
             # checks
@@ -168,6 +175,7 @@ def run_prp_a_star(
                 agent.path = None
                 break
             agent.path = new_path[:]
+            agent.k_apfs = get_k_apfs(new_path, map_dim, max(longest_len, len(new_path)), params)
             h_priority_agents.append(agent)
             align_all_paths(h_priority_agents)
             if longest_len < len(new_path):
@@ -177,10 +185,12 @@ def run_prp_a_star(
                 apfs_np = init_apfs_map(map_dim, longest_len, params)
                 for h_agent in h_priority_agents:
                     update_constraints(h_agent.path, vc_hard_np, ec_hard_np, pc_hard_np)
-                    update_apfs_map(h_agent.path, apfs_np, params)
+                    # update_apfs_map(h_agent.path, apfs_np, params)
+                    append_apfs(apfs_np, h_agent, params)
             else:
                 update_constraints(new_path, vc_hard_np, ec_hard_np, pc_hard_np)
-                update_apfs_map(new_path, apfs_np, params)
+                # update_apfs_map(new_path, apfs_np, params)
+                append_apfs(apfs_np, agent, params)
 
             # checks
             runtime = time.time() - start_time
@@ -367,7 +377,7 @@ def main():
     #     'constr_type': 'hard',
     #     'pf_alg': run_temporal_a_star,
     #     'to_render': to_render,
-    #     'w': 0.5, 'd_max': 4, 'gamma': 2
+    #     # 'w': 0.5, 'd_max': 4, 'gamma': 2
     # }
     # run_mapf_alg(alg=run_prp_a_star, params=params_prp_a_star)
     # --------------------------------------------------------------------- #
@@ -375,15 +385,16 @@ def main():
     # --------------------------------------------------------------------- #
     # PrP-SIPPS
     # --------------------------------------------------------------------- #
-    # params_prp_sipps = {
-    #     'max_time': 1000,
-    #     'alg_name': f'PrP-SIPPS',
-    #     # 'constr_type': 'soft',
-    #     'constr_type': 'hard',
-    #     'pf_alg': run_sipps,
-    #     'to_render': to_render,
-    # }
-    # run_mapf_alg(alg=run_prp_sipps, params=params_prp_sipps)
+    params_prp_sipps = {
+        'max_time': 1000,
+        'alg_name': f'PrP-SIPPS',
+        # 'constr_type': 'soft',
+        'constr_type': 'hard',
+        'pf_alg': run_sipps,
+        'to_render': to_render,
+        # 'w': 5, 'd_max': 3, 'gamma': 2,
+    }
+    run_mapf_alg(alg=run_prp_sipps, params=params_prp_sipps)
     # --------------------------------------------------------------------- #
 
     # --------------------------------------------------------------------- #
@@ -405,17 +416,17 @@ def main():
     # --------------------------------------------------------------------- #
     # k-PrP - SIPPS
     # --------------------------------------------------------------------- #
-    params_k_prp_sipps = {
-        'max_time': 1000,
-        'alg_name': f'k-PrP-SIPPS',
-        'constr_type': 'hard',
-        'k_limit': 5,
-        'pf_alg_name': 'sipps',
-        'pf_alg': run_sipps,
-        'to_render': to_render,
-        'w': 0.5, 'd_max': 4, 'gamma': 2
-    }
-    run_mapf_alg(alg=run_k_prp, params=params_k_prp_sipps)
+    # params_k_prp_sipps = {
+    #     'max_time': 1000,
+    #     'alg_name': f'k-PrP-SIPPS',
+    #     'constr_type': 'hard',
+    #     'k_limit': 5,
+    #     'pf_alg_name': 'sipps',
+    #     'pf_alg': run_sipps,
+    #     'to_render': to_render,
+    #     # 'w': 1, 'd_max': 4, 'gamma': 2
+    # }
+    # run_mapf_alg(alg=run_k_prp, params=params_k_prp_sipps)
     # --------------------------------------------------------------------- #
 
 

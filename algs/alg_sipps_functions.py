@@ -293,8 +293,9 @@ def compute_c_g_h_f_values(
     # c
     c_v = get_c_v(sipps_node, si_table)
     c_v_p = c_v
-    # if apfs_np is not None and sipps_node.low < apfs_np.shape[2]:
-    #     c_v_p += apfs_np[sipps_node.x, sipps_node.y, sipps_node.low]
+    # APFs Part
+    if apfs_np is not None and sipps_node.low < apfs_np.shape[2]:
+        c_v_p += apfs_np[sipps_node.x, sipps_node.y, sipps_node.low]
     if c_v == 0:
         c_p = get_c_p(sipps_node, si_table)
         c_v_p = max(c_v, c_p)
@@ -312,8 +313,10 @@ def compute_c_g_h_f_values(
     else:
         # sipps_node.g = max(sipps_node.low, sipps_node.parent.g + 1)
         sipps_node.g = sipps_node.low
+    # APF Part
     if apfs_np is not None and sipps_node.low < apfs_np.shape[2]:
         sipps_node.g += apfs_np[sipps_node.x, sipps_node.y, sipps_node.low]
+        # sipps_node.g += np.max(apfs_np[sipps_node.x, sipps_node.y, sipps_node.low:sipps_node.high])
 
     # h
     if sipps_node.xy_name != goal_node.xy_name:
@@ -325,6 +328,10 @@ def compute_c_g_h_f_values(
 
     else:
         sipps_node.h = 0
+    # APF Part
+    # if apfs_np is not None and sipps_node.low < apfs_np.shape[2]:
+    #     sipps_node.h += apfs_np[sipps_node.x, sipps_node.y, sipps_node.low]
+        # sipps_node.g += np.max(apfs_np[sipps_node.x, sipps_node.y, sipps_node.low:sipps_node.high])
 
     # f
     sipps_node.f = sipps_node.g + sipps_node.h

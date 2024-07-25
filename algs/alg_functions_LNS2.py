@@ -1,5 +1,7 @@
 import random
 
+import numpy as np
+
 from globals import *
 from functions_general import *
 from functions_plotting import *
@@ -27,6 +29,7 @@ class AgentLNS2:
         self.goal_node_name: str = self.goal_node.xy_name
         self.path: List[Node] | None = []
         self.k_path: List[Node] | None = None
+        self.k_apfs: np.ndarray | None = None
 
     @property
     def path_names(self):
@@ -101,7 +104,7 @@ def create_init_solution(
         constr_type: str,
         start_time: int | float,
         params: dict
-):
+) -> np.ndarray:
     alg_name: str = params['alg_name']
     c_sum: int = 0
     h_priority_agents: List[AgentLNS2] = []
@@ -111,17 +114,19 @@ def create_init_solution(
     ec_hard_np = init_ec_table(map_dim, longest_len)
     ec_soft_np = init_ec_table(map_dim, longest_len)
     si_table: Dict[str, List[Tuple[int, int, str]]] = init_si_table(nodes)
+    apfs_np = init_apfs_map(map_dim, longest_len, params)
 
     for agent in agents:
         new_path, sipps_info = run_sipps(
             agent.start_node, agent.goal_node, nodes, nodes_dict, h_dict,
             None, ec_hard_np, None, None, ec_soft_np, None,
-            agent=agent, si_table=si_table
+            agent=agent, apfs_np=apfs_np, si_table=si_table
         )
         if new_path is None:
             agent.path = None
             break
         agent.path = new_path[:]
+        agent.k_apfs = get_k_apfs(new_path, map_dim, max(longest_len, len(new_path)), params)
         h_priority_agents.append(agent)
         align_all_paths(h_priority_agents)
 
@@ -134,17 +139,71 @@ def create_init_solution(
             # vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, longest_len)
             ec_hard_np = init_ec_table(map_dim, longest_len)
             ec_soft_np = init_ec_table(map_dim, longest_len)
+            apfs_np = init_apfs_map(map_dim, longest_len, params)
             for h_agent in h_priority_agents:
                 # update_constraints(h_agent.path, vc_soft_np, ec_soft_np, pc_soft_np)
                 update_ec_table(h_agent.path, ec_soft_np)
+                append_apfs(apfs_np, h_agent, params)
         else:
             # update_constraints(new_path, vc_soft_np, ec_soft_np, pc_soft_np)
             update_ec_table(new_path, ec_soft_np)
+            append_apfs(apfs_np, agent, params)
 
         # checks
         runtime = time.time() - start_time
-        print(f'\r[{alg_name} - init] | agents: {len(h_priority_agents): <3} / {len(agents)} | {runtime= : .2f} s.',
+        print(f'\r[{alg_name} - init ({c_sum})] | agents: {len(h_priority_agents): <3} / {len(agents)} | {runtime= : .2f} s.',
               end='\n')  # , end=''
+    return apfs_np
+
+
+def create_ignorant_init_solution(
+        agents: List[AgentLNS2],
+        nodes: List[Node],
+        nodes_dict: Dict[str, Node],
+        h_dict: Dict[str, np.ndarray],
+        map_dim: Tuple[int, int],
+        constr_type: str,
+        start_time: int | float,
+        params: dict
+) -> np.ndarray:
+    alg_name: str = params['alg_name']
+    c_sum: int = 0
+    h_priority_agents: List[AgentLNS2] = []
+    longest_len = 1
+    ec_hard_np = init_ec_table(map_dim, longest_len)
+    ec_soft_np = init_ec_table(map_dim, longest_len)
+    si_table: Dict[str, List[Tuple[int, int, str]]] = init_si_table(nodes)
+    apfs_np = init_apfs_map(map_dim, longest_len, params)
+
+    for agent in agents:
+        new_path, sipps_info = run_sipps(
+            agent.start_node, agent.goal_node, nodes, nodes_dict, h_dict,
+            None, ec_hard_np, None, None, ec_soft_np, None,
+            agent=agent, apfs_np=apfs_np, si_table=si_table
+        )
+        if new_path is None:
+            agent.path = None
+            break
+        agent.path = new_path[:]
+        agent.k_apfs = get_k_apfs(new_path, map_dim, max(longest_len, len(new_path)), params)
+        h_priority_agents.append(agent)
+        align_all_paths(h_priority_agents)
+
+        c_sum += sipps_info['c']
+
+        if longest_len < len(new_path):
+            longest_len = len(new_path)
+            apfs_np = init_apfs_map(map_dim, longest_len, params)
+            for h_agent in h_priority_agents:
+                append_apfs(apfs_np, h_agent, params)
+        else:
+            append_apfs(apfs_np, agent, params)
+
+        # checks
+        runtime = time.time() - start_time
+        print(f'\r[{alg_name} - init ({c_sum})] | agents: {len(h_priority_agents): <3} / {len(agents)} | {runtime= : .2f} s.',
+              end='\n')  # , end=''
+    return apfs_np
 
 
 def solve_subset_with_prp(
@@ -157,7 +216,8 @@ def solve_subset_with_prp(
         start_time: int | float,
         # constr_type: str = 'hard',
         constr_type: str = 'soft',
-        agents: List[AgentLNS2] | None = None
+        agents: List[AgentLNS2] | None = None,
+        params: dict | None = None,
 ) -> None:
     c_sum: int = 0
     h_priority_agents: List[AgentLNS2] = outer_agents[:]
@@ -168,10 +228,12 @@ def solve_subset_with_prp(
     # vc_hard_np, ec_hard_np, pc_hard_np = init_constraints(map_dim, longest_len)
     ec_hard_np = init_ec_table(map_dim, longest_len)
     ec_soft_np = init_ec_table(map_dim, longest_len)
+    apfs_np = init_apfs_map(map_dim, longest_len, params)
     for h_agent in h_priority_agents:
         # update_constraints(h_agent.path, vc_soft_np, ec_soft_np, pc_soft_np)
         update_ec_table(h_agent.path, ec_soft_np)
         si_table = update_si_table_soft(h_agent.path, si_table)
+        append_apfs(apfs_np, h_agent, params)
 
     random.shuffle(agents_subset)
     for agent in agents_subset:
@@ -184,6 +246,7 @@ def solve_subset_with_prp(
             agent.path = None
             break
         agent.path = new_path[:]
+        agent.k_apfs = get_k_apfs(new_path, map_dim, max(longest_len, len(new_path)), params)
         h_priority_agents.append(agent)
         align_all_paths(h_priority_agents)
 
@@ -197,12 +260,15 @@ def solve_subset_with_prp(
             # vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, longest_len)
             ec_hard_np = init_ec_table(map_dim, longest_len)
             ec_soft_np = init_ec_table(map_dim, longest_len)
+            apfs_np = init_apfs_map(map_dim, longest_len, params)
             for h_agent in h_priority_agents:
                 # update_constraints(h_agent.path, vc_soft_np, ec_soft_np, pc_soft_np)
                 update_ec_table(h_agent.path, ec_soft_np)
+                append_apfs(apfs_np, h_agent, params)
         else:
             # update_constraints(new_path, vc_soft_np, ec_soft_np, pc_soft_np)
             update_ec_table(new_path, ec_soft_np)
+            append_apfs(apfs_np, agent, params)
 
         # checks
         runtime = time.time() - start_time
@@ -363,9 +429,11 @@ def create_k_limit_init_solution(
             new_path = [agent.curr_node]
         new_path = align_path(new_path, k_limit + 1)
         agent.k_path = new_path[:]
+        agent.k_apfs = get_k_apfs(new_path, map_dim, k_limit + 1, params)
         h_priority_agents.append(agent)
 
-        update_apfs_map(new_path, apfs_np, params)
+        # update_apfs_map(new_path, apfs_np, params)
+        append_apfs(apfs_np, agent, params)
         if pf_alg_name == 'sipps':
             update_constraints(new_path, vc_soft_np, ec_soft_np, pc_soft_np)
             si_table = update_si_table_soft(new_path, si_table, consider_pc=False)
@@ -496,13 +564,15 @@ def solve_k_limit_subset_with_prp(
         for h_agent in h_priority_agents:
             update_ec_table(h_agent.k_path, ec_soft_np)
             si_table = update_si_table_soft(h_agent.k_path, si_table, consider_pc=False)
-            update_apfs_map(h_agent.k_path, apfs_np, params)
+            append_apfs(apfs_np, h_agent, params)
+            # update_apfs_map(h_agent.k_path, apfs_np, params)
     elif pf_alg_name == 'a_star':
         vc_hard_np, ec_hard_np, pc_hard_np = init_constraints(map_dim, k_limit + 1)
         vc_soft_np, ec_soft_np, pc_soft_np = vc_empty_np, ec_empty_np, pc_empty_np
         for h_agent in h_priority_agents:
             update_constraints(h_agent.k_path, vc_hard_np, ec_hard_np, pc_hard_np)
-            update_apfs_map(h_agent.k_path, apfs_np, params)
+            append_apfs(apfs_np, h_agent, params)
+            # update_apfs_map(h_agent.k_path, apfs_np, params)
     else:
         raise RuntimeError('nono')
 
@@ -517,9 +587,11 @@ def solve_k_limit_subset_with_prp(
             new_path = [agent.curr_node]
         new_path = align_path(new_path, k_limit + 1)
         agent.k_path = new_path[:]
+        agent.k_apfs = get_k_apfs(new_path, map_dim, k_limit + 1, params)
         h_priority_agents.append(agent)
 
-        update_apfs_map(new_path, apfs_np, params)
+        append_apfs(apfs_np, agent, params)
+        # update_apfs_map(new_path, apfs_np, params)
         if pf_alg_name == 'sipps':
             update_ec_table(new_path, ec_soft_np)
             si_table = update_si_table_soft(new_path, si_table, consider_pc=False)

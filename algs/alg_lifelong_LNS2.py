@@ -163,37 +163,39 @@ def main():
     # --------------------------------------------------------------------- #
     # Lifelong-LNS - A*
     # --------------------------------------------------------------------- #
-    params_lifelong_lns_a_star = {
-        'max_iter_time': 5,  # seconds
-        'n_steps': 100,
-        'alg_name': f'Lifelong-LNS2-A*',
-        'constr_type': 'hard',
-        'k_limit': k_limit,
-        'n_neighbourhood': n_neighbourhood,
-        'pf_alg_name': 'a_star',
-        'pf_alg': run_temporal_a_star,
-        'to_render': to_render,
-        # 'w': 1, 'd_max': 3, 'gamma': 2,
-        # 'w': 2, 'd_max': 4, 'gamma': 2,
-    }
-    run_mapf_alg(alg=run_lifelong_LNS2, params=params_lifelong_lns_a_star)
+    # params_lifelong_lns_a_star = {
+    #     'max_iter_time': 5,  # seconds
+    #     'n_steps': 100,
+    #     'alg_name': f'Lifelong-LNS2-A*',
+    #     'constr_type': 'hard',
+    #     'k_limit': k_limit,
+    #     'n_neighbourhood': n_neighbourhood,
+    #     'pf_alg_name': 'a_star',
+    #     'pf_alg': run_temporal_a_star,
+    #     'to_render': to_render,
+    #     # 'w': 1, 'd_max': 3, 'gamma': 2,
+    #     # 'w': 2, 'd_max': 4, 'gamma': 2,
+    # }
+    # run_mapf_alg(alg=run_lifelong_LNS2, params=params_lifelong_lns_a_star)
     # --------------------------------------------------------------------- #
 
     # --------------------------------------------------------------------- #
     # Lifelong-LNS - SIPPS
     # --------------------------------------------------------------------- #
-    # params_lifelong_lns_sipps = {
-    #     'max_iter_time': 5,  # seconds
-    #     'n_steps': 100,
-    #     'alg_name': f'Lifelong-LNS2-SIPPS',
-    #     'constr_type': 'soft',
-    #     'k_limit': k_limit,
-    #     'n_neighbourhood': n_neighbourhood,
-    #     'pf_alg_name': 'sipps',
-    #     'pf_alg': run_sipps,
-    #     'to_render': to_render,
-    # }
-    # run_mapf_alg(alg=run_lifelong_LNS2, params=params_lifelong_lns_sipps)
+    params_lifelong_lns_sipps = {
+        'max_iter_time': 5,  # seconds
+        'n_steps': 50,
+        'alg_name': f'Lifelong-LNS2-SIPPS',
+        'constr_type': 'soft',
+        'k_limit': 5,
+        'n_neighbourhood': 5,
+        'pf_alg_name': 'sipps',
+        'pf_alg': run_sipps,
+        'to_render': to_render,
+        # 'w': 0.5, 'd_max': 4, 'gamma': 2,
+        # 'w': 5, 'd_max': 3, 'gamma': 2,
+    }
+    run_mapf_alg(alg=run_lifelong_LNS2, params=params_lifelong_lns_sipps)
     # --------------------------------------------------------------------- #
 
 

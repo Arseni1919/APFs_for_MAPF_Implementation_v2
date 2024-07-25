@@ -21,10 +21,10 @@ def run_mapf_alg(alg, params):
     # n_agents = 400
     # n_agents = 350
     # n_agents = 300
-    n_agents = 250
+    # n_agents = 250
     # n_agents = 200
     # n_agents = 150
-    # n_agents = 100
+    n_agents = 100
     # n_agents = 50
 
     to_render: bool = True

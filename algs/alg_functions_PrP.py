@@ -22,6 +22,7 @@ class AgentPrP:
         self.goal_node: Node = goal_node
         self.path: List[Node] = []
         self.k_path: List[Node] | None = None
+        self.k_apfs: np.ndarray | None = None
 
     @property
     def path_names(self):
