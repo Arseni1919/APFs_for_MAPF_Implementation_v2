@@ -54,9 +54,11 @@ def solve_k_prp(
                 new_path = [agent.curr_node]
             new_path = align_path(new_path, k_limit + 1)
             agent.k_path = new_path[:]
+            agent.k_apfs = get_k_apfs(new_path, map_dim, k_limit + 1, params)
             h_priority_agents.append(agent)
 
-            update_apfs_map(new_path, apfs_np, params)
+            # update_apfs_map(new_path, apfs_np, params)
+            append_apfs(apfs_np, agent, params)
             if pf_alg_name == 'sipps':
                 update_ec_table(new_path, ec_soft_np)
                 si_table = update_si_table_hard(new_path, si_table, consider_pc=False)
@@ -177,27 +179,23 @@ def run_lifelong_prp(
 
 @use_profiler(save_dir='../stats/alg_lifelong_prp.pstat')
 def main():
-    to_render = True
-    # to_render = False
+    # to_render = True
+    to_render = False
 
     # --------------------------------------------------------------------- #
     # Lifelong-PrP - A*
     # --------------------------------------------------------------------- #
     params_lifelong_prp_a_star = {
         'max_iter_time': 5,  # seconds
-        # 'max_iter_time': 10,  # seconds
-        # 'max_iter_time': 50,  # seconds
-        'n_steps': 100,
-        # 'n_steps': 100,
+        'n_steps': 50,
         'alg_name': f'Lifelong-PrP-A*',
         'constr_type': 'hard',
         'k_limit': 5,
-        # 'k_limit': 15,
         'pf_alg': run_temporal_a_star,
         'pf_alg_name': 'a_star',
         'to_render': to_render,
         # 'w': 0.5, 'd_max': 4, 'gamma': 2,
-        'w': 2, 'd_max': 5, 'gamma': 2,
+        # 'w': 2, 'd_max': 5, 'gamma': 2,
     }
     run_mapf_alg(alg=run_lifelong_prp, params=params_lifelong_prp_a_star)
     # --------------------------------------------------------------------- #
@@ -207,13 +205,14 @@ def main():
     # --------------------------------------------------------------------- #
     # params_lifelong_prp_sipps = {
     #     'max_iter_time': 5,  # seconds
-    #     'n_steps': 100,
+    #     'n_steps': 50,
     #     'alg_name': f'Lifelong-PrP-SIPPS',
     #     'constr_type': 'hard',
     #     'k_limit': 5,
     #     'pf_alg': run_sipps,
     #     'pf_alg_name': 'sipps',
     #     'to_render': to_render,
+    #     'w': 1, 'd_max': 5, 'gamma': 2,
     # }
     # run_mapf_alg(alg=run_lifelong_prp, params=params_lifelong_prp_sipps)
     # --------------------------------------------------------------------- #
