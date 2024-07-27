@@ -36,6 +36,7 @@ def run_lifelong_pibt(
         occupied_from: Dict[str, AgentAlg] = {a.path[-1].xy_name: a for a in agents}
         config_to: Dict[str, Node] = {}
         occupied_to: Dict[str, AgentAlg] = {}
+        pibt_apfs: np.ndarray = init_pibt_apfs_map(map_dim, params)
 
         # calc the step
         for agent in agents:
@@ -44,6 +45,7 @@ def run_lifelong_pibt(
                     agent,
                     config_from, occupied_from,
                     config_to, occupied_to,
+                    pibt_apfs, params,
                     agents_dict, nodes_dict, h_dict, [])
 
         # execute the step + check the termination condition

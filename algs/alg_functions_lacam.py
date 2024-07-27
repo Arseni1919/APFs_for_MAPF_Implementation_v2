@@ -2,6 +2,7 @@ from globals import *
 from functions_general import *
 from functions_plotting import *
 from algs.alg_mapf_pibt import run_procedure_pibt
+from algs.alg_functions_APFs import *
 
 
 # -------------------------------------------------------------------------------------------------------------------- #
@@ -142,12 +143,16 @@ def get_new_config(
         agents_dict: Dict[str, AgentAlg],
         nodes_dict: Dict[str, Node],
         h_dict: Dict[str, np.ndarray],
+        map_dim: Tuple[int, int],
+        params: Dict
 ) -> Dict[str, Node] | None:
     # setup next configuration
     config_from: Dict[str, Node] = N.config
     occupied_from: Dict[str, AgentAlg] = {v.xy_name: agents_dict[k] for k, v in N.config.items()}
     config_to: Dict[str, Node] = {}
     occupied_to: Dict[str, AgentAlg] = {}
+    pibt_apfs: np.ndarray = init_pibt_apfs_map(map_dim, params)
+
     for k in range(C.depth):
         agent = C.who_list[k]
         node = C.where_list[k]
@@ -169,6 +174,7 @@ def get_new_config(
                 agent,
                 config_from, occupied_from,
                 config_to, occupied_to,
+                pibt_apfs, params,
                 agents_dict, nodes_dict, h_dict, [])
             if not success:
                 return None

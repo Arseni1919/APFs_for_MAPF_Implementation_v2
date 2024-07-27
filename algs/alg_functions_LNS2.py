@@ -17,44 +17,44 @@ from algs.alg_functions_APFs import *
 # -------------------------------------------------------------------------------------------------------------------- #
 # -------------------------------------------------------------------------------------------------------------------- #
 # -------------------------------------------------------------------------------------------------------------------- #
-class AgentLNS2:
-    def __init__(self, num: int, start_node: Node, goal_node: Node):
-        self.num = num
-        self.name = f'agent_{num}'
-        self.start_node: Node = start_node
-        self.start_node_name: str = self.start_node.xy_name
-        self.curr_node: Node = start_node
-        self.curr_node_name: str = self.curr_node.xy_name
-        self.goal_node: Node = goal_node
-        self.goal_node_name: str = self.goal_node.xy_name
-        self.path: List[Node] | None = []
-        self.k_path: List[Node] | None = None
-        self.k_apfs: np.ndarray | None = None
-
-    @property
-    def path_names(self):
-        return [n.xy_name for n in self.path]
-
-    def update_curr_node(self, i_time):
-        if i_time >= len(self.path):
-            self.curr_node = self.path[-1]
-            return
-        self.curr_node = self.path[i_time]
-
-    def __lt__(self, other):
-        return self.num < other.num
-
-    def __hash__(self):
-        return hash(self.num)
-
-    def __eq__(self, other):
-        return self.num == other.num
-
-    def __str__(self):
-        return self.name
-
-    def __repr__(self):
-        return self.name
+# class AgentLNS2:
+#     def __init__(self, num: int, start_node: Node, goal_node: Node):
+#         self.num = num
+#         self.name = f'agent_{num}'
+#         self.start_node: Node = start_node
+#         self.start_node_name: str = self.start_node.xy_name
+#         self.curr_node: Node = start_node
+#         self.curr_node_name: str = self.curr_node.xy_name
+#         self.goal_node: Node = goal_node
+#         self.goal_node_name: str = self.goal_node.xy_name
+#         self.path: List[Node] | None = []
+#         self.k_path: List[Node] | None = None
+#         self.k_apfs: np.ndarray | None = None
+#
+#     @property
+#     def path_names(self):
+#         return [n.xy_name for n in self.path]
+#
+#     def update_curr_node(self, i_time):
+#         if i_time >= len(self.path):
+#             self.curr_node = self.path[-1]
+#             return
+#         self.curr_node = self.path[i_time]
+#
+#     def __lt__(self, other):
+#         return self.num < other.num
+#
+#     def __hash__(self):
+#         return hash(self.num)
+#
+#     def __eq__(self, other):
+#         return self.num == other.num
+#
+#     def __str__(self):
+#         return self.name
+#
+#     def __repr__(self):
+#         return self.name
 
 
 # -------------------------------------------------------------------------------------------------------------------- #
@@ -66,17 +66,17 @@ class AgentLNS2:
 # -------------------------------------------------------------------------------------------------------------------- #
 def create_lns_agents(
         start_nodes: List[Node], goal_nodes: List[Node]
-) -> Tuple[List[AgentLNS2], Dict[str, AgentLNS2]]:
-    agents: List[AgentLNS2] = []
-    agents_dict: Dict[str, AgentLNS2] = {}
+) -> Tuple[List[AgentAlg], Dict[str, AgentAlg]]:
+    agents: List[AgentAlg] = []
+    agents_dict: Dict[str, AgentAlg] = {}
     for num, (s_node, g_node) in enumerate(zip(start_nodes, goal_nodes)):
-        new_agent = AgentLNS2(num, s_node, g_node)
+        new_agent = AgentAlg(num, s_node, g_node)
         agents.append(new_agent)
         agents_dict[new_agent.name] = new_agent
     return agents, agents_dict
 
 
-def solution_is_found(agents: List[AgentLNS2]):
+def solution_is_found(agents: List[AgentAlg]):
     for agent in agents:
         if agent.path is None:
             return False
@@ -87,16 +87,16 @@ def solution_is_found(agents: List[AgentLNS2]):
     return True
 
 
-def get_shuffled_agents(agents: List[AgentLNS2]) -> List[AgentLNS2]:
+def get_shuffled_agents(agents: List[AgentAlg]) -> List[AgentAlg]:
     agents_copy = agents[:]
     random.shuffle(agents_copy)
-    unfinished: List[AgentLNS2] = [a for a in agents_copy if len(a.path) == 0 or a.path[-1] != a.goal_node]
-    finished: List[AgentLNS2] = [a for a in agents_copy if len(a.path) > 0 and a.path[-1] == a.goal_node]
+    unfinished: List[AgentAlg] = [a for a in agents_copy if len(a.path) == 0 or a.path[-1] != a.goal_node]
+    finished: List[AgentAlg] = [a for a in agents_copy if len(a.path) > 0 and a.path[-1] == a.goal_node]
     return [*unfinished, *finished]
 
 
 def create_init_solution(
-        agents: List[AgentLNS2],
+        agents: List[AgentAlg],
         nodes: List[Node],
         nodes_dict: Dict[str, Node],
         h_dict: Dict[str, np.ndarray],
@@ -107,7 +107,7 @@ def create_init_solution(
 ) -> np.ndarray:
     alg_name: str = params['alg_name']
     c_sum: int = 0
-    h_priority_agents: List[AgentLNS2] = []
+    h_priority_agents: List[AgentAlg] = []
     longest_len = 1
     # vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, longest_len)
     # vc_hard_np, ec_hard_np, pc_hard_np = init_constraints(map_dim, longest_len)
@@ -157,7 +157,7 @@ def create_init_solution(
 
 
 def create_ignorant_init_solution(
-        agents: List[AgentLNS2],
+        agents: List[AgentAlg],
         nodes: List[Node],
         nodes_dict: Dict[str, Node],
         h_dict: Dict[str, np.ndarray],
@@ -168,7 +168,7 @@ def create_ignorant_init_solution(
 ) -> np.ndarray:
     alg_name: str = params['alg_name']
     c_sum: int = 0
-    h_priority_agents: List[AgentLNS2] = []
+    h_priority_agents: List[AgentAlg] = []
     longest_len = 1
     ec_hard_np = init_ec_table(map_dim, longest_len)
     ec_soft_np = init_ec_table(map_dim, longest_len)
@@ -207,8 +207,8 @@ def create_ignorant_init_solution(
 
 
 def solve_subset_with_prp(
-        agents_subset: List[AgentLNS2],
-        outer_agents: List[AgentLNS2],
+        agents_subset: List[AgentAlg],
+        outer_agents: List[AgentAlg],
         nodes: List[Node],
         nodes_dict: Dict[str, Node],
         h_dict: Dict[str, np.ndarray],
@@ -216,11 +216,11 @@ def solve_subset_with_prp(
         start_time: int | float,
         # constr_type: str = 'hard',
         constr_type: str = 'soft',
-        agents: List[AgentLNS2] | None = None,
+        agents: List[AgentAlg] | None = None,
         params: dict | None = None,
 ) -> None:
     c_sum: int = 0
-    h_priority_agents: List[AgentLNS2] = outer_agents[:]
+    h_priority_agents: List[AgentAlg] = outer_agents[:]
 
     si_table: Dict[str, List[Tuple[int, int, str]]] = init_si_table(nodes)
     longest_len = max([len(a.path) for a in agents])
@@ -286,14 +286,14 @@ def solve_subset_with_prp(
 
 
 def get_cp_graph(
-        agents: List[AgentLNS2],
-        other_agents: List[AgentLNS2] | None = None,
-        prev_cp_graph: Dict[str, List[AgentLNS2]] | None = None,
-) -> Tuple[Dict[str, List[AgentLNS2]], Dict[str, List[str]]]:
+        agents: List[AgentAlg],
+        other_agents: List[AgentAlg] | None = None,
+        prev_cp_graph: Dict[str, List[AgentAlg]] | None = None,
+) -> Tuple[Dict[str, List[AgentAlg]], Dict[str, List[str]]]:
     if other_agents is None:
         other_agents = []
     # align_all_paths(agents)
-    cp_graph: Dict[str, List[AgentLNS2]] = {}
+    cp_graph: Dict[str, List[AgentAlg]] = {}
     for a1, a2 in combinations(agents, 2):
         if two_equal_paths_have_confs(a1.path, a2.path):
             if a1.name not in cp_graph:
@@ -321,10 +321,10 @@ def get_cp_graph(
 
 
 def get_outer_agent_via_random_walk(
-        rand_agent: AgentLNS2,
-        agents_s: List[AgentLNS2],
-        occupied_from: Dict[str, AgentLNS2]
-) -> AgentLNS2:
+        rand_agent: AgentAlg,
+        agents_s: List[AgentAlg],
+        occupied_from: Dict[str, AgentAlg]
+) -> AgentAlg:
     next_node: Node = random.choice(rand_agent.path)
     while True:
         if next_node.xy_name in occupied_from and occupied_from[next_node.xy_name] not in agents_s:
@@ -333,12 +333,12 @@ def get_outer_agent_via_random_walk(
 
 
 def get_agent_s_from_random_walk(
-        curr_agent: AgentLNS2,
-        cp_graph: Dict[str, List[AgentLNS2]],
+        curr_agent: AgentAlg,
+        cp_graph: Dict[str, List[AgentAlg]],
         n_neighbourhood: int,
-) -> List[AgentLNS2]:
-    out_list: List[AgentLNS2] = []
-    next_nei: AgentLNS2 = curr_agent
+) -> List[AgentAlg]:
+    out_list: List[AgentAlg] = []
+    next_nei: AgentAlg = curr_agent
     while len(out_list) < n_neighbourhood:
         nei_agents = cp_graph[next_nei.name]
         next_nei = random.choice(nei_agents)
@@ -348,18 +348,18 @@ def get_agent_s_from_random_walk(
 
 
 def get_agents_subset(
-        cp_graph: Dict[str, List[AgentLNS2]],
+        cp_graph: Dict[str, List[AgentAlg]],
         cp_graph_names: Dict[str, List[str]],
         n_neighbourhood: int,
-        agents: List[AgentLNS2],
-        occupied_from: Dict[str, AgentLNS2],
+        agents: List[AgentAlg],
+        occupied_from: Dict[str, AgentAlg],
         h_dict: Dict[str, np.ndarray],
-) -> List[AgentLNS2]:
-    agents_with_cp: List[AgentLNS2] = [a for a in agents if a.name in cp_graph]
-    curr_agent: AgentLNS2 = random.choice(agents_with_cp)
+) -> List[AgentAlg]:
+    agents_with_cp: List[AgentAlg] = [a for a in agents if a.name in cp_graph]
+    curr_agent: AgentAlg = random.choice(agents_with_cp)
 
     # find largest connected component
-    lcc: List[AgentLNS2] = []
+    lcc: List[AgentAlg] = []
     l_open = deque([curr_agent])
     i = 0
     while len(l_open) > 0:
@@ -371,7 +371,7 @@ def get_agents_subset(
             if nei_a not in lcc and nei_a not in l_open:
                 l_open.append(nei_a)
 
-    agents_s: List[AgentLNS2] = []
+    agents_s: List[AgentAlg] = []
     if len(lcc) <= n_neighbourhood:
         agents_s.extend(lcc)
         while len(agents_s) < n_neighbourhood:
@@ -393,7 +393,7 @@ def get_agents_subset(
 # -------------------------------------------------------------------------------------------------------------------- #
 # -------------------------------------------------------------------------------------------------------------------- #
 def create_k_limit_init_solution(
-        agents: List[AgentLNS2],
+        agents: List[AgentAlg],
         nodes: List[Node],
         nodes_dict: Dict[str, Node],
         h_dict: Dict[str, np.ndarray],
@@ -407,7 +407,7 @@ def create_k_limit_init_solution(
 ) -> np.ndarray:
     # APFS:
     # w, d_max, gamma = get_apfs_params(params)
-    h_priority_agents: List[AgentLNS2] = []
+    h_priority_agents: List[AgentAlg] = []
     si_table: Dict[str, List[Tuple[int, int, str]]] = init_si_table(nodes)
     apfs_np = init_apfs_map(map_dim, k_limit + 1, params)
     if pf_alg_name == 'sipps':
@@ -445,15 +445,15 @@ def create_k_limit_init_solution(
 
 
 def get_k_limit_cp_graph(
-        agents: List[AgentLNS2],
-        other_agents: List[AgentLNS2] | None = None,
-        prev_cp_graph: Dict[str, List[AgentLNS2]] | None = None,
+        agents: List[AgentAlg],
+        other_agents: List[AgentAlg] | None = None,
+        prev_cp_graph: Dict[str, List[AgentAlg]] | None = None,
         k_limit: int = int(1e10)
-) -> Tuple[Dict[str, List[AgentLNS2]], Dict[str, List[str]]]:
+) -> Tuple[Dict[str, List[AgentAlg]], Dict[str, List[str]]]:
     if other_agents is None:
         other_agents = []
     # align_all_paths(agents)
-    cp_graph: Dict[str, List[AgentLNS2]] = {}
+    cp_graph: Dict[str, List[AgentAlg]] = {}
     for a1, a2 in combinations(agents, 2):
         if exceeds_k_dist(a1.curr_node, a2.curr_node, k_limit + 1):
             continue
@@ -485,10 +485,10 @@ def get_k_limit_cp_graph(
 
 
 def get_k_limit_outer_agent_via_random_walk(
-        rand_agent: AgentLNS2,
-        agents_s: List[AgentLNS2],
-        occupied_from: Dict[str, AgentLNS2]
-) -> AgentLNS2:
+        rand_agent: AgentAlg,
+        agents_s: List[AgentAlg],
+        occupied_from: Dict[str, AgentAlg]
+) -> AgentAlg:
     next_node: Node = random.choice(rand_agent.k_path)
     while True:
         if next_node.xy_name in occupied_from and occupied_from[next_node.xy_name] not in agents_s and random.random() < 0.7:
@@ -497,18 +497,18 @@ def get_k_limit_outer_agent_via_random_walk(
 
 
 def get_k_limit_agents_subset(
-        cp_graph: Dict[str, List[AgentLNS2]],
+        cp_graph: Dict[str, List[AgentAlg]],
         cp_graph_names: Dict[str, List[str]],
         n_neighbourhood: int,
-        agents: List[AgentLNS2],
-        occupied_from: Dict[str, AgentLNS2],
+        agents: List[AgentAlg],
+        occupied_from: Dict[str, AgentAlg],
         h_dict: Dict[str, np.ndarray],
-) -> List[AgentLNS2]:
-    agents_with_cp: List[AgentLNS2] = [a for a in agents if a.name in cp_graph]
-    curr_agent: AgentLNS2 = random.choice(agents_with_cp)
+) -> List[AgentAlg]:
+    agents_with_cp: List[AgentAlg] = [a for a in agents if a.name in cp_graph]
+    curr_agent: AgentAlg = random.choice(agents_with_cp)
 
     # find largest connected component
-    lcc: List[AgentLNS2] = []
+    lcc: List[AgentAlg] = []
     l_open = deque([curr_agent])
     i = 0
     while len(l_open) > 0:
@@ -520,7 +520,7 @@ def get_k_limit_agents_subset(
             if nei_a not in lcc and nei_a not in l_open:
                 l_open.append(nei_a)
 
-    agents_s: List[AgentLNS2] = []
+    agents_s: List[AgentAlg] = []
     if len(lcc) <= n_neighbourhood:
         agents_s.extend(lcc)
         while len(agents_s) < n_neighbourhood:
@@ -537,8 +537,8 @@ def get_k_limit_agents_subset(
 
 
 def solve_k_limit_subset_with_prp(
-        agents_subset: List[AgentLNS2],
-        outer_agents: List[AgentLNS2],
+        agents_subset: List[AgentAlg],
+        outer_agents: List[AgentAlg],
         nodes: List[Node],
         nodes_dict: Dict[str, Node],
         h_dict: Dict[str, np.ndarray],
@@ -549,12 +549,12 @@ def solve_k_limit_subset_with_prp(
         vc_empty_np, ec_empty_np, pc_empty_np,
         params: Dict,
         k_limit: int = int(1e10),
-        agents: List[AgentLNS2] | None = None,
+        agents: List[AgentAlg] | None = None,
 ) -> np.ndarray:
     # APFS:
     # w, d_max, gamma = get_apfs_params(params)
 
-    h_priority_agents: List[AgentLNS2] = outer_agents[:]
+    h_priority_agents: List[AgentAlg] = outer_agents[:]
     si_table: Dict[str, List[Tuple[int, int, str]]] = init_si_table(nodes)
     apfs_np = init_apfs_map(map_dim, k_limit + 1, params)
     if pf_alg_name == 'sipps':
@@ -614,7 +614,7 @@ def solve_k_limit_subset_with_prp(
         #     print(f'{c_sum=}')
 
 
-# def create_hard_and_soft_constraints(h_priority_agents: List[AgentLNS2], map_dim: Tuple[int, int], constr_type: str):
+# def create_hard_and_soft_constraints(h_priority_agents: List[AgentAlg], map_dim: Tuple[int, int], constr_type: str):
 #     assert constr_type in ['hard', 'soft']
 #     if len(h_priority_agents) == 0:
 #         max_path_len = 1

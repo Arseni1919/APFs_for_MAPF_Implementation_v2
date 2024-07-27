@@ -77,7 +77,7 @@ def run_lacam_star(
                 C_new = get_C_child(parent=C, who=i_agent, where=nodes_dict[nei_name])
                 N.tree.append(C_new)
 
-        config_new = get_new_config(N, C, agents_dict, nodes_dict, h_dict)
+        config_new = get_new_config(N, C, agents_dict, nodes_dict, h_dict, map_dim, params)
         # check_configs(N.order, N.config, config_new)
         if config_new is None:
             continue
@@ -138,7 +138,7 @@ def run_lacam_star(
             f'{len(N.tree)=} | '
             f'{'*' * 10}',
             end='')
-        if to_render and iteration > 0:
+        if to_render and iteration >= 0:
             # update curr nodes
             for a in N.order:
                 a.curr_node = N.config[a.name]
@@ -176,32 +176,6 @@ def run_lacam_star(
     return paths_dict, {'agents': agents, 'time': runtime, 'makespan': makespan}
 
 
-def run_k_lacam_star(
-        start_nodes: List[Node],
-        goal_nodes: List[Node],
-        nodes: List[Node],
-        nodes_dict: Dict[str, Node],
-        h_dict: Dict[str, np.ndarray],
-        map_dim: Tuple[int, int],
-        params: Dict,
-) -> Tuple[Dict[str, List[Node]] | None, dict]:
-    """
-    -> MAPF:
-    - stop condition: all agents at their locations or time is up
-    - behaviour, when agent is at its goal: the goal remains the same
-    - output: success, time, makespan, soc
-    LMAPF:
-    - stop condition: the end of n iterations where every iteration has a time limit
-    - behaviour, when agent is at its goal: agent receives a new goal
-    - output: throughput
-    """
-    pass
-
-
-def run_lifelong_lacam_star():
-    pass
-
-
 @use_profiler(save_dir='../stats/alg_lacam_star.pstat')
 def main():
 
@@ -215,7 +189,8 @@ def main():
         'max_time': 60,
         'alg_name': 'LaCAM',
         'flag_star': flag_star,
-        'to_render': to_render
+        'to_render': to_render,
+        'w': 0.5, 'd_max': 3, 'gamma': 2,
     }
     run_mapf_alg(alg=run_lacam_star, params=params)
 

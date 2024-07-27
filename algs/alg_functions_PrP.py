@@ -13,32 +13,32 @@ from functions_plotting import *
 # -------------------------------------------------------------------------------------------------------------------- #
 # -------------------------------------------------------------------------------------------------------------------- #
 # -------------------------------------------------------------------------------------------------------------------- #
-class AgentPrP:
-    def __init__(self, num: int, start_node: Node, goal_node: Node):
-        self.num = num
-        self.name = f'agent_{num}'
-        self.start_node: Node = start_node
-        self.curr_node: Node = start_node
-        self.goal_node: Node = goal_node
-        self.path: List[Node] = []
-        self.k_path: List[Node] | None = None
-        self.k_apfs: np.ndarray | None = None
-
-    @property
-    def path_names(self):
-        return [n.xy_name for n in self.path]
-
-    def update_curr_node(self, i_time):
-        if i_time >= len(self.path):
-            self.curr_node = self.path[-1]
-            return
-        self.curr_node = self.path[i_time]
-
-    def __str__(self):
-        return self.name
-
-    def __repr__(self):
-        return self.name
+# class AgentPrP:
+#     def __init__(self, num: int, start_node: Node, goal_node: Node):
+#         self.num = num
+#         self.name = f'agent_{num}'
+#         self.start_node: Node = start_node
+#         self.curr_node: Node = start_node
+#         self.goal_node: Node = goal_node
+#         self.path: List[Node] = []
+#         self.k_path: List[Node] | None = None
+#         self.k_apfs: np.ndarray | None = None
+#
+#     @property
+#     def path_names(self):
+#         return [n.xy_name for n in self.path]
+#
+#     def update_curr_node(self, i_time):
+#         if i_time >= len(self.path):
+#             self.curr_node = self.path[-1]
+#             return
+#         self.curr_node = self.path[i_time]
+#
+#     def __str__(self):
+#         return self.name
+#
+#     def __repr__(self):
+#         return self.name
 
 
 # -------------------------------------------------------------------------------------------------------------------- #
@@ -50,18 +50,18 @@ class AgentPrP:
 # -------------------------------------------------------------------------------------------------------------------- #
 def create_prp_agents(
         start_nodes: List[Node], goal_nodes: List[Node]
-) -> Tuple[List[AgentPrP], Dict[str, AgentPrP]]:
-    agents: List[AgentPrP] = []
-    agents_dict: Dict[str, AgentPrP] = {}
+) -> Tuple[List[AgentAlg], Dict[str, AgentAlg]]:
+    agents: List[AgentAlg] = []
+    agents_dict: Dict[str, AgentAlg] = {}
     for num, (s_node, g_node) in enumerate(zip(start_nodes, goal_nodes)):
-        new_agent = AgentPrP(num, s_node, g_node)
+        new_agent = AgentAlg(num, s_node, g_node)
         agents.append(new_agent)
         agents_dict[new_agent.name] = new_agent
     return agents, agents_dict
 
 
 def create_hard_and_soft_constraints(
-        h_priority_agents: List[AgentPrP],
+        h_priority_agents: List[AgentAlg],
         map_dim: Tuple[int, int],
         constr_type: str,
         flag_k_limit: bool = False,
@@ -93,7 +93,7 @@ def create_hard_and_soft_constraints(
     return vc_hard_np, ec_hard_np, pc_hard_np, vc_soft_np, ec_soft_np, pc_soft_np
 
 
-def solution_is_found(agents: List[AgentPrP]):
+def solution_is_found(agents: List[AgentAlg]):
     for agent in agents:
         if agent.path is None:
             return False
@@ -104,10 +104,10 @@ def solution_is_found(agents: List[AgentPrP]):
     return True
 
 
-def get_shuffled_agents(agents: List[AgentPrP]) -> List[AgentPrP]:
+def get_shuffled_agents(agents: List[AgentAlg]) -> List[AgentAlg]:
     agents_copy = agents[:]
     random.shuffle(agents_copy)
-    unfinished: List[AgentPrP] = [a for a in agents_copy if len(a.path) == 0 or a.path[-1] != a.goal_node]
-    finished: List[AgentPrP] = [a for a in agents_copy if len(a.path) > 0 and a.path[-1] == a.goal_node]
+    unfinished: List[AgentAlg] = [a for a in agents_copy if len(a.path) == 0 or a.path[-1] != a.goal_node]
+    finished: List[AgentAlg] = [a for a in agents_copy if len(a.path) > 0 and a.path[-1] == a.goal_node]
     return [*unfinished, *finished]
 

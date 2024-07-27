@@ -7,7 +7,7 @@ from run_single_MAPF_func import run_mapf_alg
 
 
 def solve_k_prp(
-        agents: List[AgentPrP],
+        agents: List[AgentAlg],
         nodes: List[Node],
         nodes_dict: Dict[str, Node],
         h_dict: Dict[str, np.ndarray],

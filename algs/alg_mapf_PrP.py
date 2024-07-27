@@ -26,7 +26,7 @@ def run_prp_sipps(
     # create agents
     agents = []
     for num, (s_node, g_node) in enumerate(zip(start_nodes, goal_nodes)):
-        new_agent = AgentPrP(num, s_node, g_node)
+        new_agent = AgentAlg(num, s_node, g_node)
         agents.append(new_agent)
 
     longest_len = 1
@@ -48,7 +48,7 @@ def run_prp_sipps(
         apfs_np = init_apfs_map(map_dim, longest_len, params)
 
         # calc paths
-        h_priority_agents: List[AgentPrP] = []
+        h_priority_agents: List[AgentAlg] = []
         for agent in agents:
             new_path, alg_info = run_sipps(
                 agent.start_node, agent.goal_node, nodes, nodes_dict, h_dict,
@@ -149,13 +149,13 @@ def run_prp_a_star(
     # create agents
     agents = []
     for num, (s_node, g_node) in enumerate(zip(start_nodes, goal_nodes)):
-        new_agent = AgentPrP(num, s_node, g_node)
+        new_agent = AgentAlg(num, s_node, g_node)
         agents.append(new_agent)
 
     r_iter = 0
     while time.time() - start_time < max_time:
         # calc paths
-        h_priority_agents: List[AgentPrP] = []
+        h_priority_agents: List[AgentAlg] = []
         longest_len = 1
         vc_soft_np, ec_soft_np, pc_soft_np = init_constraints(map_dim, longest_len)
         vc_hard_np, ec_hard_np, pc_hard_np = init_constraints(map_dim, longest_len)
@@ -272,7 +272,7 @@ def run_k_prp(
 
         # calc k paths
         all_good: bool = True
-        h_priority_agents: List[AgentPrP] = []
+        h_priority_agents: List[AgentAlg] = []
         random.shuffle(agents)
 
         for agent in agents:
@@ -288,13 +288,15 @@ def run_k_prp(
 
             new_path = align_path(new_path, k_limit + 1)
             agent.k_path = new_path[:]
+            agent.k_apfs = get_k_apfs(new_path, map_dim, k_limit + 1, params)
             h_priority_agents.append(agent)
             # checks
             # for i in range(k_limit + 1):
             #     other_paths = {a.name: a.k_path for a in h_priority_agents if a != agent}
             #     check_one_vc_ec_neic_iter(agent.k_path, agent.name, other_paths, i)
 
-            update_apfs_map(new_path, apfs_np, params)
+            append_apfs(apfs_np, agent, params)
+            # update_apfs_map(new_path, apfs_np, params)
             if pf_alg_name == 'sipps':
                 update_constraints(new_path, vc_hard_np, ec_hard_np, pc_hard_np)
                 si_table = update_si_table_hard(new_path, si_table, consider_pc=False)
@@ -344,7 +346,7 @@ def run_k_prp(
 
         # print
         runtime = time.time() - start_time
-        finished: List[AgentPrP] = [a for a in agents if len(a.path) > 0 and a.path[-1] == a.goal_node]
+        finished: List[AgentAlg] = [a for a in agents if len(a.path) > 0 and a.path[-1] == a.goal_node]
         print(f'\r[{alg_name}] {k_iter=: <3} | agents: {len(finished): <3} / {len(agents)} | {runtime=: .2f} s.')  # , end=''
 
         # return check
@@ -392,7 +394,7 @@ def main():
         'constr_type': 'hard',
         'pf_alg': run_sipps,
         'to_render': to_render,
-        # 'w': 5, 'd_max': 3, 'gamma': 2,
+        'w': 5, 'd_max': 3, 'gamma': 2,
     }
     run_mapf_alg(alg=run_prp_sipps, params=params_prp_sipps)
     # --------------------------------------------------------------------- #

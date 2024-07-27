@@ -1,6 +1,7 @@
 from globals import *
 from functions_general import *
 from functions_plotting import *
+from algs.alg_functions_APFs import *
 
 
 # -------------------------------------------------------------------------------------------------------------------- #
@@ -24,6 +25,7 @@ def get_sorted_nei_nodes(
         config_from: Dict[str, Node],
         # nodes_dict: Dict[str, Node],
         h_dict: Dict[str, np.ndarray],
+        pibt_apfs: np.ndarray | None,
 ):
     h_goal_np: np.ndarray = h_dict[agent.goal_node.xy_name]
     # sort C in ascending order of dist(u, gi) where u ∈ C
@@ -34,7 +36,16 @@ def get_sorted_nei_nodes(
     def get_nei_v(n: Node) -> float:
         return float(h_goal_np[n.x, n.y])
 
-    nei_nodes.sort(key=get_nei_v)
+    def get_nei_v_with_apfs(n: Node) -> float:
+        if n == agent.goal_node:
+            return 0
+        return float(h_goal_np[n.x, n.y] + pibt_apfs[n.x, n.y])
+
+    if pibt_apfs is not None:
+        nei_nodes.sort(key=get_nei_v_with_apfs)
+    else:
+        nei_nodes.sort(key=get_nei_v)
+
     return nei_nodes
 
 
@@ -95,6 +106,7 @@ def check_if_swap_required(
         agent_j: AgentAlg,
         config_from: Dict[str, Node],
         h_dict: Dict[str, np.ndarray],
+        pibt_apfs: np.ndarray
 ) -> bool:
     """
     This is done by continuously moving i to j’s location while moving j to another vertex not equal to i’s location,
@@ -120,7 +132,7 @@ def check_if_swap_required(
             return False
 
         if next_node_i == agent_i.goal_node:
-            nei_nodes_j = get_sorted_nei_nodes(agent_j, config_from, h_dict)
+            nei_nodes_j = get_sorted_nei_nodes(agent_j, config_from, h_dict, pibt_apfs)
             nearest_nei_to_goal_j = nei_nodes_j[0]
             if nearest_nei_to_goal_j == agent_i.goal_node:
                 return True
@@ -165,6 +177,7 @@ def swap_required_and_possible(
         config_from: Dict[str, Node],
         occupied_from: Dict[str, AgentAlg],
         h_dict: Dict[str, np.ndarray],
+        pibt_apfs: np.ndarray,
         with_swap: bool,
 ) -> AgentAlg | None:
     if not with_swap:
@@ -174,7 +187,7 @@ def swap_required_and_possible(
         if agent_j == agent_i:
             return None
         # necessity of the swap
-        is_required = check_if_swap_required(agent_i, agent_j, config_from, h_dict)
+        is_required = check_if_swap_required(agent_i, agent_j, config_from, h_dict, pibt_apfs)
         if not is_required:
             return None
         # possibility of the swap
@@ -191,6 +204,8 @@ def run_procedure_pibt(
         occupied_from: Dict[str, AgentAlg],
         config_to: Dict[str, Node],
         occupied_to: Dict[str, AgentAlg],
+        pibt_apfs: np.ndarray,
+        params: dict,
         agents_dict: Dict[str, AgentAlg],
         nodes_dict: Dict[str, Node],
         h_dict: Dict[str, np.ndarray],
@@ -200,10 +215,10 @@ def run_procedure_pibt(
 ) -> bool:  # valid or invalid
 
     # nei_nodes = get_sorted_nei_nodes(agent_i, config_from, nodes_dict, h_dict)
-    nei_nodes = get_sorted_nei_nodes(agent_i, config_from, h_dict)
+    nei_nodes = get_sorted_nei_nodes(agent_i, config_from, h_dict, pibt_apfs)
 
     #  j ← swap_required_and_possible
-    agent_j = swap_required_and_possible(agent_i, nei_nodes[0], config_from, occupied_from, h_dict, with_swap)
+    agent_j = swap_required_and_possible(agent_i, nei_nodes[0], config_from, occupied_from, h_dict, pibt_apfs, with_swap)
     if agent_j is not None:
         nei_nodes.reverse()
 
@@ -223,12 +238,14 @@ def run_procedure_pibt(
 
         config_to[agent_i.name] = nei_node
         occupied_to[nei_node.xy_name] = agent_i
+        update_pibt_apfs_map(nei_node, pibt_apfs, params)
         agent_k = get_agent_k(nei_node, occupied_from, config_to)
         if agent_k is not None:
             valid = run_procedure_pibt(
                 agent_k,
                 config_from, occupied_from,
                 config_to, occupied_to,
+                pibt_apfs, params,
                 agents_dict, nodes_dict, h_dict, blocked_nodes
             )
             if not valid:
@@ -237,10 +254,12 @@ def run_procedure_pibt(
             i_node_from = config_from[agent_i.name]
             config_to[agent_j.name] = i_node_from
             occupied_to[i_node_from.xy_name] = agent_j
+            update_pibt_apfs_map(i_node_from, pibt_apfs, params)
         return True
     node_from = config_from[agent_i.name]
     config_to[agent_i.name] = node_from
     occupied_to[node_from.xy_name] = agent_i
+    update_pibt_apfs_map(node_from, pibt_apfs, params)
     return False
 
 

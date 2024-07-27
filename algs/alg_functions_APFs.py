@@ -6,11 +6,11 @@ from functions_plotting import *
 from alg_sipps_functions import SIPPSNode
 
 
-def get_apfs_params(params: dict) -> Tuple[float | None, int | None, int | None]:
-    if 'w' not in params:
-        return None, None, None
-    w, d_max, gamma = params['w'], params['d_max'], params['gamma']
-    return w, d_max, gamma
+# def get_apfs_params(params: dict) -> Tuple[float | None, int | None, int | None]:
+#     if 'w' not in params:
+#         return None, None, None
+#     w, d_max, gamma = params['w'], params['d_max'], params['gamma']
+#     return w, d_max, gamma
 
 
 def init_apfs_map(
@@ -26,6 +26,19 @@ def init_apfs_map(
     if max_path_len == 0:
         return None
     apfs_np = np.zeros((map_dim[0], map_dim[1], max_path_len))
+    return apfs_np
+
+
+def init_pibt_apfs_map(
+        map_dim: Tuple[int, int],
+        params: dict
+) -> np.ndarray | None:
+    """
+    apfs_np: [x, y, t] = float
+    """
+    if 'w' not in params:
+        return None
+    apfs_np = np.zeros((map_dim[0], map_dim[1]))
     return apfs_np
 
 
@@ -89,6 +102,36 @@ def update_apfs_map(
                         continue
                     open_list.append(nei_n)
     return apfs_np
+
+
+def update_pibt_apfs_map(
+        next_node: Node,
+        pibt_apfs_np: np.ndarray,
+        params: Dict
+) -> np.ndarray | None:
+    """
+    apfs_np: [x, y, t] = float
+    """
+    if pibt_apfs_np is None:
+        return None
+    # w, d_max, gamma = get_apfs_params(params)
+    w, d_max, gamma = params['w'], params['d_max'], params['gamma']
+    open_list: Deque[Node] = deque([next_node])
+    closed_list: List[str] = []
+    while len(open_list) > 0:
+        next_n: Node = open_list.popleft()
+        heapq.heappush(closed_list, next_n.xy_name)
+
+        next_n_dist = manhattan_dist(next_node, next_n)
+        if next_n_dist < d_max:
+            apf_force: float = w * (gamma**(d_max - next_n_dist) / gamma**d_max)
+            pibt_apfs_np[next_n.x, next_n.y] += apf_force
+            # extend open
+            for nei_n in next_n.neighbours_nodes:
+                if nei_n.xy_name in closed_list:
+                    continue
+                open_list.append(nei_n)
+    return pibt_apfs_np
 
 
 # def update_sipps_apfs_map(

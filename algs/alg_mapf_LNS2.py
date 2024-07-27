@@ -53,16 +53,16 @@ def run_lns2(
     # )
     cp_graph, cp_graph_names = get_cp_graph(agents)
     cp_len = len(cp_graph)
-    occupied_from: Dict[str, AgentLNS2] = {a.start_node.xy_name: a for a in agents}
+    occupied_from: Dict[str, AgentAlg] = {a.start_node.xy_name: a for a in agents}
 
     # repairing procedure
     while cp_len > 0:
         if time.time() - start_time >= max_time:
             return None, {'agents': agents}
         print(f'\n[{alg_name}] {cp_len=}')
-        agents_subset: List[AgentLNS2] = get_agents_subset(cp_graph, cp_graph_names, n_neighbourhood, agents, occupied_from, h_dict)
+        agents_subset: List[AgentAlg] = get_agents_subset(cp_graph, cp_graph_names, n_neighbourhood, agents, occupied_from, h_dict)
         old_paths: Dict[str, List[Node]] = {a.name: a.path[:] for a in agents_subset}
-        agents_outer: List[AgentLNS2] = [a for a in agents if a not in agents_subset]
+        agents_outer: List[AgentAlg] = [a for a in agents if a not in agents_subset]
 
         # assert len(set(agents_outer)) == len(agents_outer)
         # assert len(set(agents_subset)) == len(agents_subset)
@@ -146,7 +146,7 @@ def run_k_lns2(
         )
         cp_graph, cp_graph_names = get_k_limit_cp_graph(agents, k_limit=k_limit)
         cp_len = len(cp_graph)
-        occupied_from: Dict[str, AgentLNS2] = {a.curr_node.xy_name: a for a in agents}
+        occupied_from: Dict[str, AgentAlg] = {a.curr_node.xy_name: a for a in agents}
 
         # repairing procedure
         lns_iter = 0
@@ -155,11 +155,11 @@ def run_k_lns2(
             if time.time() - start_time >= max_time:
                 return None, {'agents': agents}
 
-            agents_subset: List[AgentLNS2] = get_k_limit_agents_subset(
+            agents_subset: List[AgentAlg] = get_k_limit_agents_subset(
                 cp_graph, cp_graph_names, n_neighbourhood, agents, occupied_from, h_dict
             )
             old_paths: Dict[str, List[Node]] = {a.name: a.k_path[:] for a in agents_subset}
-            agents_outer: List[AgentLNS2] = [a for a in agents if a not in agents_subset]
+            agents_outer: List[AgentAlg] = [a for a in agents if a not in agents_subset]
             print(f'\r[{alg_name}] {lns_iter=}, {cp_len=}', end='')
 
             apfs_np = solve_k_limit_subset_with_prp(
@@ -211,7 +211,7 @@ def run_k_lns2(
 
         # print
         runtime = time.time() - start_time
-        finished: List[AgentLNS2] = [a for a in agents if len(a.path) > 0 and a.path[-1] == a.goal_node]
+        finished: List[AgentAlg] = [a for a in agents if len(a.path) > 0 and a.path[-1] == a.goal_node]
         print(f'\r[{alg_name}] {k_iter=: <3} | agents: {len(finished): <3} / {len(agents)} | {runtime=: .2f} s.')  # , end=''
 
         # return check
@@ -232,23 +232,23 @@ def main():
     to_render = False
 
 
-    params_lns2 = {
-        'max_time': 1000,
-        'alg_name': 'LNS2',
-        'constr_type': 'soft',
-        'n_neighbourhood': 15,
-        'to_render': to_render,
-        # 'w': 5, 'd_max': 2, 'gamma': 2,
-    }
-    run_mapf_alg(alg=run_lns2, params=params_lns2)
+    # params_lns2 = {
+    #     'max_time': 1000,
+    #     'alg_name': 'LNS2',
+    #     'constr_type': 'soft',
+    #     'n_neighbourhood': 5,
+    #     'to_render': to_render,
+    #     # 'w': 5, 'd_max': 2, 'gamma': 2,
+    # }
+    # run_mapf_alg(alg=run_lns2, params=params_lns2)
 
     # params_k_lns2_a_star = {
     #     'max_time': 1000,
     #     'alg_name': 'k-LNS2-A*',
     #     'pf_alg_name': 'a_star',
     #     'pf_alg': run_temporal_a_star,
-    #     'k_limit': k_limit,
-    #     'n_neighbourhood': n_neighbourhood,
+    #     'k_limit': 5,
+    #     'n_neighbourhood': 5,
     #     'to_render': to_render,
     #     # 'w': 0.5, 'd_max': 4, 'gamma': 2,
     #     # 'w': 10, 'd_max': 4, 'gamma': 2
@@ -256,18 +256,18 @@ def main():
     # }
     # run_mapf_alg(alg=run_k_lns2, params=params_k_lns2_a_star)
 
-    # params_k_lns2_sipps = {
-    #     'max_time': 1000,
-    #     'alg_name': 'k-LNS2-SIPPS',
-    #     'pf_alg_name': 'sipps',
-    #     'pf_alg': run_sipps,
-    #     'k_limit': 10,
-    #     'n_neighbourhood': 5,
-    #     'to_render': to_render,
-    #     # 'w': 1, 'd_max': 4, 'gamma': 2,
-    #     'w': 5, 'd_max': 3, 'gamma': 2,
-    # }
-    # run_mapf_alg(alg=run_k_lns2, params=params_k_lns2_sipps)
+    params_k_lns2_sipps = {
+        'max_time': 1000,
+        'alg_name': 'k-LNS2-SIPPS',
+        'pf_alg_name': 'sipps',
+        'pf_alg': run_sipps,
+        'k_limit': 10,
+        'n_neighbourhood': 5,
+        'to_render': to_render,
+        # 'w': 1, 'd_max': 4, 'gamma': 2,
+        # 'w': 5, 'd_max': 3, 'gamma': 2,
+    }
+    run_mapf_alg(alg=run_k_lns2, params=params_k_lns2_sipps)
 
 
 if __name__ == '__main__':
