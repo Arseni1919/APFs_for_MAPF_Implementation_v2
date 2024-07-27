@@ -84,9 +84,10 @@ def main():
 
     params = {
         'max_iter_time': 5,  # seconds
-        'n_steps': 50,
+        'n_steps': 100,
         'alg_name': f'Lifelong-PIBT',
         'to_render': to_render,
+        'w': 0.5, 'd_max': 3, 'gamma': 2,
     }
     run_mapf_alg(alg=run_lifelong_pibt, params=params)
 
