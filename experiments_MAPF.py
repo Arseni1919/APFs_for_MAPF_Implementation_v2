@@ -18,8 +18,8 @@ def run_mapf_experiments():
     # General params
     # ------------------------------------------------------------------------------------------------------------ #
     # set_seed(random_seed_bool=False, seed=381)
-    # set_seed(random_seed_bool=False, seed=9256)  # 500 - room
-    set_seed(random_seed_bool=False, seed=1112)
+    set_seed(random_seed_bool=False, seed=9256)  # 500 - room
+    # set_seed(random_seed_bool=False, seed=1112)
     # set_seed(random_seed_bool=True)
 
     # ------------------------------------------------------------------------------------------------------------ #
@@ -40,6 +40,7 @@ def run_mapf_experiments():
 
     # ------------------------------------------------- #
 
+    # n_agents_list = [50]
     # n_agents_list = [400]
     # n_agents_list = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
     # n_agents_list = [50, 100, 150, 200, 250, 300, 350]
@@ -72,105 +73,11 @@ def run_mapf_experiments():
 
     # ------------------------------------------------- #
 
-    # alg_list = [
-    #     # ------------------------------------------------ #
-    #     # PrP Family
-    #     # ------------------------------------------------ #
-    #     (run_prp_sipps, {
-    #         'alg_name': f'PrP-SIPPS',
-    #         'constr_type': 'hard',
-    #         'pf_alg_name': 'sipps',
-    #         'pf_alg': run_sipps,
-    #         'to_render': False,
-    #     }),
-    #     (run_prp_a_star, {
-    #         'alg_name': f'PrP-A*',
-    #         'constr_type': 'hard',
-    #         'pf_alg_name': 'a_star',
-    #         'pf_alg': run_temporal_a_star,
-    #         'to_render': False,
-    #     }),
-    #     (run_k_prp, {
-    #         'alg_name': f'15-PrP-A*',
-    #         'constr_type': 'hard',
-    #         'k_limit': 15,
-    #         'pf_alg_name': 'a_star',
-    #         'pf_alg': run_temporal_a_star,
-    #         'to_render': False,
-    #     }),
-    #     (run_k_prp, {
-    #         'alg_name': f'15-PrP-SIPPS',
-    #         'constr_type': 'hard',
-    #         'k_limit': 15,
-    #         'pf_alg_name': 'sipps',
-    #         'pf_alg': run_sipps,
-    #         'to_render': False,
-    #     }),
-    #     # ------------------------------------------------ #
-    #
-    #     # ------------------------------------------------ #
-    #     # LNS2 Family
-    #     # ------------------------------------------------ #
-    #     # (run_lns2, {
-    #     #     'alg_name': f'LNS2(3)',
-    #     #     'constr_type': 'soft',
-    #     #     'n_neighbourhood': 3,
-    #     #     'to_render': False,
-    #     # }),
-    #     (run_lns2, {
-    #         'alg_name': f'LNS2(5)',
-    #         'constr_type': 'soft',
-    #         'n_neighbourhood': 5,
-    #         'to_render': False,
-    #     }),
-    #     # (run_lns2, {
-    #     #     'alg_name': f'LNS2(10)',
-    #     #     'constr_type': 'soft',
-    #     #     'n_neighbourhood': 10,
-    #     #     'to_render': False,
-    #     # }),
-    #     # (run_lns2, {
-    #     #     'alg_name': f'LNS2(15)',
-    #     #     'constr_type': 'soft',
-    #     #     'n_neighbourhood': 15,
-    #     #     'to_render': False,
-    #     # }),
-    #     (run_k_lns2, {
-    #         'k_limit': (k_limit := 15),
-    #         'alg_name': f'{k_limit}-LNS2({k_limit})-A*',
-    #         'pf_alg_name': 'a_star',
-    #         'pf_alg': run_temporal_a_star,
-    #         'n_neighbourhood': k_limit,
-    #         'to_render': False,
-    #     }),
-    #     (run_k_lns2, {
-    #         'k_limit': (k_limit := 15),
-    #         'alg_name': f'{k_limit}-LNS2({k_limit})-SIPPS',
-    #         'pf_alg_name': 'sipps',
-    #         'pf_alg': run_sipps,
-    #         'n_neighbourhood': k_limit,
-    #         'to_render': False,
-    #     }),
-    #
-    #     # ------------------------------------------------ #
-    #     # PIBT, LaCAM Family
-    #     # ------------------------------------------------ #
-    #     # (run_pibt, {
-    #     #     'alg_name': f'PIBT',
-    #     #     'to_render': False,
-    #     # }),
-    #     (run_lacam, {
-    #         'alg_name': f'LaCAM',
-    #         'to_render': False,
-    #     }),
-    #     (run_lacam_star, {
-    #         'alg_name': f'LaCAM*',
-    #         'flag_star': False,
-    #         'to_render': False,
-    #     }),
-    # ]
+    # alg_list = alg_list_general
+    # alg_list = alg_list_a_star
+    # alg_list = alg_list_sipps
+    alg_list = alg_list_pibt
 
-    alg_list = alg_list_a_star
     # ------------------------------------------------- #
 
     logs_dict: Dict[str, Any] = {

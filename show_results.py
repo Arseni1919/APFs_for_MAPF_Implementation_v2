@@ -33,7 +33,7 @@ def main():
     # LMAPF
 
     # MAPF
-    file_dir = ''
+    file_dir = 'MAPF_2024-07-28--21-55_ALGS-8_RUNS-5_MAP-random-32-32-10.json'
 
     # parameters
 

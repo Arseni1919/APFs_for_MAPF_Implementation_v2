@@ -104,8 +104,9 @@ def create_init_solution(
         constr_type: str,
         start_time: int | float,
         params: dict
-) -> np.ndarray:
+) -> np.ndarray | None:
     alg_name: str = params['alg_name']
+    max_time: bool = params['max_time']
     c_sum: int = 0
     h_priority_agents: List[AgentAlg] = []
     longest_len = 1
@@ -117,6 +118,8 @@ def create_init_solution(
     apfs_np = init_apfs_map(map_dim, longest_len, params)
 
     for agent in agents:
+        if time.time() - start_time > max_time:
+            return None
         new_path, sipps_info = run_sipps(
             agent.start_node, agent.goal_node, nodes, nodes_dict, h_dict,
             None, ec_hard_np, None, None, ec_soft_np, None,
@@ -152,7 +155,7 @@ def create_init_solution(
         # checks
         runtime = time.time() - start_time
         print(f'\r[{alg_name} - init ({c_sum})] | agents: {len(h_priority_agents): <3} / {len(agents)} | {runtime= : .2f} s.',
-              end='\n')  # , end=''
+              end='')  # , end=''
     return apfs_np
 
 
@@ -202,7 +205,7 @@ def create_ignorant_init_solution(
         # checks
         runtime = time.time() - start_time
         print(f'\r[{alg_name} - init ({c_sum})] | agents: {len(h_priority_agents): <3} / {len(agents)} | {runtime= : .2f} s.',
-              end='\n')  # , end=''
+              end='')  # , end=''
     return apfs_np
 
 

@@ -51,6 +51,8 @@ def run_lns2(
     # create_ignorant_init_solution(
     #     agents, nodes, nodes_dict, h_dict, map_dim, constr_type, start_time, params
     # )
+    if time.time() - start_time >= max_time:
+        return None, {'agents': agents}
     cp_graph, cp_graph_names = get_cp_graph(agents)
     cp_len = len(cp_graph)
     occupied_from: Dict[str, AgentAlg] = {a.start_node.xy_name: a for a in agents}
@@ -212,7 +214,8 @@ def run_k_lns2(
         # print
         runtime = time.time() - start_time
         finished: List[AgentAlg] = [a for a in agents if len(a.path) > 0 and a.path[-1] == a.goal_node]
-        print(f'\r[{alg_name}] {k_iter=: <3} | agents: {len(finished): <3} / {len(agents)} | {runtime=: .2f} s.')  # , end=''
+        # print(f'\r[{alg_name}] {k_iter=: <3} | agents: {len(finished): <3} / {len(agents)} | {runtime=: .2f} s.')  # , end=''
+        print(f'\r[{alg_name}] {k_iter=: <3} | agents: {len(finished): <3} / {len(agents)} | {runtime=: .2f} s.', end='')  #
 
         # return check
         if solution_is_found(agents):

@@ -156,3 +156,123 @@ alg_list_a_star = [
     }),
 
 ]
+
+
+# ------------------------------------------------------------------------------------------------------------ #
+# APFs in SIPPS
+# ------------------------------------------------------------------------------------------------------------ #
+
+
+alg_list_sipps = [
+    # ------------------------------------------------ #
+    # PrP Family
+    # ------------------------------------------------ #
+    # (run_prp_sipps, {
+    #     'alg_name': f'PrP-SIPPS',
+    #     'constr_type': 'hard',
+    #     'pf_alg_name': 'sipps',
+    #     'pf_alg': run_sipps,
+    #     'to_render': False,
+    # }),
+    # (run_prp_sipps, {
+    #     'alg_name': f'APF-PrP-SIPPS',
+    #     'constr_type': 'hard',
+    #     'pf_alg_name': 'sipps',
+    #     'pf_alg': run_sipps,
+    #     'to_render': False,
+    #     'w': 5, 'd_max': 3, 'gamma': 2,
+    # }),
+    (run_k_prp, {
+        'alg_name': f'k-PrP-SIPPS',
+        'constr_type': 'hard',
+        'k_limit': 15,
+        'pf_alg_name': 'sipps',
+        'pf_alg': run_sipps,
+        'to_render': False,
+    }),
+    (run_k_prp, {
+        'alg_name': f'APF-k-PrP-SIPPS',
+        'constr_type': 'hard',
+        'k_limit': 15,
+        'pf_alg_name': 'sipps',
+        'pf_alg': run_sipps,
+        'to_render': False,
+        'w': 5, 'd_max': 3, 'gamma': 2,
+    }),
+    # ------------------------------------------------ #
+
+    # ------------------------------------------------ #
+    # LNS2 Family
+    # ------------------------------------------------ #
+    # (run_lns2, {
+    #     'alg_name': f'LNS2',
+    #     'constr_type': 'soft',
+    #     'n_neighbourhood': 5,
+    #     'to_render': False,
+    # }),
+    # (run_lns2, {
+    #     'alg_name': f'APF-LNS2',
+    #     'constr_type': 'soft',
+    #     'n_neighbourhood': 5,
+    #     'to_render': False,
+    #     'w': 5, 'd_max': 3, 'gamma': 2,
+    # }),
+    (run_k_lns2, {
+        'k_limit': (k_limit := 15),
+        'alg_name': f'k-LNS2-SIPPS',
+        'pf_alg_name': 'sipps',
+        'pf_alg': run_sipps,
+        'n_neighbourhood': k_limit,
+        'to_render': False,
+    }),
+    (run_k_lns2, {
+        'k_limit': (k_limit := 15),
+        'alg_name': f'APF-k-LNS2-SIPPS',
+        'pf_alg_name': 'sipps',
+        'pf_alg': run_sipps,
+        'n_neighbourhood': k_limit,
+        'to_render': False,
+        'w': 5, 'd_max': 3, 'gamma': 2,
+    }),
+]
+
+
+# ------------------------------------------------------------------------------------------------------------ #
+# APFs in PIBT
+# ------------------------------------------------------------------------------------------------------------ #
+
+
+alg_list_pibt = [
+    # ------------------------------------------------ #
+    # PIBT, LaCAM Family
+    # ------------------------------------------------ #
+    (run_pibt, {
+        'alg_name': f'PIBT',
+        'to_render': False,
+    }),
+    (run_pibt, {
+        'alg_name': f'APF-PIBT',
+        'to_render': False,
+        'w': 0.5, 'd_max': 3, 'gamma': 2,
+    }),
+    (run_lacam, {
+        'alg_name': f'LaCAM',
+        'to_render': False,
+    }),
+    (run_lacam, {
+        'alg_name': f'APF-LaCAM',
+        'to_render': False,
+        'w': 0.5, 'd_max': 3, 'gamma': 2,
+    }),
+    (run_lacam_star, {
+        'alg_name': f'LaCAM*',
+        'flag_star': False,
+        'to_render': False,
+    }),
+    (run_lacam_star, {
+        'alg_name': f'APF-LaCAM*',
+        'flag_star': False,
+        'to_render': False,
+        'w': 0.5, 'd_max': 3, 'gamma': 2,
+    }),
+]
