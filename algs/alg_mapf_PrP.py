@@ -194,7 +194,8 @@ def run_prp_a_star(
 
             # checks
             runtime = time.time() - start_time
-            print(f'\r[{alg_name}] {r_iter=: <3} | agents: {len(h_priority_agents): <3} / {len(agents)} | {runtime= : .2f} s.')  # , end=''
+            # print(f'\r[{alg_name}] {r_iter=: <3} | agents: {len(h_priority_agents): <3} / {len(agents)} | {runtime= : .2f} s.')  # , end=''
+            print(f'\r[{alg_name}] {r_iter=: <3} | agents: {len(h_priority_agents): <3} / {len(agents)} | {runtime= : .2f} s.', end='')
             # collisions: int = 0
             # for i in range(len(h_priority_agents[0].path)):
             #     to_count = False if constr_type == 'hard' else True
@@ -347,7 +348,8 @@ def run_k_prp(
         # print
         runtime = time.time() - start_time
         finished: List[AgentAlg] = [a for a in agents if len(a.path) > 0 and a.path[-1] == a.goal_node]
-        print(f'\r[{alg_name}] {k_iter=: <3} | agents: {len(finished): <3} / {len(agents)} | {runtime=: .2f} s.')  # , end=''
+        # print(f'\r[{alg_name}] {k_iter=: <3} | agents: {len(finished): <3} / {len(agents)} | {runtime=: .2f} s.')  # , end=''
+        print(f'\r[{alg_name}] {k_iter=: <3} | agents: {len(finished): <3} / {len(agents)} | {runtime=: .2f} s.', end='')  #
 
         # return check
         if solution_is_found(agents):

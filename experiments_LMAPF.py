@@ -111,6 +111,10 @@ def run_mapf_experiments():
     to_render = True
     # to_render = False
 
+    # saving
+    # to_save = False
+    to_save = True
+
     logs_dict: Dict[str, Any] = {
         params['alg_name']: {
             f'{n_agents}': {
@@ -124,6 +128,7 @@ def run_mapf_experiments():
     logs_dict['img_dir'] = img_dir
     logs_dict['max_iter_time'] = max_iter_time
     logs_dict['n_steps'] = n_steps
+    logs_dict['expr_type'] = 'LMAPF'
 
     # ------------------------------------------------------------------------------------------------------------ #
     # ------------------------------------------------------------------------------------------------------------ #
@@ -165,6 +170,9 @@ def run_mapf_experiments():
             # plot
             plot_throughput(ax, info=logs_dict)
             plt.pause(0.001)
+
+    if to_save:
+        save_results(logs_dict)
 
     print('\n[INFO]: finished BIG Lifelong MAPF experiments')
     plt.show()

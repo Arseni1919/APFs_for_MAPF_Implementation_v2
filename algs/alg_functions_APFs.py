@@ -3,7 +3,6 @@ import heapq
 from globals import *
 from functions_general import *
 from functions_plotting import *
-from alg_sipps_functions import SIPPSNode
 
 
 # def get_apfs_params(params: dict) -> Tuple[float | None, int | None, int | None]:

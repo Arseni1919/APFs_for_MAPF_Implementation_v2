@@ -108,6 +108,7 @@ def main():
         'alg_name': 'PIBT',
         'to_render': to_render,
         'w': 0.5, 'd_max': 3, 'gamma': 2,
+        # 'w': 1, 'd_max': 3, 'gamma': 2,
     }
     run_mapf_alg(alg=run_pibt, params=params)
 

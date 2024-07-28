@@ -8,9 +8,10 @@ import random
 import pstats
 import cProfile
 import itertools
-from itertools import combinations, permutations, tee, pairwise
 from typing import *
+from datetime import datetime
 from collections import deque, defaultdict
+from itertools import combinations, permutations, tee, pairwise
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -53,17 +54,28 @@ markers_lines_dict = defaultdict(lambda: random.choice(markers))
 colors_dict: DefaultDict[str, str | None] = defaultdict(lambda: None)
 
 
-markers_lines_dict['LNS2'] = '-p'
-colors_dict['LNS2'] = 'blue'
+markers_lines_dict['PrP-A*'] = '-v'
+colors_dict['PrP-A*'] = 'green'
+
+markers_lines_dict['APF-PrP-A*'] = '--v'
+colors_dict['APF-PrP-A*'] = 'green'
+
+markers_lines_dict['k-PrP-A*'] = '-^'
+colors_dict['k-PrP-A*'] = 'springgreen'
+
+markers_lines_dict['APF-k-PrP-A*'] = '--^'
+colors_dict['APF-k-PrP-A*'] = 'springgreen'
+
+markers_lines_dict['k-LNS2-A*'] = '-p'
+colors_dict['k-LNS2-A*'] = 'blue'
+
+markers_lines_dict['APF-k-LNS2-A*'] = '--p'
+colors_dict['APF-k-LNS2-A*'] = 'blue'
+
 
 markers_lines_dict['PF-LNS2'] = '-*'
 colors_dict['PF-LNS2'] = 'red'
 
-markers_lines_dict['PrP'] = '-v'
-colors_dict['PrP'] = 'green'
-
-markers_lines_dict['PF-PrP'] = '-^'
-colors_dict['PF-PrP'] = 'orange'
 
 # -------------------------------------------------------------------------------------------------------------------- #
 # -------------------------------------------------------------------------------------------------------------------- #

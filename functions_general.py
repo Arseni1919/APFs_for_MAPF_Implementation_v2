@@ -10,6 +10,20 @@ from globals import *
 # -------------------------------------------------------------------------------------------------------------------- #
 # -------------------------------------------------------------------------------------------------------------------- #
 # -------------------------------------------------------------------------------------------------------------------- #
+def save_results(logs_dict: dict):
+    alg_names = logs_dict['alg_names']
+    i_problems = logs_dict['i_problems']
+    img_dir = logs_dict['img_dir']
+    expr_type = logs_dict['expr_type']
+    file_dir = f'logs_for_experiments/{expr_type}_{datetime.now().strftime("%Y-%m-%d--%H-%M")}_ALGS-{len(alg_names)}_RUNS-{i_problems}_MAP-{img_dir[:-4]}.json'
+    # Serializing json
+    json_object = json.dumps(logs_dict, indent=4)
+    with open(file_dir, "w") as outfile:
+        outfile.write(json_object)
+    print(f'Results saved in: {file_dir}')
+    return file_dir
+
+
 def set_seed(random_seed_bool, seed=1):
     if random_seed_bool:
         seed = random.randint(0, 10000)
