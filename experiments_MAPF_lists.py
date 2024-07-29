@@ -90,7 +90,6 @@ alg_list_general = [
     }),
 ]
 
-
 # ------------------------------------------------------------------------------------------------------------ #
 # APFs in A*
 # ------------------------------------------------------------------------------------------------------------ #
@@ -156,7 +155,6 @@ alg_list_a_star = [
     }),
 
 ]
-
 
 # ------------------------------------------------------------------------------------------------------------ #
 # APFs in SIPPS
@@ -236,6 +234,86 @@ alg_list_sipps = [
     }),
 ]
 
+alg_list_sipps_params_w = [
+    (run_k_lns2, {
+        'k_limit': (k_limit := 15),
+        'alg_name': f'k-LNS2-SIPPS',
+        'pf_alg_name': 'sipps',
+        'pf_alg': run_sipps,
+        'n_neighbourhood': k_limit,
+        'to_render': False,
+    }),
+    # 1
+    (run_k_lns2, {
+        'w': (w := 0.5), 'd_max': (d_max := 3), 'gamma': (gamma := 2),
+        'k_limit': (k_limit := 15),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'pf_alg_name': 'sipps',
+        'pf_alg': run_sipps,
+        'n_neighbourhood': k_limit,
+        'to_render': False,
+    }),
+    # 2
+    (run_k_lns2, {
+        'w': (w := 1), 'd_max': (d_max := 3), 'gamma': (gamma := 2),
+        'k_limit': (k_limit := 15),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'pf_alg_name': 'sipps',
+        'pf_alg': run_sipps,
+        'n_neighbourhood': k_limit,
+        'to_render': False,
+    }),
+    # 3
+    (run_k_lns2, {
+        'w': (w := 3), 'd_max': (d_max := 3), 'gamma': (gamma := 2),
+        'k_limit': (k_limit := 15),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'pf_alg_name': 'sipps',
+        'pf_alg': run_sipps,
+        'n_neighbourhood': k_limit,
+        'to_render': False,
+    }),
+    # 4
+    (run_k_lns2, {
+        'w': (w := 5), 'd_max': (d_max := 3), 'gamma': (gamma := 2),
+        'k_limit': (k_limit := 15),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'pf_alg_name': 'sipps',
+        'pf_alg': run_sipps,
+        'n_neighbourhood': k_limit,
+        'to_render': False,
+    }),
+    # 5
+    (run_k_lns2, {
+        'w': (w := 7), 'd_max': (d_max := 3), 'gamma': (gamma := 2),
+        'k_limit': (k_limit := 15),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'pf_alg_name': 'sipps',
+        'pf_alg': run_sipps,
+        'n_neighbourhood': k_limit,
+        'to_render': False,
+    }),
+    # 6
+    (run_k_lns2, {
+        'w': (w := 10), 'd_max': (d_max := 3), 'gamma': (gamma := 2),
+        'k_limit': (k_limit := 15),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'pf_alg_name': 'sipps',
+        'pf_alg': run_sipps,
+        'n_neighbourhood': k_limit,
+        'to_render': False,
+    }),
+    # 7
+    (run_k_lns2, {
+        'w': (w := 15), 'd_max': (d_max := 3), 'gamma': (gamma := 2),
+        'k_limit': (k_limit := 15),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'pf_alg_name': 'sipps',
+        'pf_alg': run_sipps,
+        'n_neighbourhood': k_limit,
+        'to_render': False,
+    }),
+]
 
 # ------------------------------------------------------------------------------------------------------------ #
 # APFs in PIBT

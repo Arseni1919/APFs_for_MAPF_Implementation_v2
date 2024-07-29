@@ -68,7 +68,7 @@ def run_lifelong_pibt(
 
         # print + render
         runtime = time.time() - start_time
-        print(f'\r[{alg_name}] {step_iter=: <3} | runtime: {runtime: .2f} s. | {throughput=}',end='')
+        print(f'\r[{alg_name}] {step_iter=: <3} | runtime: {runtime: .2f} s. | {throughput=}', end='')
 
     # checks
     # for i in range(len(agents[0].path)):

@@ -62,9 +62,17 @@ def run_mapf_experiments():
     # ------------------------------------------------- #
 
     # alg_list = alg_list_general
-    alg_list = alg_list_a_star
+    # alg_list = alg_list_a_star
     # alg_list = alg_list_sipps
     # alg_list = alg_list_pibt
+
+    # SIPPS APFs params
+    # alg_list = alg_list_sipps_params_w
+    # alg_list = alg_list_sipps_params_d_max
+    # alg_list = alg_list_sipps_params_gamma
+
+    # PIBT APFs params
+    alg_list = alg_list_pibt_params_w
 
     # ------------------------------------------------- #
 

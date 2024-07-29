@@ -157,7 +157,8 @@ def run_lifelong_prp(
 
         # print
         global_runtime = time.time() - global_start_time
-        print(f'\r[{alg_name}] {n_agents=}, {step_iter=: <3} / {n_steps} | {global_runtime=: .2f} s. | {throughput=}')  # , end=''
+        # print(f'\r[{alg_name}] {n_agents=}, {step_iter=: <3} / {n_steps} | {global_runtime=: .2f} s. | {throughput=}')  # , end=''
+        print(f'\r[{alg_name}] {n_agents=}, {step_iter=: <3} / {n_steps} | {global_runtime=: .2f} s. | {throughput=}', end='')  #
         # ------------------------------ #
         # ------------------------------ #
         # ------------------------------ #

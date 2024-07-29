@@ -5,7 +5,7 @@ from run_single_MAPF_func import run_mapf_alg
 
 
 def solve_k_LNS2(
-        agents: List[AgentLNS2],
+        agents: List[AgentAlg],
         nodes: List[Node],
         nodes_dict: Dict[str, Node],
         h_dict: Dict[str, np.ndarray],
@@ -29,7 +29,7 @@ def solve_k_LNS2(
     )
     cp_graph, cp_graph_names = get_k_limit_cp_graph(agents, k_limit=k_limit)
     cp_len = len(cp_graph)
-    occupied_from: Dict[str, AgentLNS2] = {a.curr_node.xy_name: a for a in agents}
+    occupied_from: Dict[str, AgentAlg] = {a.curr_node.xy_name: a for a in agents}
 
     # repairing procedure
     lns_iter = 0
@@ -38,11 +38,11 @@ def solve_k_LNS2(
 
         runtime = time.time() - iter_start_time
 
-        agents_subset: List[AgentLNS2] = get_k_limit_agents_subset(
+        agents_subset: List[AgentAlg] = get_k_limit_agents_subset(
             cp_graph, cp_graph_names, n_neighbourhood, agents, occupied_from, h_dict
         )
         old_paths: Dict[str, List[Node]] = {a.name: a.k_path[:] for a in agents_subset}
-        agents_outer: List[AgentLNS2] = [a for a in agents if a not in agents_subset]
+        agents_outer: List[AgentAlg] = [a for a in agents if a not in agents_subset]
         # print(f'\r[{alg_name}] {lns_iter=}, {cp_len=}, {runtime=: .2f} s., {agents_subset=} ', end='')
         print(f'\r[{alg_name}] {lns_iter=}, {cp_len=}, {runtime=: .2f} s. ', end='')
 
@@ -129,7 +129,8 @@ def run_lifelong_LNS2(
 
         # print
         global_runtime = time.time() - global_start_time
-        print(f'\r[{alg_name}] {n_agents=}, {step_iter=: <3} / {n_steps} | {global_runtime=: .2f} s. | {throughput=}')  # , end=''
+        # print(f'\r[{alg_name}] {n_agents=}, {step_iter=: <3} / {n_steps} | {global_runtime=: .2f} s. | {throughput=}')  # , end=''
+        print(f'\r[{alg_name}] {n_agents=}, {step_iter=: <3} / {n_steps} | {global_runtime=: .2f} s. | {throughput=}', end='')  #
         # ------------------------------ #
         # ------------------------------ #
         # ------------------------------ #

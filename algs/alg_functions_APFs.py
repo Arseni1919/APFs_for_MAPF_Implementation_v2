@@ -92,7 +92,7 @@ def update_apfs_map(
             heapq.heappush(closed_list, next_n.xy_name)
 
             next_n_dist = manhattan_dist(curr_node, next_n)
-            if next_n_dist < d_max:
+            if next_n_dist <= d_max:
                 apf_force: float = w * (gamma**(d_max - next_n_dist) / gamma**d_max)
                 apfs_np[next_n.x, next_n.y, t] += apf_force
                 # extend open
