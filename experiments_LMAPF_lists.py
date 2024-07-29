@@ -426,5 +426,75 @@ alg_list_pibt_params_w = [
     }),
 ]
 
+alg_list_pibt_params_d_max = [
+    (run_lifelong_pibt, {
+        'alg_name': f'L-PIBT',
+        'to_render': False,
+    }),
+    (run_lifelong_pibt, {
+        'w': (w := 0.1), 'd_max': (d_max := 1), 'gamma': (gamma := 2),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'to_render': False,
+    }),
+(run_lifelong_pibt, {
+        'w': (w := 0.1), 'd_max': (d_max := 2), 'gamma': (gamma := 2),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'to_render': False,
+    }),
+(run_lifelong_pibt, {
+        'w': (w := 0.1), 'd_max': (d_max := 3), 'gamma': (gamma := 2),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'to_render': False,
+    }),
+(run_lifelong_pibt, {
+        'w': (w := 0.1), 'd_max': (d_max := 4), 'gamma': (gamma := 2),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'to_render': False,
+    }),
+(run_lifelong_pibt, {
+        'w': (w := 0.1), 'd_max': (d_max := 5), 'gamma': (gamma := 2),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'to_render': False,
+    }),
+]
+
+
+alg_list_pibt_params_gamma = [
+    (run_lifelong_pibt, {
+        'alg_name': f'L-PIBT',
+        'to_render': False,
+    }),
+    (run_lifelong_pibt, {
+        'w': (w := 0.1), 'd_max': (d_max := 2), 'gamma': (gamma := 1),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'to_render': False,
+    }),
+    (run_lifelong_pibt, {
+        'w': (w := 0.1), 'd_max': (d_max := 2), 'gamma': (gamma := 1.1),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'to_render': False,
+    }),
+    (run_lifelong_pibt, {
+        'w': (w := 0.1), 'd_max': (d_max := 2), 'gamma': (gamma := 1.5),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'to_render': False,
+    }),
+    (run_lifelong_pibt, {
+        'w': (w := 0.1), 'd_max': (d_max := 2), 'gamma': (gamma := 2),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'to_render': False,
+    }),
+    (run_lifelong_pibt, {
+        'w': (w := 0.1), 'd_max': (d_max := 2), 'gamma': (gamma := 3),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'to_render': False,
+    }),
+    (run_lifelong_pibt, {
+        'w': (w := 0.1), 'd_max': (d_max := 2), 'gamma': (gamma := 5),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'to_render': False,
+    }),
+]
+
 
 
