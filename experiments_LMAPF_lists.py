@@ -101,6 +101,215 @@ alg_list_a_star = [
 ]
 
 
+alg_list_a_star_params_w = [
+    (run_lifelong_LNS2, {
+        'alg_name': f'L-LNS2-A*',
+        'constr_type': 'hard',
+        'k_limit': 5,
+        'n_neighbourhood': 5,
+        'pf_alg_name': 'a_star',
+        'pf_alg': run_temporal_a_star,
+        'to_render': False,
+    }),
+    (run_lifelong_LNS2, {
+        'k_limit': 5,
+        'w': (w := 0.1), 'd_max': (d_max := 4), 'gamma': (gamma := 2),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'constr_type': 'hard',
+        'n_neighbourhood': 5,
+        'pf_alg_name': 'a_star',
+        'pf_alg': run_temporal_a_star,
+        'to_render': False,
+    }),
+    (run_lifelong_LNS2, {
+        'k_limit': 5,
+        'w': (w := 0.5), 'd_max': (d_max := 4), 'gamma': (gamma := 2),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'constr_type': 'hard',
+        'n_neighbourhood': 5,
+        'pf_alg_name': 'a_star',
+        'pf_alg': run_temporal_a_star,
+        'to_render': False,
+    }),
+    (run_lifelong_LNS2, {
+        'k_limit': 5,
+        'w': (w := 1), 'd_max': (d_max := 4), 'gamma': (gamma := 2),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'constr_type': 'hard',
+        'n_neighbourhood': 5,
+        'pf_alg_name': 'a_star',
+        'pf_alg': run_temporal_a_star,
+        'to_render': False,
+    }),
+    (run_lifelong_LNS2, {
+        'k_limit': 5,
+        'w': (w := 2), 'd_max': (d_max := 4), 'gamma': (gamma := 2),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'constr_type': 'hard',
+        'n_neighbourhood': 5,
+        'pf_alg_name': 'a_star',
+        'pf_alg': run_temporal_a_star,
+        'to_render': False,
+    }),
+    (run_lifelong_LNS2, {
+        'k_limit': 5,
+        'w': (w := 5), 'd_max': (d_max := 4), 'gamma': (gamma := 2),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'constr_type': 'hard',
+        'n_neighbourhood': 5,
+        'pf_alg_name': 'a_star',
+        'pf_alg': run_temporal_a_star,
+        'to_render': False,
+    }),
+]
+
+
+alg_list_a_star_params_d_max = [
+    (run_lifelong_LNS2, {
+        'alg_name': f'L-LNS2-A*',
+        'constr_type': 'hard',
+        'k_limit': 5,
+        'n_neighbourhood': 5,
+        'pf_alg_name': 'a_star',
+        'pf_alg': run_temporal_a_star,
+        'to_render': False,
+    }),
+    (run_lifelong_LNS2, {
+        'k_limit': 5,
+        'w': (w := 0.5), 'd_max': (d_max := 1), 'gamma': (gamma := 2),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'constr_type': 'hard',
+        'n_neighbourhood': 5,
+        'pf_alg_name': 'a_star',
+        'pf_alg': run_temporal_a_star,
+        'to_render': False,
+    }),
+    (run_lifelong_LNS2, {
+        'k_limit': 5,
+        'w': (w := 0.5), 'd_max': (d_max := 2), 'gamma': (gamma := 2),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'constr_type': 'hard',
+        'n_neighbourhood': 5,
+        'pf_alg_name': 'a_star',
+        'pf_alg': run_temporal_a_star,
+        'to_render': False,
+    }),
+    (run_lifelong_LNS2, {
+        'k_limit': 5,
+        'w': (w := 0.5), 'd_max': (d_max := 3), 'gamma': (gamma := 2),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'constr_type': 'hard',
+        'n_neighbourhood': 5,
+        'pf_alg_name': 'a_star',
+        'pf_alg': run_temporal_a_star,
+        'to_render': False,
+    }),
+    (run_lifelong_LNS2, {
+        'k_limit': 5,
+        'w': (w := 0.5), 'd_max': (d_max := 4), 'gamma': (gamma := 2),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'constr_type': 'hard',
+        'n_neighbourhood': 5,
+        'pf_alg_name': 'a_star',
+        'pf_alg': run_temporal_a_star,
+        'to_render': False,
+    }),
+    (run_lifelong_LNS2, {
+        'k_limit': 5,
+        'w': (w := 0.5), 'd_max': (d_max := 5), 'gamma': (gamma := 2),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'constr_type': 'hard',
+        'n_neighbourhood': 5,
+        'pf_alg_name': 'a_star',
+        'pf_alg': run_temporal_a_star,
+        'to_render': False,
+    }),
+    # (run_lifelong_LNS2, {
+    #         'k_limit': 5,
+    #         'w': (w := 0.5), 'd_max': (d_max := 10), 'gamma': (gamma := 2),
+    #         'alg_name': f'{w=},{d_max=},{gamma=}',
+    #         'constr_type': 'hard',
+    #         'n_neighbourhood': 5,
+    #         'pf_alg_name': 'a_star',
+    #         'pf_alg': run_temporal_a_star,
+    #         'to_render': False,
+    #     }),
+]
+
+
+alg_list_a_star_params_gamma = [
+    (run_lifelong_LNS2, {
+        'alg_name': f'L-LNS2-A*',
+        'constr_type': 'hard',
+        'k_limit': 5,
+        'n_neighbourhood': 5,
+        'pf_alg_name': 'a_star',
+        'pf_alg': run_temporal_a_star,
+        'to_render': False,
+    }),
+    (run_lifelong_LNS2, {
+        'k_limit': 5,
+        'w': (w := 0.5), 'd_max': (d_max := 4), 'gamma': (gamma := 1),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'constr_type': 'hard',
+        'n_neighbourhood': 5,
+        'pf_alg_name': 'a_star',
+        'pf_alg': run_temporal_a_star,
+        'to_render': False,
+    }),
+    (run_lifelong_LNS2, {
+        'k_limit': 5,
+        'w': (w := 0.5), 'd_max': (d_max := 4), 'gamma': (gamma := 1.1),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'constr_type': 'hard',
+        'n_neighbourhood': 5,
+        'pf_alg_name': 'a_star',
+        'pf_alg': run_temporal_a_star,
+        'to_render': False,
+    }),
+    (run_lifelong_LNS2, {
+        'k_limit': 5,
+        'w': (w := 0.5), 'd_max': (d_max := 4), 'gamma': (gamma := 1.5),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'constr_type': 'hard',
+        'n_neighbourhood': 5,
+        'pf_alg_name': 'a_star',
+        'pf_alg': run_temporal_a_star,
+        'to_render': False,
+    }),
+    (run_lifelong_LNS2, {
+        'k_limit': 5,
+        'w': (w := 0.5), 'd_max': (d_max := 4), 'gamma': (gamma := 2),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'constr_type': 'hard',
+        'n_neighbourhood': 5,
+        'pf_alg_name': 'a_star',
+        'pf_alg': run_temporal_a_star,
+        'to_render': False,
+    }),
+    (run_lifelong_LNS2, {
+        'k_limit': 5,
+        'w': (w := 0.5), 'd_max': (d_max := 4), 'gamma': (gamma := 2.5),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'constr_type': 'hard',
+        'n_neighbourhood': 5,
+        'pf_alg_name': 'a_star',
+        'pf_alg': run_temporal_a_star,
+        'to_render': False,
+    }),
+(run_lifelong_LNS2, {
+        'k_limit': 5,
+        'w': (w := 0.5), 'd_max': (d_max := 4), 'gamma': (gamma := 3),
+        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'constr_type': 'hard',
+        'n_neighbourhood': 5,
+        'pf_alg_name': 'a_star',
+        'pf_alg': run_temporal_a_star,
+        'to_render': False,
+    }),
+]
+
+
 # ------------------------------------------------------------------------------------------------------------ #
 # APFs in SIPPS
 # ------------------------------------------------------------------------------------------------------------ #
@@ -389,6 +598,7 @@ alg_list_pibt = [
     }),
 ]
 
+
 alg_list_pibt_params_w = [
     (run_lifelong_pibt, {
         'alg_name': f'L-PIBT',
@@ -425,6 +635,7 @@ alg_list_pibt_params_w = [
         'to_render': False,
     }),
 ]
+
 
 alg_list_pibt_params_d_max = [
     (run_lifelong_pibt, {

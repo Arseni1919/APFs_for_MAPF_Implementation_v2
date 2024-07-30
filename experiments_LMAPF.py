@@ -41,8 +41,8 @@ def run_mapf_experiments():
     # n_agents_list = [400]
     # n_agents_list = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
     # n_agents_list = [100, 200, 300, 400]
-    # n_agents_list = [50, 100, 150, 200, 250, 300, 350, 400, 450]
-    n_agents_list = [150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 700, 800]
+    n_agents_list = [50, 100, 150, 200, 250, 300, 350, 400, 450]
+    # n_agents_list = [150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 700, 800]
     # n_agents_list = [350, 400, 450, 500, 550, 600, 650, 700]
     # n_agents_list = [100, 200, 300, 400, 500]
     # n_agents_list = [200, 300, 400, 500, 600]
@@ -68,6 +68,11 @@ def run_mapf_experiments():
     # alg_list = alg_list_sipps
     # alg_list = alg_list_pibt
 
+    # A* APFs params
+    # alg_list = alg_list_a_star_params_w
+    # alg_list = alg_list_a_star_params_d_max
+    alg_list = alg_list_a_star_params_gamma
+
     # SIPPS APFs params
     # alg_list = alg_list_sipps_params_w
     # alg_list = alg_list_sipps_params_d_max
@@ -76,7 +81,7 @@ def run_mapf_experiments():
     # PIBT APFs params
     # alg_list = alg_list_pibt_params_w
     # alg_list = alg_list_pibt_params_d_max
-    alg_list = alg_list_pibt_params_gamma
+    # alg_list = alg_list_pibt_params_gamma
 
     # ------------------------------------------------- #
 
