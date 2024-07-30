@@ -12,7 +12,11 @@ from algs.alg_lifelong_PIBT import run_lifelong_pibt
 # ------------------------------------------------------------------------------------------------------------ #
 # General
 # ------------------------------------------------------------------------------------------------------------ #
-
+"""
+A*: w=0.5, d_max = 4, gamma = 2
+SIPPS: w = 0.1, d_max = 3, gamma = 3
+PIBT: w = 0.1, d_max = 2, gamma = 1.1
+"""
 
 alg_list_general = [
         (run_lifelong_prp, {
@@ -59,7 +63,9 @@ alg_list_general = [
 # ------------------------------------------------------------------------------------------------------------ #
 # APFs in A*
 # ------------------------------------------------------------------------------------------------------------ #
-
+"""
+A*: w=0.5, d_max = 4, gamma = 2
+"""
 
 alg_list_a_star = [
     (run_lifelong_prp, {
@@ -313,7 +319,9 @@ alg_list_a_star_params_gamma = [
 # ------------------------------------------------------------------------------------------------------------ #
 # APFs in SIPPS
 # ------------------------------------------------------------------------------------------------------------ #
-
+"""
+SIPPS: w = 0.1, d_max = 3, gamma = 3
+"""
 
 alg_list_sipps = [
     (run_lifelong_prp, {
@@ -324,14 +332,14 @@ alg_list_sipps = [
         'k_limit': 5,
         'to_render': False,
     }),
-(run_lifelong_prp, {
+    (run_lifelong_prp, {
         'alg_name': f'APF-L-PrP-SIPPS',
         'constr_type': 'hard',
         'pf_alg': run_sipps,
         'pf_alg_name': 'sipps',
         'k_limit': 5,
         'to_render': False,
-        'w': 0.1, 'd_max': 4, 'gamma': 3,
+        'w': 0.1, 'd_max': 3, 'gamma': 3,
     }),
     (run_lifelong_LNS2, {
         'alg_name': f'L-LNS2-SIPPS',
@@ -350,7 +358,7 @@ alg_list_sipps = [
         'pf_alg_name': 'sipps',
         'pf_alg': run_sipps,
         'to_render': False,
-        'w': 0.1, 'd_max': 4, 'gamma': 3,
+        'w': 0.1, 'd_max': 3, 'gamma': 3,
     }),
 ]
 
@@ -584,7 +592,9 @@ alg_list_sipps_params_gamma = [
 # ------------------------------------------------------------------------------------------------------------ #
 # APFs in PIBT
 # ------------------------------------------------------------------------------------------------------------ #
-
+"""
+PIBT: w = 0.1, d_max = 2, gamma = 1.1
+"""
 
 alg_list_pibt = [
     (run_lifelong_pibt, {
@@ -594,7 +604,7 @@ alg_list_pibt = [
     (run_lifelong_pibt, {
         'alg_name': f'APF-L-PIBT',
         'to_render': False,
-        'w': 0.5, 'd_max': 3, 'gamma': 2,
+        'w': 0.1, 'd_max': 2, 'gamma': 1.1,
     }),
 ]
 

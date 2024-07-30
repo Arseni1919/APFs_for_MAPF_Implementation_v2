@@ -103,7 +103,8 @@ def run_prp_sipps(
 
             # checks
             runtime = time.time() - start_time
-            print(f'\r[{alg_name}] {r_iter=: <3} | agents: {len(h_priority_agents): <3} / {len(agents)} | {runtime= : .2f} s.')  # , end=''
+            # print(f'\r[{alg_name}] {r_iter=: <3} | agents: {len(h_priority_agents): <3} / {len(agents)} | {runtime= : .2f} s.')  # , end=''
+            print(f'\r[{alg_name}] {r_iter=: <3} | agents: {len(h_priority_agents): <3} / {len(agents)} | {runtime= : .2f} s.', end='')  #
             # collisions: int = 0
             # for i in range(len(h_priority_agents[0].path)):
             #     check_vc_ec_neic_iter(h_priority_agents, i, False)
@@ -286,6 +287,8 @@ def run_k_prp(
                 # all_good = False
                 # break
                 new_path = [agent.curr_node]
+            if time.time() - start_time > max_time:
+                break
 
             new_path = align_path(new_path, k_limit + 1)
             agent.k_path = new_path[:]
@@ -306,6 +309,8 @@ def run_k_prp(
             else:
                 raise RuntimeError('nono')
 
+        if time.time() - start_time > max_time:
+            break
         repair_agents_k_paths(agents, k_limit)
         # checks
         # for agent1, agent2 in combinations(agents, 2):
@@ -369,8 +374,8 @@ def run_k_prp(
 
 @use_profiler(save_dir='../stats/alg_prp.pstat')
 def main():
-    # to_render = True
-    to_render = False
+    to_render = True
+    # to_render = False
 
     # --------------------------------------------------------------------- #
     # PrP-A*
@@ -381,7 +386,7 @@ def main():
     #     'constr_type': 'hard',
     #     'pf_alg': run_temporal_a_star,
     #     'to_render': to_render,
-    #     # 'w': 0.5, 'd_max': 4, 'gamma': 2
+    #     'w': 0.5, 'd_max': 3, 'gamma': 2
     # }
     # run_mapf_alg(alg=run_prp_a_star, params=params_prp_a_star)
     # --------------------------------------------------------------------- #
@@ -389,32 +394,32 @@ def main():
     # --------------------------------------------------------------------- #
     # PrP-SIPPS
     # --------------------------------------------------------------------- #
-    params_prp_sipps = {
-        'max_time': 1000,
-        'alg_name': f'PrP-SIPPS',
-        # 'constr_type': 'soft',
-        'constr_type': 'hard',
-        'pf_alg': run_sipps,
-        'to_render': to_render,
-        'w': 5, 'd_max': 3, 'gamma': 2,
-    }
-    run_mapf_alg(alg=run_prp_sipps, params=params_prp_sipps)
+    # params_prp_sipps = {
+    #     'max_time': 1000,
+    #     'alg_name': f'PrP-SIPPS',
+    #     # 'constr_type': 'soft',
+    #     'constr_type': 'hard',
+    #     'pf_alg': run_sipps,
+    #     'to_render': to_render,
+    #     'w': 5, 'd_max': 3, 'gamma': 2,
+    # }
+    # run_mapf_alg(alg=run_prp_sipps, params=params_prp_sipps)
     # --------------------------------------------------------------------- #
 
     # --------------------------------------------------------------------- #
     # k-PrP - A*
     # --------------------------------------------------------------------- #
-    # params_k_prp_a_star = {
-    #     'max_time': 1000,
-    #     'alg_name': f'k-PrP-A*',
-    #     'constr_type': 'hard',
-    #     'k_limit': 5,
-    #     'pf_alg_name': 'a_star',
-    #     'pf_alg': run_temporal_a_star,
-    #     'to_render': to_render,
-    #     'w': 0.5, 'd_max': 4, 'gamma': 2
-    # }
-    # run_mapf_alg(alg=run_k_prp, params=params_k_prp_a_star)
+    params_k_prp_a_star = {
+        'max_time': 1000,
+        'alg_name': f'k-PrP-A*',
+        'constr_type': 'hard',
+        'k_limit': 5,
+        'pf_alg_name': 'a_star',
+        'pf_alg': run_temporal_a_star,
+        'to_render': to_render,
+        # 'w': 0.5, 'd_max': 3, 'gamma': 2
+    }
+    run_mapf_alg(alg=run_k_prp, params=params_k_prp_a_star)
     # --------------------------------------------------------------------- #
 
     # --------------------------------------------------------------------- #

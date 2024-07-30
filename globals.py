@@ -48,33 +48,62 @@ color_names = [
 ]
 
 
-markers = ['-^', '-1', '-2', '-X', '-d', '-v', '-o']
+markers = [
+    ".",    # point marker
+    ",",    # pixel marker
+    "o",    # circle marker
+    "v",    # triangle_down marker
+    "^",    # triangle_up marker
+    "<",    # triangle_left marker
+    ">",    # triangle_right marker
+    "1",    # tri_down marker
+    "2",    # tri_up marker
+    "3",    # tri_left marker
+    "4",    # tri_right marker
+    "s",    # square marker
+    "p",    # pentagon marker
+    "*",    # star marker
+    "h",    # hexagon1 marker
+    "H",    # hexagon2 marker
+    "+",    # plus marker
+    "x",    # x marker
+    "D",    # diamond marker
+    "d",    # thin_diamond marker
+    "P",    # plus (filled) marker
+    "X",    # x (filled) marker
+]
+lines = [
+    "-",  # solid line
+    "--", # dashed line
+    "-.", # dash-dot line
+    ":",  # dotted line
+]
 markers_iter = iter(markers)
-markers_lines_dict = defaultdict(lambda: random.choice(markers))
+markers_lines_dict: dict = {}
 colors_dict: DefaultDict[str, str | None] = defaultdict(lambda: None)
 
 
-markers_lines_dict['PrP-A*'] = '-v'
-colors_dict['PrP-A*'] = 'green'
-
-markers_lines_dict['APF-PrP-A*'] = '--v'
-colors_dict['APF-PrP-A*'] = 'green'
-
-markers_lines_dict['k-PrP-A*'] = '-^'
-colors_dict['k-PrP-A*'] = 'springgreen'
-
-markers_lines_dict['APF-k-PrP-A*'] = '--^'
-colors_dict['APF-k-PrP-A*'] = 'springgreen'
-
-markers_lines_dict['k-LNS2-A*'] = '-p'
-colors_dict['k-LNS2-A*'] = 'blue'
-
-markers_lines_dict['APF-k-LNS2-A*'] = '--p'
-colors_dict['APF-k-LNS2-A*'] = 'blue'
-
-
-markers_lines_dict['PF-LNS2'] = '-*'
-colors_dict['PF-LNS2'] = 'red'
+# markers_lines_dict['PrP-A*'] = '-v'
+# colors_dict['PrP-A*'] = 'green'
+#
+# markers_lines_dict['APF-PrP-A*'] = '--v'
+# colors_dict['APF-PrP-A*'] = 'green'
+#
+# markers_lines_dict['k-PrP-A*'] = '-^'
+# colors_dict['k-PrP-A*'] = 'springgreen'
+#
+# markers_lines_dict['APF-k-PrP-A*'] = '--^'
+# colors_dict['APF-k-PrP-A*'] = 'springgreen'
+#
+# markers_lines_dict['k-LNS2-A*'] = '-p'
+# colors_dict['k-LNS2-A*'] = 'blue'
+#
+# markers_lines_dict['APF-k-LNS2-A*'] = '--p'
+# colors_dict['APF-k-LNS2-A*'] = 'blue'
+#
+#
+# markers_lines_dict['PF-LNS2'] = '-*'
+# colors_dict['PF-LNS2'] = 'red'
 
 
 # -------------------------------------------------------------------------------------------------------------------- #
