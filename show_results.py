@@ -14,7 +14,7 @@ def show_results(file_dir):
             fig, ax = plt.subplots(2, 2, figsize=(8, 8))
 
             plot_sr(ax[0, 0], info=logs_dict)
-            plot_time_metric(ax[0, 1], info=logs_dict)
+            plot_time_metric_cactus(ax[0, 1], info=logs_dict)
             plot_makespan(ax[1, 1], info=logs_dict)
 
         if expr_type == 'LMAPF':
@@ -33,11 +33,13 @@ def main():
     # LMAPF
 
     # MAPF
-    file_dir = 'LMAPF_2024-07-29--14-49_ALGS-7_RUNS-5_MAP-random-32-32-10.json'
+    file_dir = 'MAPF_2024-07-31--01-29_ALGS-4_RUNS-15_MAP-empty-32-32.json'
+    # file_dir = 'MAPF_2024-07-30--21-47_ALGS-4_RUNS-3_MAP-random-32-32-10.json'
 
     # parameters
 
-    show_results(file_dir=f'logs_for_experiments/{file_dir}')
+    # show_results(file_dir=f'logs_for_experiments/{file_dir}')
+    show_results(file_dir=f'final_logs/{file_dir}')
 
 
 if __name__ == '__main__':

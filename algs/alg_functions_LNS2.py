@@ -604,18 +604,6 @@ def solve_k_limit_subset_with_prp(
             raise RuntimeError('nono')
     return apfs_np
 
-        # checks
-        # runtime = time.time() - start_time
-        # assert len(agents_subset) + len(outer_agents) == len(agents)
-        # print(f'\r[LNS neigh calc] | agents: {len(h_priority_agents): <3} / {len(agents_subset) + len(outer_agents)} | {runtime=: .2f} s.',end='')  # , end=''
-        # collisions: int = 0
-        # align_all_paths(h_priority_agents)
-        # for i in range(len(h_priority_agents[0].path)):
-        #     to_count = False if constr_type == 'hard' else True
-        #     collisions += check_vc_ec_neic_iter(h_priority_agents, i, to_count)
-        # if c_sum > 0:
-        #     print(f'{c_sum=}')
-
 
 # def create_hard_and_soft_constraints(h_priority_agents: List[AgentAlg], map_dim: Tuple[int, int], constr_type: str):
 #     assert constr_type in ['hard', 'soft']

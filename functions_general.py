@@ -350,17 +350,27 @@ def two_plans_have_no_confs(path1: List[Node], path2: List[Node]):
 
 
 def two_equal_paths_have_confs(path1: List[Node], path2: List[Node]):
-    assert len(path1) == len(path2)
-    from1 = None
-    from2 = None
+    # assert len(path1) == len(path2)
+    # from1 = None
+    # from2 = None
+    from1_name: str = ''
+    from2_name: str = ''
     for i, (to1, to2) in enumerate(zip(path1, path2)):
-        if to1.x == to2.x and to1.y == to2.y:
+        to1_name = to1.xy_name
+        to2_name = to2.xy_name
+        # if to1.x == to2.x and to1.y == to2.y:
+        #     return True
+        if to1_name == to2_name:
             return True
         if i > 0:
-            if from1.x == to2.x and from1.y == to2.y and to1.x == from2.x and to1.y == from2.y:
+            # if from1.x == to2.x and from1.y == to2.y and to1.x == from2.x and to1.y == from2.y:
+            #     return True
+            if from1_name == to2_name and to1_name == from2_name:
                 return True
-        from1 = to1
-        from2 = to2
+        # from1 = to1
+        # from2 = to2
+        from1_name = to1_name
+        from2_name = to2_name
     return False
 
 

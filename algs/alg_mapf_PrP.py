@@ -292,15 +292,15 @@ def run_k_prp(
 
             new_path = align_path(new_path, k_limit + 1)
             agent.k_path = new_path[:]
-            agent.k_apfs = get_k_apfs(new_path, map_dim, k_limit + 1, params)
+            # agent.k_apfs = get_k_apfs(new_path, map_dim, k_limit + 1, params)
             h_priority_agents.append(agent)
             # checks
             # for i in range(k_limit + 1):
             #     other_paths = {a.name: a.k_path for a in h_priority_agents if a != agent}
             #     check_one_vc_ec_neic_iter(agent.k_path, agent.name, other_paths, i)
 
-            append_apfs(apfs_np, agent, params)
-            # update_apfs_map(new_path, apfs_np, params)
+            # append_apfs(apfs_np, agent, params)
+            update_apfs_map(new_path, apfs_np, params)
             if pf_alg_name == 'sipps':
                 update_constraints(new_path, vc_hard_np, ec_hard_np, pc_hard_np)
                 si_table = update_si_table_hard(new_path, si_table, consider_pc=False)
