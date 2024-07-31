@@ -203,7 +203,7 @@ def plot_sr(ax, info):
     # ax.set_title(f'{img_dir[:-4]} Map | time limit: {time_to_think_limit} sec.')
     # set_plot_title(ax, f'{img_dir[:-4]} Map | time limit: {time_to_think_limit} sec.', size=11)
     set_plot_title(ax, f'{img_dir[:-4]} Map', size=11)
-    set_legend(ax, size=12)
+    set_legend(ax, size=10)
     plt.tight_layout()
 
 
@@ -271,12 +271,17 @@ def plot_makespan(ax, info):
     n_agents_list = info['n_agents_list']
     img_dir = info['img_dir']
     max_time = info['max_time']
+    i_problems = info['i_problems']
 
     for alg_name in alg_names:
         makespan_list = []
+        x_list = []
         for n_a in n_agents_list:
+            if len(info[alg_name][f'{n_a}']['soc']) < i_problems:
+                break
+            x_list.append(n_a)
             makespan_list.append(np.mean(info[alg_name][f'{n_a}']['makespan']))
-        ax.plot(n_agents_list, makespan_list, get_marker_line(alg_name), color=get_alg_color(alg_name),
+        ax.plot(x_list, makespan_list, get_marker_line(alg_name), color=get_alg_color(alg_name),
                 alpha=0.5, label=f'{alg_name}', linewidth=4, markersize=15)
     ax.set_xlim([min(n_agents_list) - 20, max(n_agents_list) + 20])
     ax.set_xticks(n_agents_list)
@@ -324,14 +329,14 @@ def plot_soc(ax, info):
     i_problems = info['i_problems']
 
     for alg_name in alg_names:
-        makespan_list = []
+        soc_list = []
         x_list = []
         for n_a in n_agents_list:
             if len(info[alg_name][f'{n_a}']['soc']) < i_problems:
                 break
             x_list.append(n_a)
-            makespan_list.append(np.mean(info[alg_name][f'{n_a}']['soc']))
-        ax.plot(x_list, makespan_list, get_marker_line(alg_name), color=get_alg_color(alg_name),
+            soc_list.append(np.mean(info[alg_name][f'{n_a}']['soc']))
+        ax.plot(x_list, soc_list, get_marker_line(alg_name), color=get_alg_color(alg_name),
                 alpha=0.5, label=f'{alg_name}', linewidth=4, markersize=15)
     ax.set_xlim([min(n_agents_list) - 20, max(n_agents_list) + 20])
     ax.set_xticks(n_agents_list)
