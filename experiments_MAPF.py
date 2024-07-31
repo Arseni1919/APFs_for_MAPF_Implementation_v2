@@ -31,9 +31,9 @@ def run_mapf_experiments():
     # img_dir = '15-15-six-rooms.map'
     # img_dir = '15-15-eight-rooms.map'
 
-    # img_dir = 'empty-32-32.map'
+    img_dir = 'empty-32-32.map'
     # img_dir = 'random-32-32-10.map'
-    img_dir = 'random-32-32-20.map'
+    # img_dir = 'random-32-32-20.map'
     # img_dir = 'room-32-32-4.map'
     # img_dir = 'maze-32-32-2.map'
 
@@ -46,8 +46,8 @@ def run_mapf_experiments():
     # n_agents_list = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
     # n_agents_list = [50, 100, 150, 200, 250, 300, 350]
     # n_agents_list = [150, 200, 250, 300, 350]
-    # n_agents_list = [50, 100, 150, 200, 250, 300, 350, 400, 450]
-    n_agents_list = [200, 250, 300, 350, 400, 450]
+    n_agents_list = [50, 100, 150, 200, 250, 300, 350, 400, 450]
+    # n_agents_list = [200, 250, 300, 350, 400, 450]
     # n_agents_list = [100, 200, 300, 400, 500]
     # n_agents_list = [200, 300, 400, 500, 600]
     # n_agents_list = [300, 400, 500, 600, 700]
@@ -55,9 +55,9 @@ def run_mapf_experiments():
     # ------------------------------------------------- #
 
     # i_problems = 3
-    i_problems = 5
+    # i_problems = 5
     # i_problems = 10
-    # i_problems = 15   # !
+    i_problems = 15   # !
     # i_problems = 20
 
     # ------------------------------------------------- #
@@ -135,7 +135,7 @@ def run_mapf_experiments():
                 params['max_time'] = max_time
                 alg_name = params['alg_name']
 
-                solved, alg_info = False, {}
+                solved, paths_dict, alg_info = False, None, {}
                 if to_continue_dict[alg_name]:
                     # the run
                     paths_dict, alg_info = alg(
@@ -146,7 +146,8 @@ def run_mapf_experiments():
                 if solved:
                     logs_dict[alg_name][f'{n_agents}']['sr'].append(1)
                     logs_dict[alg_name][f'{n_agents}']['time'].append(alg_info['time'])
-                    logs_dict[alg_name][f'{n_agents}']['makespan'].append(alg_info['makespan'])
+                    logs_dict[alg_name][f'{n_agents}']['makespan'].append(get_makespan_metric(paths_dict))
+                    logs_dict[alg_name][f'{n_agents}']['soc'].append(get_soc_metric(paths_dict))
                 else:
                     logs_dict[alg_name][f'{n_agents}']['sr'].append(0)
                 print(f'\n{n_agents=}, {i_problem=}, {alg_name=}')
@@ -155,8 +156,11 @@ def run_mapf_experiments():
             plot_sr(ax[0, 0], info=logs_dict)
             # plot_time_metric(ax[0, 1], info=logs_dict)
             plot_time_metric_cactus(ax[0, 1], info=logs_dict)
-            plot_makespan(ax[1, 1], info=logs_dict)
-            plt.pause(0.01)
+            plot_makespan(ax[1, 0], info=logs_dict)
+            # plot_makespan_cactus(ax[1, 0], info=logs_dict)
+            plot_soc(ax[1, 1], info=logs_dict)
+            # plot_soc_cactus(ax[1, 1], info=logs_dict)
+            plt.pause(0.1)
 
         # check if solved all the prev problems
         for alg, params in alg_list:

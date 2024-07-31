@@ -288,6 +288,88 @@ def plot_makespan(ax, info):
     # set_legend(ax, size=12)
 
 
+def plot_makespan_cactus(ax, info):
+    ax.cla()
+    alg_names = info['alg_names']
+    n_agents_list = info['n_agents_list']
+    img_dir = info['img_dir']
+    max_time = info['max_time']
+
+    for alg_name in alg_names:
+        y_list = []
+        # res_str = ''
+        for n_a in n_agents_list:
+            y_list.extend(info[alg_name][f'{n_a}']['makespan'])
+            # res_str += f'\t{n_a} - {y_list[-1]: .2f}, '
+        y_list.sort()
+        ax.plot(y_list, get_marker_line(alg_name), color=get_alg_color(alg_name),
+                alpha=0.5, label=f'{alg_name}', linewidth=2, markersize=10)
+        # print(f'{i_alg}\t\t\t: {res_str}')
+    # ax.set_xlim([min(x_list) - 20, max(x_list) + 20])
+    # ax.set_xticks(x_list)
+    ax.set_xlabel('Solved Instances', fontsize=15)
+    ax.set_ylabel('Makespan', fontsize=15)
+    # ax.set_title(f'{img_dir[:-4]} Map | time limit: {time_to_think_limit} sec.')
+    set_plot_title(ax, f'{img_dir[:-4]} Map | time limit: {max_time} sec.',
+                   size=11)
+    # set_legend(ax, size=12)
+
+
+def plot_soc(ax, info):
+    ax.cla()
+    alg_names = info['alg_names']
+    n_agents_list = info['n_agents_list']
+    img_dir = info['img_dir']
+    max_time = info['max_time']
+    i_problems = info['i_problems']
+
+    for alg_name in alg_names:
+        makespan_list = []
+        x_list = []
+        for n_a in n_agents_list:
+            if len(info[alg_name][f'{n_a}']['soc']) < i_problems:
+                break
+            x_list.append(n_a)
+            makespan_list.append(np.mean(info[alg_name][f'{n_a}']['soc']))
+        ax.plot(x_list, makespan_list, get_marker_line(alg_name), color=get_alg_color(alg_name),
+                alpha=0.5, label=f'{alg_name}', linewidth=4, markersize=15)
+    ax.set_xlim([min(n_agents_list) - 20, max(n_agents_list) + 20])
+    ax.set_xticks(n_agents_list)
+    ax.set_xlabel('N agents', fontsize=15)
+    ax.set_ylabel('SoC', fontsize=15)
+    # ax.set_title(f'{img_dir[:-4]} Map | time limit: {time_to_think_limit} sec.')
+    set_plot_title(ax, f'{img_dir[:-4]} Map | time limit: {max_time} sec.',
+                   size=10)
+    # set_legend(ax, size=12)
+
+
+def plot_soc_cactus(ax, info):
+    ax.cla()
+    alg_names = info['alg_names']
+    n_agents_list = info['n_agents_list']
+    img_dir = info['img_dir']
+    max_time = info['max_time']
+
+    for alg_name in alg_names:
+        y_list = []
+        # res_str = ''
+        for n_a in n_agents_list:
+            y_list.extend(info[alg_name][f'{n_a}']['soc'])
+            # res_str += f'\t{n_a} - {y_list[-1]: .2f}, '
+        y_list.sort()
+        ax.plot(y_list, get_marker_line(alg_name), color=get_alg_color(alg_name),
+                alpha=0.5, label=f'{alg_name}', linewidth=2, markersize=10)
+        # print(f'{i_alg}\t\t\t: {res_str}')
+    # ax.set_xlim([min(x_list) - 20, max(x_list) + 20])
+    # ax.set_xticks(x_list)
+    ax.set_xlabel('Solved Instances', fontsize=15)
+    ax.set_ylabel('SoC', fontsize=15)
+    # ax.set_title(f'{img_dir[:-4]} Map | time limit: {time_to_think_limit} sec.')
+    set_plot_title(ax, f'{img_dir[:-4]} Map | time limit: {max_time} sec.',
+                   size=11)
+    # set_legend(ax, size=12)
+
+
 def plot_throughput(ax, info):
     ax.cla()
     alg_names = info['alg_names']

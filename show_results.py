@@ -14,8 +14,12 @@ def show_results(file_dir):
             fig, ax = plt.subplots(2, 2, figsize=(8, 8))
 
             plot_sr(ax[0, 0], info=logs_dict)
+            # plot_time_metric(ax[0, 1], info=logs_dict)
             plot_time_metric_cactus(ax[0, 1], info=logs_dict)
-            plot_makespan(ax[1, 1], info=logs_dict)
+            plot_makespan(ax[1, 0], info=logs_dict)
+            # plot_makespan_cactus(ax[1, 0], info=logs_dict)
+            plot_soc(ax[1, 1], info=logs_dict)
+            # plot_soc_cactus(ax[1, 1], info=logs_dict)
 
         if expr_type == 'LMAPF':
 

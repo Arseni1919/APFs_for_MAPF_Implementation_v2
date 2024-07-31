@@ -10,6 +10,21 @@ from globals import *
 # -------------------------------------------------------------------------------------------------------------------- #
 # -------------------------------------------------------------------------------------------------------------------- #
 # -------------------------------------------------------------------------------------------------------------------- #
+def shorten_back_path(input_path: List[Node]) -> List[Node]:
+    path = input_path[:]
+    if len(path) <= 2:
+        return path
+    minus_1_node = path[-1]
+    minus_2_node = path[-2]
+    while minus_1_node == minus_2_node:
+        path = path[:-1]
+        if len(path) <= 2:
+            break
+        minus_1_node = path[-1]
+        minus_2_node = path[-2]
+    return path
+
+
 def save_results(logs_dict: dict):
     alg_names = logs_dict['alg_names']
     i_problems = logs_dict['i_problems']
@@ -482,3 +497,30 @@ def repair_agents_k_paths(agents: List[AgentAlg] | list, k_limit: int) -> None:
                 break
     # print(' | repaired')
     return
+
+
+# -------------------------------------------------------------------------------------------------------------------- #
+# -------------------------------------------------------------------------------------------------------------------- #
+# -------------------------------------------------------------------------------------------------------------------- #
+# METRICS FUNCS
+# -------------------------------------------------------------------------------------------------------------------- #
+# -------------------------------------------------------------------------------------------------------------------- #
+# -------------------------------------------------------------------------------------------------------------------- #
+
+
+def get_makespan_metric(paths_dict: Dict[str, List[Node]]) -> int:
+    old_paths = list(paths_dict.values())
+    paths: List[List[Node]] = []
+    for path in old_paths:
+        paths.append(shorten_back_path(path))
+    makespan: int = max([len(path) for path in paths])
+    return makespan
+
+
+def get_soc_metric(paths_dict: Dict[str, List[Node]]) -> int:
+    old_paths = list(paths_dict.values())
+    paths: List[List[Node]] = []
+    for path in old_paths:
+        paths.append(shorten_back_path(path))
+    soc: int = sum([len(path) for path in paths])
+    return soc
