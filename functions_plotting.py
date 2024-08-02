@@ -30,6 +30,10 @@ def get_marker_line(alg_name: str):
         marker_line += 'h'
     elif 'LNS2' in alg_name:
         marker_line += 's'
+    elif 'LaCAM' in alg_name and '*' not in alg_name:
+        marker_line += '1'
+    elif 'LaCAM*' in alg_name:
+        marker_line += '2'
     else:
         marker_line += random.choice(markers)
     markers_lines_dict[alg_name] = marker_line
@@ -51,7 +55,7 @@ def get_alg_color(alg_name: str):
         color = 'brown'
     elif 'LNS2' in alg_name:
         color = 'lightgreen'
-    elif 'LaCAM' == alg_name:
+    elif 'LaCAM' in alg_name and '*' not in alg_name:
         color = 'indigo'
     elif 'LaCAM*' in alg_name:
         color = 'plum'

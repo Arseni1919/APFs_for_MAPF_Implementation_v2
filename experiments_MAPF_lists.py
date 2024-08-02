@@ -277,13 +277,23 @@ alg_list_sipps = [
     }),
     (run_k_lns2, {
         'k_limit': 15,
-        'alg_name': f'APF-k-LNS2-SIPPS',
+        'alg_name': f'APF-k-LNS2-SIPPS(w=5)',
         'pf_alg_name': 'sipps',
         'pf_alg': run_sipps,
         'n_neighbourhood': 5,
         'to_render': False,
         # 'w': 0.1, 'd_max': 3, 'gamma': 3,
         'w': 5, 'd_max': 3, 'gamma': 3,
+    }),
+    (run_k_lns2, {
+        'k_limit': 15,
+        'alg_name': f'APF-k-LNS2-SIPPS(w=0.1)',
+        'pf_alg_name': 'sipps',
+        'pf_alg': run_sipps,
+        'n_neighbourhood': 5,
+        'to_render': False,
+        'w': 0.1, 'd_max': 3, 'gamma': 3,
+        # 'w': 5, 'd_max': 3, 'gamma': 3,
     }),
 ]
 
