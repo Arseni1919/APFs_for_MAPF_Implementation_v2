@@ -601,11 +601,11 @@ alg_list_pibt = [
         'alg_name': f'L-PIBT',
         'to_render': False,
     }),
-    (run_lifelong_pibt, {
-        'alg_name': f'APF-L-PIBT',
-        'to_render': False,
-        'w': 0.1, 'd_max': 2, 'gamma': 1.1,
-    }),
+    # (run_lifelong_pibt, {
+    #     'alg_name': f'APF-L-PIBT',
+    #     'to_render': False,
+    #     'w': 0.1, 'd_max': 2, 'gamma': 1.1,
+    # }),
 ]
 
 

@@ -64,7 +64,7 @@ def run_prp_sipps(
                 break
 
             agent.path = new_path[:]
-            agent.k_apfs = get_k_apfs(new_path, map_dim, max(longest_len, len(new_path)), params)
+            agent.k_apfs = get_k_apfs(new_path, map_dim, max(longest_len, len(new_path)), params, agent.goal_node)
             h_priority_agents.append(agent)
             align_all_paths(h_priority_agents)
 
@@ -176,7 +176,7 @@ def run_prp_a_star(
                 agent.path = None
                 break
             agent.path = new_path[:]
-            agent.k_apfs = get_k_apfs(new_path, map_dim, max(longest_len, len(new_path)), params)
+            agent.k_apfs = get_k_apfs(new_path, map_dim, max(longest_len, len(new_path)), params, agent.goal_node)
             h_priority_agents.append(agent)
             align_all_paths(h_priority_agents)
             if longest_len < len(new_path):
@@ -300,7 +300,7 @@ def run_k_prp(
             #     check_one_vc_ec_neic_iter(agent.k_path, agent.name, other_paths, i)
 
             # append_apfs(apfs_np, agent, params)
-            update_apfs_map(new_path, apfs_np, params)
+            update_apfs_map(new_path, apfs_np, params, agent.goal_node)
             if pf_alg_name == 'sipps':
                 update_constraints(new_path, vc_hard_np, ec_hard_np, pc_hard_np)
                 si_table = update_si_table_hard(new_path, si_table, consider_pc=False)

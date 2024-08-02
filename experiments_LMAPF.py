@@ -33,9 +33,9 @@ def run_mapf_experiments():
     # img_dir = 'empty-32-32.map'
     # img_dir = 'random-32-32-10.map'
     # img_dir = 'random-32-32-20.map'
-    img_dir = 'maze-32-32-4.map'
-    # img_dir = 'maze-32-32-2.map'
     # img_dir = 'room-32-32-4.map'
+    img_dir = 'maze-32-32-2.map'
+    # img_dir = 'maze-32-32-4.map'
     # ------------------------------------------------- #
 
     # n_agents_list = [400]
@@ -50,17 +50,19 @@ def run_mapf_experiments():
 
     # ------------------------------------------------- #
 
-    i_problems = 5
+    i_problems = 3
+    # i_problems = 5
     # i_problems = 20
 
     # ------------------------------------------------- #
 
     # limits
-    max_iter_time = 5
-    # max_iter_time = 10
+    # max_iter_time = 5
+    max_iter_time = 10
 
     # n_steps = 5
-    n_steps = 50
+    n_steps = 25
+    # n_steps = 50
     # n_steps = 100
 
     # ------------------------------------------------- #
@@ -69,8 +71,8 @@ def run_mapf_experiments():
     # alg_list = alg_list_a_star
     # alg_list = alg_list_sipps
     # alg_list = alg_list_pibt
-    alg_list = [*alg_list_a_star, *alg_list_sipps]
-    # alg_list = [*alg_list_a_star, *alg_list_sipps, *alg_list_pibt]
+    # alg_list = [*alg_list_a_star, *alg_list_sipps]
+    alg_list = [*alg_list_a_star, *alg_list_sipps, *alg_list_pibt]
 
     # A* APFs params
     # alg_list = alg_list_a_star_params_w

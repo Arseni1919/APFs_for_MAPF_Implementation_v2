@@ -79,15 +79,15 @@ def run_lifelong_pibt(
 @use_profiler(save_dir='../stats/alg_lifelong_pibt.pstat')
 def main():
 
-    # to_render = True
-    to_render = False
+    to_render = True
+    # to_render = False
 
     params = {
         'max_iter_time': 5,  # seconds
         'n_steps': 100,
         'alg_name': f'Lifelong-PIBT',
         'to_render': to_render,
-        'w': 0.5, 'd_max': 3, 'gamma': 2,
+        # 'w': 0.5, 'd_max': 3, 'gamma': 2,
     }
     run_mapf_alg(alg=run_lifelong_pibt, params=params)
 

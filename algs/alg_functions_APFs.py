@@ -5,13 +5,6 @@ from functions_general import *
 from functions_plotting import *
 
 
-# def get_apfs_params(params: dict) -> Tuple[float | None, int | None, int | None]:
-#     if 'w' not in params:
-#         return None, None, None
-#     w, d_max, gamma = params['w'], params['d_max'], params['gamma']
-#     return w, d_max, gamma
-
-
 def init_apfs_map(
         map_dim: Tuple[int, int],
         max_path_len: int,
@@ -41,41 +34,11 @@ def init_pibt_apfs_map(
     return apfs_np
 
 
-def get_k_apfs(
-        path: List[Node],
-        map_dim: Tuple[int, int],
-        max_path_len: int,
-        params: dict
-):
-    apfs_np = init_apfs_map(map_dim, max_path_len, params)
-    return update_apfs_map(path, apfs_np, params)
-
-
-# def get_apfs(
-#         path: List[Node],
-#         map_dim: Tuple[int, int],
-#         max_path_len: int,
-#         params: dict
-# ):
-#     apfs_np = init_apfs_map(map_dim, max_path_len, params)
-#     return update_apfs_map(path, apfs_np, params)
-
-
-def append_apfs(
-        apfs_np: np.ndarray,
-        agent: AgentAlg | Any,
-        params: dict
-):
-    if 'w' not in params:
-        return None
-    apfs_np[:, :, :agent.k_apfs.shape[2]] += agent.k_apfs
-    return apfs_np
-
-
 def update_apfs_map(
         path: List[Node],
         apfs_np: np.ndarray,
-        params: Dict
+        params: Dict,
+        goal_node: Node | None = None
 ) -> np.ndarray | None:
     """
     apfs_np: [x, y, t] = float
@@ -85,6 +48,8 @@ def update_apfs_map(
     # w, d_max, gamma = get_apfs_params(params)
     w, d_max, gamma = params['w'], params['d_max'], params['gamma']
     for t, curr_node in enumerate(path):
+        if goal_node is not None and curr_node == goal_node:
+            continue
         open_list: Deque[Node] = deque([curr_node])
         closed_list: List[str] = []
         while len(open_list) > 0:
@@ -144,6 +109,45 @@ def update_pibt_apfs_map(
                 continue
             open_list.append(nei_n)
     return pibt_apfs_np
+
+
+def get_k_apfs(
+        path: List[Node],
+        map_dim: Tuple[int, int],
+        max_path_len: int,
+        params: dict,
+        goal_node: Node | None = None
+):
+    apfs_np = init_apfs_map(map_dim, max_path_len, params)
+    return update_apfs_map(path, apfs_np, params, goal_node)
+
+
+def append_apfs(
+        apfs_np: np.ndarray,
+        agent: AgentAlg | Any,
+        params: dict
+):
+    if 'w' not in params:
+        return None
+    apfs_np[:, :, :agent.k_apfs.shape[2]] += agent.k_apfs
+    return apfs_np
+
+
+# def get_apfs_params(params: dict) -> Tuple[float | None, int | None, int | None]:
+#     if 'w' not in params:
+#         return None, None, None
+#     w, d_max, gamma = params['w'], params['d_max'], params['gamma']
+#     return w, d_max, gamma
+
+
+# def get_apfs(
+#         path: List[Node],
+#         map_dim: Tuple[int, int],
+#         max_path_len: int,
+#         params: dict
+# ):
+#     apfs_np = init_apfs_map(map_dim, max_path_len, params)
+#     return update_apfs_map(path, apfs_np, params)
 
 
 # def update_sipps_apfs_map(

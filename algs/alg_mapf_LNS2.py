@@ -264,11 +264,11 @@ def main():
         'alg_name': 'k-LNS2-SIPPS',
         'pf_alg_name': 'sipps',
         'pf_alg': run_sipps,
-        'k_limit': 10,
+        'k_limit': 20,
         'n_neighbourhood': 5,
         'to_render': to_render,
-        # 'w': 1, 'd_max': 4, 'gamma': 2,
-        # 'w': 5, 'd_max': 3, 'gamma': 2,
+        # 'w': 0.1, 'd_max': 3, 'gamma': 3,
+        'w': 5, 'd_max': 3, 'gamma': 2,
     }
     run_mapf_alg(alg=run_k_lns2, params=params_k_lns2_sipps)
 

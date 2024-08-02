@@ -54,7 +54,7 @@ def solve_k_prp(
                 new_path = [agent.curr_node]
             new_path = align_path(new_path, k_limit + 1)
             agent.k_path = new_path[:]
-            agent.k_apfs = get_k_apfs(new_path, map_dim, k_limit + 1, params)
+            agent.k_apfs = get_k_apfs(new_path, map_dim, k_limit + 1, params, agent.goal_node)
             h_priority_agents.append(agent)
 
             # update_apfs_map(new_path, apfs_np, params)

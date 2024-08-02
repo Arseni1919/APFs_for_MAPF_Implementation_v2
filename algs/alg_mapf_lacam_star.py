@@ -182,15 +182,15 @@ def main():
     # flag_star: bool = True
     flag_star: bool = False
 
-    # to_render = True
-    to_render = False
+    to_render = True
+    # to_render = False
 
     params = {
         'max_time': 60,
         'alg_name': 'LaCAM',
         'flag_star': flag_star,
         'to_render': to_render,
-        'w': 0.5, 'd_max': 3, 'gamma': 2,
+        # 'w': 0.5, 'd_max': 3, 'gamma': 2,
     }
     run_mapf_alg(alg=run_lacam_star, params=params)
 

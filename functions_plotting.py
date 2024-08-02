@@ -51,6 +51,10 @@ def get_alg_color(alg_name: str):
         color = 'brown'
     elif 'LNS2' in alg_name:
         color = 'lightgreen'
+    elif 'LaCAM' == alg_name:
+        color = 'indigo'
+    elif 'LaCAM*' in alg_name:
+        color = 'plum'
     else:
         color = random.choice(color_names)
     colors_dict[alg_name] = color
