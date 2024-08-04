@@ -31,13 +31,13 @@ def run_mapf_experiments():
     # img_dir = '15-15-six-rooms.map'
     # img_dir = '15-15-eight-rooms.map'
 
-    # img_dir = 'empty-32-32.map'
+    img_dir = 'empty-32-32.map'
     # img_dir = 'random-32-32-10.map'
     # img_dir = 'random-32-32-20.map'
     # img_dir = 'room-32-32-4.map'
     # img_dir = 'maze-32-32-2.map'
 
-    img_dir = 'maze-32-32-4.map'
+    # img_dir = 'maze-32-32-4.map'
 
     # ------------------------------------------------- #
 
@@ -45,9 +45,9 @@ def run_mapf_experiments():
     # n_agents_list = [400]
     # n_agents_list = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
     # n_agents_list = [50, 100, 150, 200, 250, 300, 350]
-    n_agents_list = [50, 100, 150]
+    # n_agents_list = [5, 50, 100, 150]
     # n_agents_list = [150, 200, 250, 300, 350]
-    # n_agents_list = [50, 100, 150, 200, 250, 300, 350, 400, 450]
+    n_agents_list = [50, 100, 150, 200, 250, 300, 350, 400, 450]
     # n_agents_list = [200, 250, 300, 350, 400, 450]
     # n_agents_list = [100, 200, 300, 400, 500]
     # n_agents_list = [200, 300, 400, 500, 600]
@@ -57,8 +57,8 @@ def run_mapf_experiments():
 
     # i_problems = 3
     # i_problems = 5
-    i_problems = 10
-    # i_problems = 15   # !
+    # i_problems = 10
+    i_problems = 15   # !
     # i_problems = 20
 
     # ------------------------------------------------- #
@@ -86,8 +86,8 @@ def run_mapf_experiments():
     # alg_list = alg_list_pibt
     # alg_list = alg_list_full_algs_general
     # alg_list = [*alg_list_a_star, *alg_list_sipps]
-    # alg_list = [*alg_list_a_star, *alg_list_sipps, *alg_list_pibt]
-    alg_list = [*alg_list_sipps, *alg_list_pibt]
+    alg_list = [*alg_list_a_star, *alg_list_sipps, *alg_list_pibt]
+    # alg_list = [*alg_list_sipps, *alg_list_pibt]
 
     # ------------------------------------------------- #
 

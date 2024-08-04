@@ -47,14 +47,14 @@ def get_alg_color(alg_name: str):
         color = 'blue'
     elif 'PrP-SIPPS' in alg_name:
         color = 'orange'
-    elif 'LNS2-A*' in alg_name:
-        color = 'green'
-    elif 'LNS2-SIPPS' in alg_name:
-        color = 'peru'
+    # elif 'LNS2-A*' in alg_name:
+    #     color = 'green'
+    # elif 'LNS2-SIPPS' in alg_name:
+    #     color = 'peru'
     elif 'PIBT' in alg_name:
         color = 'brown'
-    elif 'LNS2' in alg_name:
-        color = 'lightgreen'
+    # elif 'LNS2' in alg_name:
+    #     color = 'lightgreen'
     elif 'LaCAM' in alg_name and '*' not in alg_name:
         color = 'indigo'
     elif 'LaCAM*' in alg_name:

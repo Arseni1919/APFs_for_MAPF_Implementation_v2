@@ -231,24 +231,26 @@ alg_list_sipps = [
     #     'to_render': False,
     #     'w': 5, 'd_max': 3, 'gamma': 2,
     # }),
-    # (run_k_prp, {
-    #     'alg_name': f'k-PrP-SIPPS',
-    #     'constr_type': 'hard',
-    #     'k_limit': 15,
-    #     'pf_alg_name': 'sipps',
-    #     'pf_alg': run_sipps,
-    #     'to_render': False,
-    # }),
-    # (run_k_prp, {
-    #     'alg_name': f'APF-k-PrP-SIPPS',
-    #     'constr_type': 'hard',
-    #     'k_limit': 15,
-    #     'pf_alg_name': 'sipps',
-    #     'pf_alg': run_sipps,
-    #     'to_render': False,
-    #     # 'w': 0.1, 'd_max': 3, 'gamma': 3,
-    #     'w': 5, 'd_max': 3, 'gamma': 3,
-    # }),
+    (run_k_prp, {
+        'alg_name': f'k-PrP-SIPPS',
+        'constr_type': 'hard',
+        'k_limit': 15,
+        # 'k_limit': 5,
+        'pf_alg_name': 'sipps',
+        'pf_alg': run_sipps,
+        'to_render': False,
+    }),
+    (run_k_prp, {
+        'alg_name': f'APF-k-PrP-SIPPS',
+        'constr_type': 'hard',
+        'k_limit': 15,
+        # 'k_limit': 5,
+        'pf_alg_name': 'sipps',
+        'pf_alg': run_sipps,
+        'to_render': False,
+        'w': 0.1, 'd_max': 3, 'gamma': 3,
+        # 'w': 5, 'd_max': 3, 'gamma': 3,
+    }),
     # ------------------------------------------------ #
 
     # ------------------------------------------------ #
@@ -277,17 +279,7 @@ alg_list_sipps = [
     }),
     (run_k_lns2, {
         'k_limit': 15,
-        'alg_name': f'APF-k-LNS2-SIPPS(w=5)',
-        'pf_alg_name': 'sipps',
-        'pf_alg': run_sipps,
-        'n_neighbourhood': 5,
-        'to_render': False,
-        # 'w': 0.1, 'd_max': 3, 'gamma': 3,
-        'w': 5, 'd_max': 3, 'gamma': 3,
-    }),
-    (run_k_lns2, {
-        'k_limit': 15,
-        'alg_name': f'APF-k-LNS2-SIPPS(w=0.1)',
+        'alg_name': f'APF-k-LNS2-SIPPS',
         'pf_alg_name': 'sipps',
         'pf_alg': run_sipps,
         'n_neighbourhood': 5,
@@ -295,6 +287,16 @@ alg_list_sipps = [
         'w': 0.1, 'd_max': 3, 'gamma': 3,
         # 'w': 5, 'd_max': 3, 'gamma': 3,
     }),
+    # (run_k_lns2, {
+    #     'k_limit': 15,
+    #     'alg_name': f'APF-k-LNS2-SIPPS(w=5)',
+    #     'pf_alg_name': 'sipps',
+    #     'pf_alg': run_sipps,
+    #     'n_neighbourhood': 5,
+    #     'to_render': False,
+    #     # 'w': 0.1, 'd_max': 3, 'gamma': 3,
+    #     'w': 5, 'd_max': 3, 'gamma': 3,
+    # }),
 ]
 
 # ------------------------------------------------------------------------------------------------------------ #
