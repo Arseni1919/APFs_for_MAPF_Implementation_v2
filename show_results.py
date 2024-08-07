@@ -37,13 +37,13 @@ def main():
     # LMAPF
 
     # MAPF
-    file_dir = 'MAPF_2024-08-02--12-23_ALGS-5_RUNS-5_MAP-maze-32-32-4.json'
+    file_dir = 'MAPF_2024-08-05--20-38_ALGS-11_RUNS-15_MAP-room-32-32-4.json'
     # file_dir = 'MAPF_2024-07-30--21-47_ALGS-4_RUNS-3_MAP-random-32-32-10.json'
 
     # parameters
 
-    show_results(file_dir=f'logs_for_experiments/{file_dir}')
-    # show_results(file_dir=f'final_logs/{file_dir}')
+    # show_results(file_dir=f'logs_for_experiments/{file_dir}')
+    show_results(file_dir=f'final_logs/{file_dir}')
 
 
 if __name__ == '__main__':

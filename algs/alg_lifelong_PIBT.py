@@ -21,6 +21,7 @@ def run_lifelong_pibt(
     n_steps: int = params['n_steps']
     alg_name: bool = params['alg_name']
     to_render: bool = params['to_render']
+    k_limit: bool = params['k_limit']
 
     start_time = time.time()
     throughput: int = 0
@@ -31,6 +32,10 @@ def run_lifelong_pibt(
     agents.sort(key=lambda a: a.priority, reverse=True)
 
     for step_iter in range(n_steps):
+
+        if step_iter > 0 and (step_iter - 1) % k_limit == 0:
+            # update goal and throughput
+            throughput += update_goal_nodes(agents, nodes)
 
         config_from: Dict[str, Node] = {a.name: a.path[-1] for a in agents}
         occupied_from: Dict[str, AgentAlg] = {a.path[-1].xy_name: a for a in agents}
@@ -64,7 +69,8 @@ def run_lifelong_pibt(
         # unfinished first
         agents.sort(key=lambda a: a.priority, reverse=True)
 
-        throughput += update_goal_nodes(agents, nodes)
+        # throughput += update_goal_nodes(agents, nodes)
+        # throughput += get_finished_goals(agents)
 
         # print + render
         runtime = time.time() - start_time

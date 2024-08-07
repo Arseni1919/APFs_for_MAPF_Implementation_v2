@@ -40,7 +40,7 @@ def solve_k_prp(
 
         # calc k paths
         all_good: bool = True
-        h_priority_agents: List[AgentPrP] = []
+        h_priority_agents: List[AgentAlg] = []
 
         for agent in agents:
             new_path, alg_info = pf_alg(
@@ -72,18 +72,6 @@ def solve_k_prp(
 
         repair_agents_k_paths(agents, k_limit)
         return
-
-        # if time is up - save the found solution
-        if not all_good and time.time() - iter_start_time > max_iter_time:
-            break
-
-        if all_good:
-            return
-
-        # reset k paths if not good
-        random.shuffle(agents)
-        for agent in agents:
-            agent.k_path = []
 
     # repair policy
     repair_agents_k_paths(agents, k_limit)
@@ -134,7 +122,12 @@ def run_lifelong_prp(
     path_len = 0
     for step_iter in range(n_steps):
 
+        if step_iter > 0 and (step_iter - 1) % k_limit == 0:
+            # update goal and throughput
+            throughput += update_goal_nodes(agents, nodes)
+
         if step_iter == path_len:
+
             for agent in agents:
                 agent.k_path = []
             # create k paths
@@ -152,8 +145,6 @@ def run_lifelong_prp(
         for agent in agents:
             agent.curr_node = agent.path[step_iter]
         # check_vc_ec_neic_iter(agents, step_iter, to_count=False)
-        # update goal and throughput
-        throughput += update_goal_nodes(agents, nodes)
 
         # print
         global_runtime = time.time() - global_start_time

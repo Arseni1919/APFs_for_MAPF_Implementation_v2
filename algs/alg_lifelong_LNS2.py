@@ -107,7 +107,12 @@ def run_lifelong_LNS2(
     path_len = 0
     for step_iter in range(n_steps):
 
+        if step_iter > 0 and (step_iter - 1) % k_limit == 0:
+            # update goal and throughput
+            throughput += update_goal_nodes(agents, nodes)
+
         if step_iter == path_len:
+
             for agent in agents:
                 agent.k_path = []
             # create k paths
@@ -125,7 +130,7 @@ def run_lifelong_LNS2(
         # check_vc_ec_neic_iter(agents, step_iter, to_count=False)
 
         # update goal and throughput
-        throughput += update_goal_nodes(agents, nodes)
+        # throughput += update_goal_nodes(agents, nodes)
 
         # print
         global_runtime = time.time() - global_start_time

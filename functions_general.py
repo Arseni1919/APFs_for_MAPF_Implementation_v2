@@ -436,6 +436,14 @@ def add_k_paths_to_agents(agents: List[AgentAlg] | list) -> None:
         agent.path.extend(agent.k_path[1:])
 
 
+def get_finished_goals(agents: List[AgentAlg] | list) -> int:
+    finished_goals = 0
+    for agent in agents:
+        if agent.curr_node == agent.goal_node:
+            finished_goals += 1
+    return finished_goals
+
+
 def update_goal_nodes(agents: List[AgentAlg] | list, nodes: List[Node]) -> int:
     finished_goals = 0
     goal_names: List[str] = [a.goal_node.xy_name for a in agents]

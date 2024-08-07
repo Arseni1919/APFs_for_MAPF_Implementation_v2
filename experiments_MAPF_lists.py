@@ -271,6 +271,7 @@ alg_list_sipps = [
     # }),
     (run_k_lns2, {
         'k_limit': 15,
+        # 'k_limit': 5,
         'alg_name': f'k-LNS2-SIPPS',
         'pf_alg_name': 'sipps',
         'pf_alg': run_sipps,
@@ -279,6 +280,7 @@ alg_list_sipps = [
     }),
     (run_k_lns2, {
         'k_limit': 15,
+        # 'k_limit': 5,
         'alg_name': f'APF-k-LNS2-SIPPS',
         'pf_alg_name': 'sipps',
         'pf_alg': run_sipps,
@@ -312,29 +314,31 @@ alg_list_pibt = [
         'alg_name': f'PIBT',
         'to_render': False,
     }),
-    # (run_pibt, {
-    #     'alg_name': f'APF-PIBT',
-    #     'to_render': False,
-    #     'w': 0.1, 'd_max': 2, 'gamma': 1.1,
-    # }),
+    (run_pibt, {
+        'alg_name': f'APF-PIBT',
+        'to_render': False,
+        'w': 0.1, 'd_max': 2, 'gamma': 1.1,
+    }),
     (run_lacam, {
         'alg_name': f'LaCAM',
         'to_render': False,
     }),
-    # (run_lacam, {
-    #     'alg_name': f'APF-LaCAM',
-    #     'to_render': False,
-    #     'w': 0.1, 'd_max': 2, 'gamma': 1.1,
-    # }),
+    (run_lacam, {
+        'alg_name': f'APF-LaCAM',
+        'to_render': False,
+        'w': 0.1, 'd_max': 2, 'gamma': 1.1,
+    }),
     (run_lacam_star, {
         'alg_name': f'LaCAM*',
         'flag_star': False,
+        # 'flag_star': True,
         'to_render': False,
     }),
-    # (run_lacam_star, {
-    #     'alg_name': f'APF-LaCAM*',
-    #     'flag_star': False,
-    #     'to_render': False,
-    #     'w': 0.1, 'd_max': 2, 'gamma': 1.1,
-    # }),
+    (run_lacam_star, {
+        'alg_name': f'APF-LaCAM*',
+        'flag_star': False,
+        # 'flag_star': True,
+        'to_render': False,
+        'w': 0.1, 'd_max': 2, 'gamma': 1.1,
+    }),
 ]

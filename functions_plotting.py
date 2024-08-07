@@ -48,7 +48,7 @@ def get_alg_color(alg_name: str):
     elif 'PrP-SIPPS' in alg_name:
         color = 'orange'
     elif 'LNS2-A*' in alg_name:
-        color = 'green'
+        color = 'lightskyblue'
     elif 'LNS2-SIPPS' in alg_name:
         color = 'peru'
     elif 'PIBT' in alg_name:
