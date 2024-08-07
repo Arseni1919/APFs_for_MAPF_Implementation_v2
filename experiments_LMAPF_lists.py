@@ -68,23 +68,23 @@ A*: w=0.5, d_max = 4, gamma = 2
 """
 
 alg_list_a_star = [
-    (run_lifelong_prp, {
-        'alg_name': f'L-PrP-A*',
-        'constr_type': 'hard',
-        'pf_alg': run_temporal_a_star,
-        'pf_alg_name': 'a_star',
-        'k_limit': 5,
-        'to_render': False,
-    }),
-    (run_lifelong_prp, {
-        'alg_name': f'APF-L-PrP-A*',
-        'constr_type': 'hard',
-        'pf_alg': run_temporal_a_star,
-        'pf_alg_name': 'a_star',
-        'k_limit': 5,
-        'to_render': False,
-        'w': 0.5, 'd_max': 4, 'gamma': 2,
-    }),
+    # (run_lifelong_prp, {
+    #     'alg_name': f'L-PrP-A*',
+    #     'constr_type': 'hard',
+    #     'pf_alg': run_temporal_a_star,
+    #     'pf_alg_name': 'a_star',
+    #     'k_limit': 5,
+    #     'to_render': False,
+    # }),
+    # (run_lifelong_prp, {
+    #     'alg_name': f'APF-L-PrP-A*',
+    #     'constr_type': 'hard',
+    #     'pf_alg': run_temporal_a_star,
+    #     'pf_alg_name': 'a_star',
+    #     'k_limit': 5,
+    #     'to_render': False,
+    #     'w': 0.5, 'd_max': 4, 'gamma': 2,
+    # }),
     (run_lifelong_LNS2, {
         'alg_name': f'L-LNS2-A*',
         'constr_type': 'hard',
@@ -324,23 +324,23 @@ SIPPS: w = 0.1, d_max = 3, gamma = 3
 """
 
 alg_list_sipps = [
-    (run_lifelong_prp, {
-        'alg_name': f'L-PrP-SIPPS',
-        'constr_type': 'hard',
-        'pf_alg': run_sipps,
-        'pf_alg_name': 'sipps',
-        'k_limit': 5,
-        'to_render': False,
-    }),
-    (run_lifelong_prp, {
-        'alg_name': f'APF-L-PrP-SIPPS',
-        'constr_type': 'hard',
-        'pf_alg': run_sipps,
-        'pf_alg_name': 'sipps',
-        'k_limit': 5,
-        'to_render': False,
-        'w': 0.1, 'd_max': 3, 'gamma': 3,
-    }),
+    # (run_lifelong_prp, {
+    #     'alg_name': f'L-PrP-SIPPS',
+    #     'constr_type': 'hard',
+    #     'pf_alg': run_sipps,
+    #     'pf_alg_name': 'sipps',
+    #     'k_limit': 5,
+    #     'to_render': False,
+    # }),
+    # (run_lifelong_prp, {
+    #     'alg_name': f'APF-L-PrP-SIPPS',
+    #     'constr_type': 'hard',
+    #     'pf_alg': run_sipps,
+    #     'pf_alg_name': 'sipps',
+    #     'k_limit': 5,
+    #     'to_render': False,
+    #     'w': 0.1, 'd_max': 3, 'gamma': 3,
+    # }),
     (run_lifelong_LNS2, {
         'alg_name': f'L-LNS2-SIPPS',
         'constr_type': 'soft',
@@ -602,12 +602,12 @@ alg_list_pibt = [
         'to_render': False,
         'k_limit': 5,
     }),
-    # (run_lifelong_pibt, {
-    #     'alg_name': f'APF-L-PIBT',
-    #     'to_render': False,
-    #     'k_limit': 5,
-    #     'w': 0.1, 'd_max': 2, 'gamma': 1.1,
-    # }),
+    (run_lifelong_pibt, {
+        'alg_name': f'APF-L-PIBT',
+        'to_render': False,
+        'k_limit': 5,
+        'w': 0.1, 'd_max': 2, 'gamma': 1.1,
+    }),
 ]
 
 

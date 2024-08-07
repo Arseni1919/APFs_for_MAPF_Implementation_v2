@@ -50,10 +50,10 @@ def run_mapf_experiments():
 
     # ------------------------------------------------- #
 
-    i_problems = 3
+    # i_problems = 3
     # i_problems = 5
     # i_problems = 10
-    # i_problems = 15
+    i_problems = 15
     # i_problems = 20
 
     # ------------------------------------------------- #
@@ -65,17 +65,17 @@ def run_mapf_experiments():
 
     # n_steps = 5
     # n_steps = 25
-    n_steps = 50
-    # n_steps = 100
+    # n_steps = 50
+    n_steps = 100
 
     # ------------------------------------------------- #
 
     # alg_list = alg_list_general
     # alg_list = alg_list_a_star
     # alg_list = alg_list_sipps
-    # alg_list = alg_list_pibt
+    alg_list = alg_list_pibt
     # alg_list = [*alg_list_a_star, *alg_list_pibt]
-    alg_list = [*alg_list_a_star, *alg_list_sipps, *alg_list_pibt]
+    # alg_list = [*alg_list_a_star, *alg_list_sipps, *alg_list_pibt]
 
     # A* APFs params
     # alg_list = alg_list_a_star_params_w
