@@ -35,9 +35,13 @@ def main():
     # show_results(file_dir=f'logs_for_plots/{file_dir}')
 
     # LMAPF
+    # file_dir = 'LMAPF_ALL_ALGS-10_RUNS-15_MAP-empty-32-32.json'
+    # file_dir = 'LMAPF_ALL_ALGS-10_RUNS-15_MAP-random-32-32-10.json'
+    # file_dir = 'LMAPF_ALL_ALGS-10_RUNS-15_MAP-random-32-32-20.json'
+    file_dir = 'LMAPF_ALL_ALGS-10_RUNS-15_MAP-room-32-32-4.json'
 
     # MAPF
-    file_dir = 'MAPF_2024-08-05--20-38_ALGS-11_RUNS-15_MAP-room-32-32-4.json'
+    # file_dir = 'LMAPF_ALL_ALGS-10_RUNS-15_MAP-random-32-32-20.json'
     # file_dir = 'MAPF_2024-07-30--21-47_ALGS-4_RUNS-3_MAP-random-32-32-10.json'
 
     # parameters

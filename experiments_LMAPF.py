@@ -30,10 +30,10 @@ def run_mapf_experiments():
     # img_dir = '15-15-six-rooms.map'
     # img_dir = '15-15-eight-rooms.map'
 
-    img_dir = 'empty-32-32.map'
+    # img_dir = 'empty-32-32.map'
     # img_dir = 'random-32-32-10.map'
     # img_dir = 'random-32-32-20.map'
-    # img_dir = 'room-32-32-4.map'
+    img_dir = 'room-32-32-4.map'
     # img_dir = 'maze-32-32-2.map'
     # img_dir = 'maze-32-32-4.map'
     # ------------------------------------------------- #
@@ -51,9 +51,9 @@ def run_mapf_experiments():
     # ------------------------------------------------- #
 
     # i_problems = 3
-    # i_problems = 5
+    i_problems = 5
     # i_problems = 10
-    i_problems = 15
+    # i_problems = 15
     # i_problems = 20
 
     # ------------------------------------------------- #
@@ -65,8 +65,8 @@ def run_mapf_experiments():
 
     # n_steps = 5
     # n_steps = 25
-    # n_steps = 50
-    n_steps = 100
+    n_steps = 50
+    # n_steps = 100
 
     # ------------------------------------------------- #
 
@@ -156,7 +156,7 @@ def run_mapf_experiments():
                 )
 
                 logs_dict[alg_name][f'{n_agents}']['throughput'].append(alg_info['throughput'])
-                print(f'\n{n_agents=}, {i_problem=}, {alg_name=}, throughput={alg_info['throughput']}')
+                print(f'\n{n_agents=}, {i_problem=}, {alg_name=}, throughput={alg_info["throughput"]}')
 
             # plot
             plot_throughput(ax, info=logs_dict)
