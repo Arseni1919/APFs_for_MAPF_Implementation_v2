@@ -49,10 +49,11 @@ def solve_k_lacam_star(
     while len(open_list) > 0:
         N: HighLevelNodeStar = open_list[0]
 
-        if N_goal is None and N.name == config_goal_name or backtrack_N_number(N) >= k_limit or not time_is_good(start_time, max_iter_time):
+        # if N_goal is None and N.name == config_goal_name or backtrack_N_number(N) >= k_limit or not time_is_good(start_time, max_iter_time):
+        if N_goal is None and N.name == config_goal_name or not time_is_good(start_time, max_iter_time):
 
             N_goal = N
-            print(f"\ninitial solution found, cost={N_goal.g}")
+            # print(f"\ninitial solution found, cost={N_goal.g}")
             if not flag_star:
                 break
 
