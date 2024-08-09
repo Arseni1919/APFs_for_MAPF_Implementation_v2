@@ -137,7 +137,7 @@ def backtrack(N: HighLevelNode) -> Dict[str, List[Node]]:
     return paths_dict
 
 
-def backtrack_N_number(N: HighLevelNode) -> int:
+def backtrack_N_number(N: HighLevelNode | Any) -> int:
     count: int = 0
     parent: HighLevelNode = N.parent
     while parent is not None:

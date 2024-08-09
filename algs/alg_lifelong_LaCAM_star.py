@@ -1,8 +1,9 @@
-from algs.alg_functions_lacam import *
+from algs.alg_functions_lacam_star import *
+from algs.alg_functions_lacam import backtrack_N_number
 from run_single_MAPF_func import run_mapf_alg
 
 
-def solve_k_lacam(
+def solve_k_lacam_star(
         agents: List[AgentAlg],
         agents_dict: Dict[str, AgentAlg],
         nodes: List[Node],
@@ -14,28 +15,31 @@ def solve_k_lacam(
 
     k_limit: int = params['k_limit']
     max_iter_time: int = params['max_iter_time']
-    # max_time = params['max_time']
-    # alg_name = params['alg_name']
+    flag_star: bool = params['flag_star']
+    # alg_name: str = params['alg_name']
     # to_render: bool = params['to_render']
     # img_np: np.ndarray = params['img_np']
 
     # if to_render:
     #     fig, ax = plt.subplots(1, 2, figsize=(14, 7))
+    #     plot_rate = 0.001
 
     start_time = time.time()
 
     # create agents
+    # agents, agents_dict = create_agents(start_nodes, goal_nodes)
     n_agents = len(agents_dict)
 
     config_start: Dict[str, Node] = {a.name: a.curr_node for a in agents}
     config_goal: Dict[str, Node] = {a.name: a.goal_node for a in agents}
     config_goal_name: str = get_config_name(config_goal)
 
-    open_list: Deque[HighLevelNode] = deque()  # stack
-    explored_dict: Dict[str, HighLevelNode] = {}   # stack
+    open_list: Deque[HighLevelNodeStar] = deque()  # stack
+    explored_dict: Dict[str, HighLevelNodeStar] = {}   # stack
+    N_goal: HighLevelNodeStar | None = None
 
     init_order = get_init_order(agents)
-    N_init: HighLevelNode = HighLevelNode(
+    N_init: HighLevelNodeStar = HighLevelNodeStar(
         config=config_start, tree=deque([get_C_init()]), order=init_order, parent=None
     )
     open_list.appendleft(N_init)
@@ -43,20 +47,19 @@ def solve_k_lacam(
 
     iteration = 0
     while len(open_list) > 0:
-        N: HighLevelNode = open_list[0]
+        N: HighLevelNodeStar = open_list[0]
 
-        if N.name == config_goal_name or backtrack_N_number(N) >= k_limit or not time_is_good(start_time, max_iter_time):
+        if N_goal is None and N.name == config_goal_name or backtrack_N_number(N) >= k_limit or not time_is_good(start_time, max_iter_time):
 
-            paths_dict = backtrack(N)
-            for a_name, path in paths_dict.items():
-                new_path = align_path(path, k_limit + 1)
-                agents_dict[a_name].k_path = new_path
-            # checks
-            # for i in range(len(agents[0].path)):
-            #     check_vc_ec_neic_iter(agents, i, to_count=False)
-            runtime = time.time() - start_time
-            makespan: int = max([len(a.path) for a in agents])
-            return paths_dict, {'agents': agents, 'time': runtime, 'makespan': makespan}
+            N_goal = N
+            print(f"\ninitial solution found, cost={N_goal.g}")
+            if not flag_star:
+                break
+
+        # lower bound check
+        if N_goal is not None and N_goal.g <= N.f:
+            open_list.popleft()
+            continue
 
         # low-level search end
         if len(N.tree) == 0:
@@ -64,7 +67,7 @@ def solve_k_lacam(
             continue
 
         # low-level search
-        C: LowLevelNode = N.tree.popleft()  # constraints
+        C: LowLevelNodeStar = N.tree.popleft()  # constraints
         if C.depth < n_agents:
             i_agent = N.order[C.depth]
             v = N.config[i_agent.name]
@@ -82,36 +85,59 @@ def solve_k_lacam(
         config_new_name = get_config_name(config_new)
         if config_new_name in explored_dict:
             N_known = explored_dict[config_new_name]
+            N.neigh.add(N_known)
             open_list.appendleft(N_known)  # typically helpful
-            continue
+            # rewrite, Dijkstra update
+            D: Deque[HighLevelNodeStar] = deque([N])
+            while len(D) > 0 and flag_star:
+                N_from = D.popleft()
+                for N_to in N_from.neigh:
+                    g = N_from.g + get_edge_cost(agents, N_from.config, N_to.config)
+                    if g < N_to.g:
+                        if N_goal is not None and N_to is N_goal:
+                            print(f"\ncost update: {N_goal.g:4d} -> {g:4d}")
+                        N_to.g = g
+                        N_to.f = N_to.g + N_to.h
+                        N_to.parent = N_from
+                        D.append(N_to)
+                        if N_goal is not None and N_to.f < N_goal.g:
+                            open_list.appendleft(N_to)
+                            # possible improvement:
+                            # if random.random() > 0.001:
+                            #     open_list.appendleft(N_to)
+                            # else:
+                            #     open_list.appendleft(N_init)
 
-        # check_configs(N.order, N.config, config_new)
+        else:
+            # new configuration
+            order, finished = get_order(config_new, N)
+            N_new: HighLevelNodeStar = HighLevelNodeStar(
+                config=config_new,
+                tree=deque([get_C_init()]),
+                order=order,
+                parent=N,
+                g=N.g + get_edge_cost(agents, N.config, config_new),
+                h=get_h_value(config_new, h_dict, agents),
+                finished=finished
+            )
+            N.neigh.add(N_new)
+            open_list.appendleft(N_new)
+            explored_dict[N_new.name] = N_new
 
-        order, finished = get_order(config_new, N)
-        N_new: HighLevelNode = HighLevelNode(
-            config=config_new,
-            tree=deque([get_C_init()]),
-            order=order,
-            parent=N,
-            finished=finished,
-            i=iteration
-        )
-        open_list.appendleft(N_new)
-        explored_dict[N_new.name] = N_new
+        iteration += 1
 
         # print + render
-        runtime = time.time() - start_time
+        # runtime = time.time() - start_time
         # print(
         #     f'\r{'*' * 10} | '
-        #     f'[{alg_name}] {iteration=: <3} | '
-        #     f'finished: {N_new.finished}/{n_agents: <3} | '
+        #     f'[{alg_name}{'*' if flag_star else '-'}] {iteration=: <3} | '
+        #     f'finished: {N.finished}/{n_agents: <3} | '
         #     f'runtime: {runtime: .2f} seconds | '
         #     f'{len(open_list)=} | '
         #     f'{len(explored_dict)=} | '
         #     f'{len(N.tree)=} | '
         #     f'{'*' * 10}',
         #     end='')
-        iteration += 1
         # if to_render and iteration >= 0:
         #     # update curr nodes
         #     for a in N.order:
@@ -125,12 +151,31 @@ def solve_k_lacam(
         #     }
         #     plot_step_in_env(ax[0], plot_info)
         #     plt.pause(0.001)
-        #     # plt.pause(1)
+        #     # plt.pause(5)
 
-    return None, {'agents': agents}
+    # if N_goal is not None and len(open_list) == 0:
+    #     print(f"\nreach optimal solution, cost={N_goal.g}")
+    # elif N_goal is not None:
+    #     print(f"\nsuboptimal solution, cost={N_goal.g}")
+    # elif len(open_list) == 0:
+    #     print("\ndetected unsolvable instance")
+    #     return None, {'agents': agents}
+    # else:
+    #     print("\nfailure due to timeout")
+    #     return None, {'agents': agents}
 
+    paths_dict = backtrack(N_goal)
+    for a_name, path in paths_dict.items():
+        new_path = align_path(path, k_limit + 1)
+        agents_dict[a_name].k_path = new_path
+    # checks
+    # for i in range(len(agents[0].path)):
+    #     check_vc_ec_neic_iter(agents, i, to_count=False)
+    runtime = time.time() - start_time
+    makespan: int = max([len(a.path) for a in agents])
+    return paths_dict, {'agents': agents, 'time': runtime, 'makespan': makespan}
 
-def run_lifelong_lacam(
+def run_lifelong_lacam_star(
         start_nodes: List[Node],
         goal_nodes: List[Node],
         nodes: List[Node],
@@ -181,7 +226,7 @@ def run_lifelong_lacam(
             # create k paths
             # agents = get_shuffled_agents(agents)
             random.shuffle(agents)
-            solve_k_lacam(
+            solve_k_lacam_star(
                 agents, agents_dict, nodes, nodes_dict, h_dict, map_dim, params
             )
             # append paths
@@ -221,18 +266,20 @@ def run_lifelong_lacam(
 @use_profiler(save_dir='../stats/alg_lifelong_lacam.pstat')
 def main():
 
-    # to_render = True
-    to_render = False
+    to_render = True
+    # to_render = False
 
     params = {
         'k_limit': 5,
-        'alg_name': 'L-LaCAM',
+        'alg_name': 'L-LaCAM*',
+        # 'flag_star': True,
+        'flag_star': False,
         'to_render': to_render,
         'max_iter_time': 5,  # seconds
         'n_steps': 50,
         # 'w': 0.5, 'd_max': 3, 'gamma': 2,
     }
-    run_mapf_alg(alg=run_lifelong_lacam, params=params)
+    run_mapf_alg(alg=run_lifelong_lacam_star, params=params)
 
 
 if __name__ == '__main__':

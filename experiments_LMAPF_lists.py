@@ -8,6 +8,7 @@ from algs.alg_lifelong_PrP import run_lifelong_prp
 from algs.alg_lifelong_LNS2 import run_lifelong_LNS2
 from algs.alg_lifelong_PIBT import run_lifelong_pibt
 from algs.alg_lifelong_LaCAM import run_lifelong_lacam
+from algs.alg_lifelong_LaCAM_star import run_lifelong_lacam_star
 
 
 # ------------------------------------------------------------------------------------------------------------ #
@@ -609,11 +610,23 @@ alg_list_pibt = [
     #     'k_limit': 5,
     #     'w': 0.1, 'd_max': 2, 'gamma': 1.1,
     # }),
-    (run_lifelong_lacam, {
-        'alg_name': f'L-LaCAM',
+    # (run_lifelong_lacam, {
+    #     'alg_name': f'L-LaCAM',
+    #     'to_render': False,
+    #     'k_limit': 5,
+    # }),
+    (run_lifelong_lacam_star, {
+        'alg_name': f'L-LaCAM*',
         'to_render': False,
+        'flag_star': False,
         'k_limit': 5,
     }),
+    # (run_lifelong_lacam_star, {
+    #     'alg_name': f'L-LaCAM*+',
+    #     'to_render': False,
+    #     'flag_star': True,
+    #     'k_limit': 5,
+    # }),
 ]
 
 
