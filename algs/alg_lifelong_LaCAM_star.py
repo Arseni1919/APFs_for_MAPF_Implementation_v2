@@ -176,6 +176,7 @@ def solve_k_lacam_star(
     makespan: int = max([len(a.path) for a in agents])
     return paths_dict, {'agents': agents, 'time': runtime, 'makespan': makespan}
 
+
 def run_lifelong_lacam_star(
         start_nodes: List[Node],
         goal_nodes: List[Node],
@@ -267,8 +268,8 @@ def run_lifelong_lacam_star(
 @use_profiler(save_dir='../stats/alg_lifelong_lacam.pstat')
 def main():
 
-    to_render = True
-    # to_render = False
+    # to_render = True
+    to_render = False
 
     params = {
         'k_limit': 5,
@@ -276,7 +277,7 @@ def main():
         # 'flag_star': True,
         'flag_star': False,
         'to_render': to_render,
-        'max_iter_time': 5,  # seconds
+        'max_iter_time': 10,  # seconds
         'n_steps': 50,
         # 'w': 0.5, 'd_max': 3, 'gamma': 2,
     }
