@@ -13,6 +13,7 @@ def solve_k_lacam(
 ) -> Tuple[None, Dict] | Tuple[Dict[str, List[Node]], Dict]:
 
     k_limit: int = params['k_limit']
+    max_iter_time: int = params['max_iter_time']
     # max_time = params['max_time']
     # alg_name = params['alg_name']
     # to_render: bool = params['to_render']
@@ -44,11 +45,12 @@ def solve_k_lacam(
     while len(open_list) > 0:
         N: HighLevelNode = open_list[0]
 
-        if N.name == config_goal_name or backtrack_N_number(N) >= k_limit:
+        if N.name == config_goal_name or backtrack_N_number(N) >= k_limit or not time_is_good(start_time, max_iter_time):
 
             paths_dict = backtrack(N)
             for a_name, path in paths_dict.items():
-                agents_dict[a_name].k_path = path
+                new_path = align_path(path, k_limit + 1)
+                agents_dict[a_name].k_path = new_path
             # checks
             # for i in range(len(agents[0].path)):
             #     check_vc_ec_neic_iter(agents, i, to_count=False)

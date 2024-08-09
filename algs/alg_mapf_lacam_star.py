@@ -153,7 +153,6 @@ def run_lacam_star(
             plt.pause(0.001)
             # plt.pause(5)
 
-
     if N_goal is not None and len(open_list) == 0:
         print(f"\nreach optimal solution, cost={N_goal.g}")
     elif N_goal is not None:
