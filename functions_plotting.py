@@ -202,8 +202,9 @@ def plot_sr(ax, info):
             if len(info[alg_name][f'{n_a}']['sr']) > 0:
                 sr_list.append(np.sum(info[alg_name][f'{n_a}']['sr']) / len(info[alg_name][f'{n_a}']['sr']))
                 x_list.append(n_a)
+        label = '' if 'APF' in alg_name else f'{alg_name}'
         ax.plot(x_list, sr_list, get_marker_line(alg_name), color=get_alg_color(alg_name),
-                alpha=0.5, label=f'{alg_name}', linewidth=4, markersize=15)
+                alpha=0.5, label=label, linewidth=4, markersize=15)
     ax.set_xlim([min(n_agents_list) - 20, max(n_agents_list) + 20])
     ax.set_ylim([0, 1 + 0.1])
     ax.set_xticks(n_agents_list)
@@ -395,12 +396,16 @@ def plot_throughput(ax, info):
         throughput_list = []
         for n_a in n_agents_list:
             throughput_list.append(np.mean(info[alg_name][f'{n_a}']['throughput']))
+        label = '' if 'APF' in alg_name else f'{alg_name}'
         ax.plot(n_agents_list, throughput_list, get_marker_line(alg_name), color=get_alg_color(alg_name),
-                alpha=0.5, label=f'{alg_name}', linewidth=4, markersize=15)
+                alpha=0.5, label=label, linewidth=4, markersize=15)
     ax.set_xlim([min(n_agents_list) - 20, max(n_agents_list) + 20])
     ax.set_xticks(n_agents_list)
-    ax.set_xlabel('N agents', fontsize=15)
-    ax.set_ylabel('Throughput', fontsize=15)
+    ax.set_xlabel('N agents', fontsize=27)
+    ax.set_ylabel('Throughput', fontsize=27)
     # ax.set_title(f'{img_dir[:-4]} Map | time limit: {time_to_think_limit} sec.')
-    set_plot_title(ax, f'{img_dir[:-4]} Map | n_steps: {n_steps}', size=10)
-    set_legend(ax, size=12)
+    set_plot_title(ax, f'{img_dir[:-4]} Map | n_steps: {n_steps}', size=17)
+    labelsize = 20
+    ax.xaxis.set_tick_params(labelsize=labelsize)
+    ax.yaxis.set_tick_params(labelsize=labelsize)
+    # set_legend(ax, size=21)

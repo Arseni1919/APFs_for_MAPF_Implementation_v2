@@ -32,9 +32,9 @@ def run_mapf_experiments():
     # img_dir = '15-15-eight-rooms.map'
 
     # img_dir = 'empty-32-32.map'
-    img_dir = 'random-32-32-10.map'
+    # img_dir = 'random-32-32-10.map'
     # img_dir = 'random-32-32-20.map'
-    # img_dir = 'room-32-32-4.map'  # run once again with k=5
+    img_dir = 'room-32-32-4.map'
     # img_dir = 'maze-32-32-2.map'
 
     # img_dir = 'maze-32-32-4.map'
@@ -162,7 +162,7 @@ def run_mapf_experiments():
             # plot_makespan_cactus(ax[1, 0], info=logs_dict)
             plot_soc(ax[1, 1], info=logs_dict)
             # plot_soc_cactus(ax[1, 1], info=logs_dict)
-            plt.pause(0.1)
+            plt.pause(1)
 
         # check if solved all the prev problems
         for alg, params in alg_list:

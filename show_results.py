@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+
 from globals import *
 from functions_plotting import *
 
@@ -10,7 +12,6 @@ def show_results(file_dir):
         expr_type = logs_dict['expr_type']
 
         if expr_type == 'MAPF':
-
             fig, ax = plt.subplots(2, 2, figsize=(8, 8))
 
             plot_sr(ax[0, 0], info=logs_dict)
@@ -22,11 +23,24 @@ def show_results(file_dir):
             # plot_soc_cactus(ax[1, 1], info=logs_dict)
 
         if expr_type == 'LMAPF':
-
+            logs_dict['alg_names'] = [
+                "L-LNS2-A*",
+                "APF-L-LNS2-A*",
+                "L-LNS2-SIPPS",
+                "APF-L-LNS2-SIPPS",
+                "L-PIBT",
+                "L-PrP-A*",
+                "APF-L-PrP-A*",
+                "L-PrP-SIPPS",
+                "APF-L-PrP-SIPPS",
+                # "APF-L-PIBT",
+                # "L-LaCAM"
+            ]
             fig, ax = plt.subplots(1, 1, figsize=(8, 8))
 
             plot_throughput(ax, info=logs_dict)
 
+        plt.tight_layout()
         plt.show()
 
 
@@ -35,14 +49,16 @@ def main():
     # show_results(file_dir=f'logs_for_plots/{file_dir}')
 
     # LMAPF
-    file_dir = 'LMAPF_ALL_ALGS-10_RUNS-15_MAP-empty-32-32.json'
+    # file_dir = 'LMAPF_ALL_ALGS-10_RUNS-15_MAP-empty-32-32.json'
     # file_dir = 'LMAPF_ALL_ALGS-10_RUNS-15_MAP-random-32-32-10.json'
     # file_dir = 'LMAPF_ALL_ALGS-10_RUNS-15_MAP-random-32-32-20.json'
     # file_dir = 'LMAPF_ALL_ALGS-10_RUNS-15_MAP-room-32-32-4.json'
 
     # MAPF
-    # file_dir = 'LMAPF_ALL_ALGS-10_RUNS-15_MAP-random-32-32-20.json'
-    # file_dir = 'MAPF_2024-07-30--21-47_ALGS-4_RUNS-3_MAP-random-32-32-10.json'
+    # file_dir = 'MAPF_ALL_K_ALGS_RUNS-15_MAP-empty-32-32.json'
+    # file_dir = 'MAPF_ALL_K_ALGS_RUNS-15_MAP-random-32-32-10.json'
+    # file_dir = 'MAPF_ALL_K_ALGS_RUNS-15_MAP-random-32-32-20.json'
+    file_dir = 'MAPF_ALL_K_ALGS_RUNS-15_MAP-room-32-32-4.json'
 
     # parameters
 
@@ -52,5 +68,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
