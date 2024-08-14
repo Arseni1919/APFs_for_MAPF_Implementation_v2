@@ -29,13 +29,16 @@ def get_marker_line(alg_name: str):
     elif 'PIBT' in alg_name:
         marker_line += 'h'
     elif 'LNS2' in alg_name:
-        marker_line += 's'
+        # marker_line += 's'
+        marker_line += 'X'
     elif 'LaCAM' in alg_name and '*' not in alg_name:
         marker_line += '1'
     elif 'LaCAM*' in alg_name:
         marker_line += '2'
     else:
-        marker_line += random.choice(markers)
+        # marker_line += random.choice(markers)
+        marker_line = '--'
+        marker_line += next(markers_iter)
     markers_lines_dict[alg_name] = marker_line
     return marker_line
 
@@ -55,13 +58,15 @@ def get_alg_color(alg_name: str):
     elif 'PIBT' in alg_name:
         color = 'salmon'
     elif 'LNS2' in alg_name:
-        color = 'lightgreen'
+        # color = 'lightgreen'
+        color = 'teal'
     elif 'LaCAM' in alg_name and '*' not in alg_name:
         color = 'indigo'
     elif 'LaCAM*' in alg_name:
         color = 'plum'
     else:
         color = random.choice(color_names)
+        color = next(colors_iter)
     colors_dict[alg_name] = color
     return color
 
@@ -403,7 +408,8 @@ def plot_throughput(ax, info):
     for alg_name in alg_names:
         throughput_list = []
         for n_a in n_agents_list:
-            throughput_list.append(np.mean(info[alg_name][f'{n_a}']['throughput']))
+            # throughput_list.append(np.mean(info[alg_name][f'{n_a}']['throughput']))
+            throughput_list.append(np.mean(info[alg_name][f'{n_a}']['n_closed_goals']))
         label = '' if 'APF' in alg_name else f'{alg_name}'
         ax.plot(n_agents_list, throughput_list, get_marker_line(alg_name), color=get_alg_color(alg_name),
                 alpha=0.5, label=label, linewidth=4, markersize=15)
@@ -412,12 +418,13 @@ def plot_throughput(ax, info):
     ax.set_xlabel('N agents', fontsize=27)
     ax.set_ylabel('Throughput', fontsize=27)
     # ax.set_title(f'{img_dir[:-4]} Map | time limit: {time_to_think_limit} sec.')
-    set_plot_title(ax, f'{img_dir[:-4]} | n_steps: {n_steps}',
+    # set_plot_title(ax, f'{img_dir[:-4]} | n_steps: {n_steps}',
+    set_plot_title(ax, f'{img_dir[:-4]}',
                    size=27)
     labelsize = 20
     ax.xaxis.set_tick_params(labelsize=labelsize)
     ax.yaxis.set_tick_params(labelsize=labelsize)
-    set_legend(ax, size=20)
+    set_legend(ax, size=19)
 
 
 def plot_rsoc(ax, info):

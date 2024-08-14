@@ -29,7 +29,7 @@ import matplotlib.pyplot as plt
 
 color_names = [
     # 'b', 'g', 'r', 'c', 'm', 'y', 'k', 'w',  # Single-letter abbreviations
-    'blue', 'green', 'red', 'cyan', 'magenta', 'yellow', 'black',  # Full names except 'white'
+    'blue', 'green', 'red', 'cyan', 'magenta', 'black',  # Full names except 'white' 'yellow'
     'aliceblue', 'antiquewhite', 'aqua', 'aquamarine', 'azure', 'beige', 'bisque', 'black',
     'blanchedalmond', 'blue', 'blueviolet', 'brown', 'burlywood', 'cadetblue', 'chartreuse', 'chocolate',
     'coral', 'cornflowerblue', 'cornsilk', 'crimson', 'cyan', 'darkblue', 'darkcyan', 'darkgoldenrod',
@@ -52,8 +52,8 @@ color_names = [
 
 
 markers = [
-    ".",    # point marker
-    ",",    # pixel marker
+    # ".",    # point marker
+    # ",",    # pixel marker
     "o",    # circle marker
     "v",    # triangle_down marker
     "^",    # triangle_up marker
@@ -82,6 +82,7 @@ lines = [
     ":",  # dotted line
 ]
 markers_iter = iter(markers)
+colors_iter = iter(color_names)
 markers_lines_dict: dict = {}
 colors_dict: DefaultDict[str, str | None] = defaultdict(lambda: None)
 
