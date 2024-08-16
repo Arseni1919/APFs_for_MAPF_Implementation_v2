@@ -408,8 +408,8 @@ def plot_throughput(ax, info):
     for alg_name in alg_names:
         throughput_list = []
         for n_a in n_agents_list:
-            # throughput_list.append(np.mean(info[alg_name][f'{n_a}']['throughput']))
-            throughput_list.append(np.mean(info[alg_name][f'{n_a}']['n_closed_goals']))
+            throughput_list.append(np.mean(info[alg_name][f'{n_a}']['throughput']))
+            # throughput_list.append(np.mean(info[alg_name][f'{n_a}']['n_closed_goals']))
         label = '' if 'APF' in alg_name else f'{alg_name}'
         ax.plot(n_agents_list, throughput_list, get_marker_line(alg_name), color=get_alg_color(alg_name),
                 alpha=0.5, label=label, linewidth=4, markersize=15)
@@ -424,7 +424,7 @@ def plot_throughput(ax, info):
     labelsize = 20
     ax.xaxis.set_tick_params(labelsize=labelsize)
     ax.yaxis.set_tick_params(labelsize=labelsize)
-    set_legend(ax, size=19)
+    set_legend(ax, size=17)
 
 
 def plot_rsoc(ax, info):

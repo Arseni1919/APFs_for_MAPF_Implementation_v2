@@ -84,15 +84,15 @@ def main():
     # a star
     # file_dir = 'params_a_star_gamma_ALGS-7_RUNS-15_MAP-random-32-32-10.json'
     # file_dir = 'params_a_star_d_max_ALGS-7_RUNS-15_MAP-random-32-32-10.json'
-    file_dir = 'params_a_star_w_ALGS-6_RUNS-15_MAP-random-32-32-10.json'
+    # file_dir = 'params_a_star_w_ALGS-6_RUNS-15_MAP-random-32-32-10.json'
     # sipps
-    # file_dir = ''
-    # file_dir = ''
-    # file_dir = ''
+    # file_dir = 'params_sipps_w_ALGS-8_RUNS-10_MAP-random-32-32-10.json'
+    # file_dir = 'params_sipps_d_max_ALGS-6_RUNS-10_MAP-random-32-32-10.json'
+    # file_dir = 'params_sipps_gamma_ALGS-7_RUNS-10_MAP-random-32-32-10.json'
     # pibt
-    # file_dir = ''
-    # file_dir = ''
-    # file_dir = ''
+    # file_dir = 'params_pibt_w_ALGS-7_RUNS-10_MAP-random-32-32-10.json'
+    # file_dir = 'params_pibt_d_max_ALGS-6_RUNS-10_MAP-random-32-32-10.json'
+    file_dir = 'params_pibt_gamma_ALGS-7_RUNS-10_MAP-random-32-32-10.json'
 
     # file_dir = 'LMAPF_2024-08-10--15-56_ALGS-1_RUNS-15_MAP-room-32-32-4.json'
 
