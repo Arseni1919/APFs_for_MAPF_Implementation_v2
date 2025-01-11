@@ -31,6 +31,7 @@ class SIPPSNode:
         self.h: int = 0
         self.f: int = 0
         self.c: int = 0
+        self.m: int = 0
 
     # def __eq__(self, other: Self) -> bool:
     #     if self.xy_name != other.xy_name:
@@ -290,12 +291,18 @@ def compute_c_g_h_f_values(
     and ce is 1 if ((n`.v, n.v), n.low) ∈ Os and 0 otherwise.
     If n is the root curr_node (i.e., n` does not exist), c(n) = cv.
     """
+    if sipps_node.parent is not None:
+        sipps_node.m = sipps_node.parent.m
+    # APF Part
+    if apfs_np is not None and sipps_node.low < apfs_np.shape[2]:
+        sipps_node.m += apfs_np[sipps_node.x, sipps_node.y, sipps_node.low]
     # c
     c_v = get_c_v(sipps_node, si_table)
     c_v_p = c_v
     # APFs Part
     if apfs_np is not None and sipps_node.low < apfs_np.shape[2]:
-        c_v_p += apfs_np[sipps_node.x, sipps_node.y, sipps_node.low]
+        # c_v_p += apfs_np[sipps_node.x, sipps_node.y, sipps_node.low]
+        c_v_p += sipps_node.m
     if c_v == 0:
         c_p = get_c_p(sipps_node, si_table)
         c_v_p = max(c_v, c_p)
@@ -313,9 +320,11 @@ def compute_c_g_h_f_values(
     else:
         # sipps_node.g = max(sipps_node.low, sipps_node.parent.g + 1)
         sipps_node.g = sipps_node.low
+        # sipps_node.m = sipps_node.parent.m
     # APF Part
-    if apfs_np is not None and sipps_node.low < apfs_np.shape[2]:
-        sipps_node.g += apfs_np[sipps_node.x, sipps_node.y, sipps_node.low]
+    # if apfs_np is not None and sipps_node.low < apfs_np.shape[2]:
+    #     sipps_node.m += apfs_np[sipps_node.x, sipps_node.y, sipps_node.low]
+        # sipps_node.g += apfs_np[sipps_node.x, sipps_node.y, sipps_node.low]
         # sipps_node.g += np.max(apfs_np[sipps_node.x, sipps_node.y, sipps_node.low:sipps_node.high])
 
     # h
@@ -334,7 +343,7 @@ def compute_c_g_h_f_values(
         # sipps_node.g += np.max(apfs_np[sipps_node.x, sipps_node.y, sipps_node.low:sipps_node.high])
 
     # f
-    sipps_node.f = sipps_node.g + sipps_node.h
+    sipps_node.f = sipps_node.g + sipps_node.h + sipps_node.m
 
 
 def extract_path(next_sipps_node: SIPPSNode, agent=None) -> Tuple[List[Node], Deque[SIPPSNode]]:

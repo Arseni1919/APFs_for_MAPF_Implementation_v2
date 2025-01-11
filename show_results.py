@@ -33,7 +33,7 @@ def show_results(file_dir):
 
             # plot_rsoc(ax, info=logs_dict)
 
-            # plot_sr(ax, info=logs_dict)
+            plot_sr(ax, info=logs_dict)
             # plot_sr(ax[0, 0], info=logs_dict)
             # plot_time_metric(ax[0, 1], info=logs_dict)
             # plot_time_metric_cactus(ax[0, 1], info=logs_dict)

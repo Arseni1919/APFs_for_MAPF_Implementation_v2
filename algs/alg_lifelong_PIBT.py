@@ -42,6 +42,7 @@ def run_lifelong_pibt(
         config_to: Dict[str, Node] = {}
         occupied_to: Dict[str, AgentAlg] = {}
         pibt_apfs: np.ndarray = init_pibt_apfs_map(map_dim, params)
+        # pibt_apfs = init_apfs_map(map_dim, k_limit + 1, params)  # !!!
 
         # calc the step
         for agent in agents:
@@ -54,7 +55,7 @@ def run_lifelong_pibt(
                     agents_dict, nodes_dict, h_dict, [])
 
         # execute the step + check the termination condition
-        agents_finished = []
+        agents_finished, agents_unfinished = [], []
         for agent in agents:
             next_node = config_to[agent.name]
             agent.path.append(next_node)
@@ -62,12 +63,15 @@ def run_lifelong_pibt(
             agent.curr_node = next_node
             if agent.curr_node != agent.goal_node:
                 agent.priority += 1
+                agents_unfinished.append(agent)
             else:
                 agent.priority = agent.init_priority
                 agents_finished.append(agent)
 
         # unfinished first
         agents.sort(key=lambda a: a.priority, reverse=True)
+        # agents_unfinished.sort(key=lambda a: a.priority, reverse=True)
+        # agents = [*agents_finished, *agents_unfinished]
 
         # throughput += update_goal_nodes(agents, nodes)
         # throughput += get_finished_goals(agents)
@@ -93,6 +97,7 @@ def main():
         'n_steps': 100,
         'alg_name': f'Lifelong-PIBT',
         'to_render': to_render,
+        'k_limit': 10,
         # 'w': 0.5, 'd_max': 3, 'gamma': 2,
     }
     run_mapf_alg(alg=run_lifelong_pibt, params=params)

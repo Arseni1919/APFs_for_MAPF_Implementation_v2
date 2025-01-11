@@ -24,20 +24,20 @@ def get_marker_line(alg_name: str):
         marker_line += 'v'
     elif 'LNS2-A*' in alg_name:
         marker_line += 'X'
-    elif 'LNS2-SIPPS' in alg_name:
-        marker_line += 'P'
+    # elif 'LNS2-SIPPS' in alg_name:
+    #     marker_line += 'P'
     elif 'PIBT' in alg_name:
         marker_line += 'h'
-    elif 'LNS2' in alg_name:
-        # marker_line += 's'
-        marker_line += 'X'
+    # elif 'LNS2' in alg_name:
+    #     # marker_line += 's'
+    #     marker_line += 'X'
     elif 'LaCAM' in alg_name and '*' not in alg_name:
         marker_line += '1'
     elif 'LaCAM*' in alg_name:
         marker_line += '2'
     else:
         # marker_line += random.choice(markers)
-        marker_line = '--'
+        # marker_line = '--'
         marker_line += next(markers_iter)
     markers_lines_dict[alg_name] = marker_line
     return marker_line
@@ -50,16 +50,16 @@ def get_alg_color(alg_name: str):
         color = 'blue'
     elif 'PrP-SIPPS' in alg_name:
         color = 'orange'
-    elif 'LNS2-A*' in alg_name:
-        # color = 'lightskyblue'
-        color = 'teal'
-    elif 'LNS2-SIPPS' in alg_name:
-        color = 'peru'
+    # elif 'LNS2-A*' in alg_name:
+    #     # color = 'lightskyblue'
+    #     color = 'teal'
+    # elif 'LNS2-SIPPS' in alg_name:
+    #     color = 'peru'
     elif 'PIBT' in alg_name:
         color = 'salmon'
-    elif 'LNS2' in alg_name:
-        # color = 'lightgreen'
-        color = 'teal'
+    # elif 'LNS2' in alg_name:
+    #     # color = 'lightgreen'
+    #     color = 'teal'
     elif 'LaCAM' in alg_name and '*' not in alg_name:
         color = 'indigo'
     elif 'LaCAM*' in alg_name:
