@@ -238,7 +238,7 @@ def run_procedure_pibt(
 
         config_to[agent_i.name] = nei_node
         occupied_to[nei_node.xy_name] = agent_i
-        update_pibt_apfs_map_alt(nei_node, pibt_apfs, params)
+        update_pibt_apfs_map_alt(nei_node, pibt_apfs, params, goal_node=agent_i.goal_node, h_dict=h_dict)
         agent_k = get_agent_k(nei_node, occupied_from, config_to)
         if agent_k is not None:
             valid = run_procedure_pibt(
@@ -254,12 +254,12 @@ def run_procedure_pibt(
             i_node_from = config_from[agent_i.name]
             config_to[agent_j.name] = i_node_from
             occupied_to[i_node_from.xy_name] = agent_j
-            update_pibt_apfs_map_alt(i_node_from, pibt_apfs, params)
+            update_pibt_apfs_map_alt(i_node_from, pibt_apfs, params, goal_node=agent_i.goal_node, h_dict=h_dict)
         return True
     node_from = config_from[agent_i.name]
     config_to[agent_i.name] = node_from
     occupied_to[node_from.xy_name] = agent_i
-    update_pibt_apfs_map_alt(node_from, pibt_apfs, params)
+    update_pibt_apfs_map_alt(node_from, pibt_apfs, params, goal_node=agent_i.goal_node, h_dict=h_dict)
     return False
 
 

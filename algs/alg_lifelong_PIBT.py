@@ -97,8 +97,8 @@ def main():
         'n_steps': 100,
         'alg_name': f'Lifelong-PIBT',
         'to_render': to_render,
-        'k_limit': 10,
-        # 'w': 0.5, 'd_max': 3, 'gamma': 2,
+        'k_limit': 4,
+        # 'w': 0.1, 'd_max': 3, 'gamma': 2,
     }
     run_mapf_alg(alg=run_lifelong_pibt, params=params)
 

@@ -113,36 +113,51 @@ def update_apfs_map(
 def update_pibt_apfs_map_alt(
         next_node: Node,
         pibt_apfs_np: np.ndarray,
-        params: Dict
+        params: Dict,
+        goal_node: Node,
+        h_dict: Dict[str, np.ndarray],
 ) -> np.ndarray | None:
     """
     apfs_np: [x, y, t] = float
     """
     if pibt_apfs_np is None:
         return None
+    # calc the k-step path to the goal node
+    k_limit: bool = params['k_limit']
+    h_goal_np: np.ndarray = h_dict[goal_node.xy_name]
+    k_path = [next_node]
+    while len(k_path) < k_limit and k_path[-1] != goal_node:
+        nei_nodes: List[Node] = k_path[-1].neighbours_nodes[:]
+        nei_nodes.sort(key=lambda n: float(h_goal_np[n.x, n.y]))
+        i_node = nei_nodes[0]
+        k_path.append(i_node)
+
+    # get APFs params
     # w, d_max, gamma = get_apfs_params(params)
     w, d_max, gamma = params['w'], params['d_max'], params['gamma']
-    open_list: Deque[Node] = deque([next_node])
-    closed_list: List[str] = []
-    while len(open_list) > 0:
-        next_n: Node = open_list.popleft()
-        heapq.heappush(closed_list, next_n.xy_name)
-        dist_x = abs(next_node.x - next_n.x)
-        if dist_x > d_max:
-            continue
-        dist_y = abs(next_node.y - next_n.y)
-        next_n_dist = dist_y + dist_x
-        if next_n_dist > d_max:
-            continue
-        # next_n_dist = manhattan_dist(next_node, next_n)
-        # if next_n_dist < d_max:
-        apf_force: float = w * (gamma**(-next_n_dist))
-        pibt_apfs_np[next_n.x, next_n.y] += apf_force
-        # extend open
-        for nei_n in next_n.neighbours_nodes:
-            if nei_n.xy_name in closed_list:
+    # update the pibt_apfs_np matrix
+    for i_node in k_path:
+        open_list: Deque[Node] = deque([i_node])
+        closed_list: List[str] = []
+        while len(open_list) > 0:
+            next_n: Node = open_list.popleft()
+            heapq.heappush(closed_list, next_n.xy_name)
+            dist_x = abs(i_node.x - next_n.x)
+            if dist_x > d_max:
                 continue
-            open_list.append(nei_n)
+            dist_y = abs(i_node.y - next_n.y)
+            next_n_dist = dist_y + dist_x
+            if next_n_dist > d_max:
+                continue
+            # next_n_dist = manhattan_dist(i_node, next_n)
+            # if next_n_dist < d_max:
+            apf_force: float = w * (gamma**(-next_n_dist))
+            pibt_apfs_np[next_n.x, next_n.y] += apf_force
+            # extend open
+            for nei_n in next_n.neighbours_nodes:
+                if nei_n.xy_name in closed_list:
+                    continue
+                open_list.append(nei_n)
     return pibt_apfs_np
 
 

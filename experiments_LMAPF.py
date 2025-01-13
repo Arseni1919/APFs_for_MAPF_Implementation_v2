@@ -31,8 +31,8 @@ def run_mapf_experiments():
     # img_dir = '15-15-eight-rooms.map'
 
     # img_dir = 'empty-32-32.map'
-    img_dir = 'random-32-32-10.map'
-    # img_dir = 'random-32-32-20.map'
+    # img_dir = 'random-32-32-10.map'
+    img_dir = 'random-32-32-20.map'
     # img_dir = 'room-32-32-4.map'
     # img_dir = 'maze-32-32-2.map'
     # img_dir = 'maze-32-32-4.map'
@@ -65,14 +65,15 @@ def run_mapf_experiments():
 
     # n_steps = 5
     # n_steps = 25
-    n_steps = 50
-    # n_steps = 100
+    # n_steps = 50
+    n_steps = 100
+    # n_steps = 200
 
     # ------------------------------------------------- #
 
     # alg_list = alg_list_general
     # alg_list = alg_list_a_star
-    alg_list = alg_list_sipps
+    # alg_list = alg_list_sipps
     # alg_list = alg_list_pibt
     # alg_list = [*alg_list_a_star, *alg_list_pibt]
     # alg_list = [*alg_list_a_star, *alg_list_sipps, *alg_list_pibt]
@@ -88,7 +89,7 @@ def run_mapf_experiments():
     # alg_list = alg_list_sipps_params_gamma
 
     # PIBT APFs params
-    # alg_list = alg_list_pibt_params_w
+    alg_list = alg_list_pibt_params_w
     # alg_list = alg_list_pibt_params_d_max
     # alg_list = alg_list_pibt_params_gamma
 
@@ -103,8 +104,8 @@ def run_mapf_experiments():
     # to_render = False
 
     # saving
-    # to_save = False
-    to_save = True
+    to_save = False
+    # to_save = True
 
     logs_dict: Dict[str, Any] = {
         params['alg_name']: {
