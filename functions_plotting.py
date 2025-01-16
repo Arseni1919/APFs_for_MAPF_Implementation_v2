@@ -11,64 +11,22 @@ from globals import *
 
 
 def get_marker_line(alg_name: str):
-    if alg_name in markers_lines_dict:
-        return markers_lines_dict[alg_name]
-    marker_line = ''
-    if 'APF' in alg_name:
-        marker_line += '--'
-    else:
-        marker_line += '-'
-    if 'PrP-A*' in alg_name:
-        marker_line += '^'
-    elif 'PrP-SIPPS' in alg_name:
-        marker_line += 'v'
-    elif 'LNS2-A*' in alg_name:
-        marker_line += 'X'
-    # elif 'LNS2-SIPPS' in alg_name:
-    #     marker_line += 'P'
-    elif 'PIBT' in alg_name:
-        marker_line += 'h'
-    # elif 'LNS2' in alg_name:
-    #     # marker_line += 's'
-    #     marker_line += 'X'
-    elif 'LaCAM' in alg_name and '*' not in alg_name:
-        marker_line += '1'
-    elif 'LaCAM*' in alg_name:
-        marker_line += '2'
-    else:
-        # marker_line += random.choice(markers)
-        # marker_line = '--'
+    if alg_name not in mrc_dict:
+        marker_line = ''
+        if 'APF' in alg_name:
+            marker_line += '--'
+        else:
+            marker_line += '-'
         marker_line += next(markers_iter)
-    markers_lines_dict[alg_name] = marker_line
-    return marker_line
+        return marker_line
+    return mrc_dict[alg_name]['marker-line']
 
 
 def get_alg_color(alg_name: str):
-    if alg_name in colors_dict:
-        return colors_dict[alg_name]
-    if 'PrP-A*' in alg_name:
-        color = 'blue'
-    elif 'PrP-SIPPS' in alg_name:
-        color = 'orange'
-    # elif 'LNS2-A*' in alg_name:
-    #     # color = 'lightskyblue'
-    #     color = 'teal'
-    # elif 'LNS2-SIPPS' in alg_name:
-    #     color = 'peru'
-    elif 'PIBT' in alg_name:
-        color = 'salmon'
-    # elif 'LNS2' in alg_name:
-    #     # color = 'lightgreen'
-    #     color = 'teal'
-    elif 'LaCAM' in alg_name and '*' not in alg_name:
-        color = 'indigo'
-    elif 'LaCAM*' in alg_name:
-        color = 'plum'
-    else:
-        color = random.choice(color_names)
+    if alg_name not in mrc_dict:
         color = next(colors_iter)
-    colors_dict[alg_name] = color
-    return color
+        return color
+    return mrc_dict[alg_name]['color']
 
 
 def get_color(i):
@@ -424,7 +382,7 @@ def plot_throughput(ax, info):
     labelsize = 20
     ax.xaxis.set_tick_params(labelsize=labelsize)
     ax.yaxis.set_tick_params(labelsize=labelsize)
-    set_legend(ax, size=17)
+    # set_legend(ax, size=20)
 
 
 def plot_rsoc(ax, info):

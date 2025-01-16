@@ -82,31 +82,33 @@ lines = [
 ]
 markers_iter = iter(markers)
 colors_iter = iter(color_names)
-markers_lines_dict: dict = {}
-colors_dict: DefaultDict[str, str | None] = defaultdict(lambda: None)
 
-
-# markers_lines_dict['PrP-A*'] = '-v'
-# colors_dict['PrP-A*'] = 'green'
-#
-# markers_lines_dict['APF-PrP-A*'] = '--v'
-# colors_dict['APF-PrP-A*'] = 'green'
-#
-# markers_lines_dict['k-PrP-A*'] = '-^'
-# colors_dict['k-PrP-A*'] = 'springgreen'
-#
-# markers_lines_dict['APF-k-PrP-A*'] = '--^'
-# colors_dict['APF-k-PrP-A*'] = 'springgreen'
-#
-# markers_lines_dict['k-LNS2-A*'] = '-p'
-# colors_dict['k-LNS2-A*'] = 'blue'
-#
-# markers_lines_dict['APF-k-LNS2-A*'] = '--p'
-# colors_dict['APF-k-LNS2-A*'] = 'blue'
-#
-#
-# markers_lines_dict['PF-LNS2'] = '-*'
-# colors_dict['PF-LNS2'] = 'red'
+mrc_dict = {
+    "L-PrP-A*":
+        {'color': 'blue', 'marker-line': '-^'},
+    "APF-L-PrP-A*":
+        {'color': 'blue', 'marker-line': '--^'},
+    "L-LNS2-A*":
+        {'color': 'teal', 'marker-line': '-X'},
+    "APF-L-LNS2-A*":
+        {'color': 'teal', 'marker-line': '--X'},
+    "L-PrP-SIPPS":
+        {'color': 'orange', 'marker-line': '-v'},
+    "APF-L-PrP-SIPPS":
+        {'color': 'orange', 'marker-line': '--v'},
+    "L-LNS2-SIPPS":
+        {'color': 'peru', 'marker-line': '-P'},
+    "APF-L-LNS2-SIPPS":
+        {'color': 'peru', 'marker-line': '--P'},
+    "L-PIBT":
+        {'color': 'salmon', 'marker-line': '-h'},
+    "APF-L-PIBT":
+        {'color': 'salmon', 'marker-line': '--h'},
+    "L-LaCAM":
+        {'color': 'indigo', 'marker-line': '-1'},
+    "L-LaCAM*":
+        {'color': 'plum', 'marker-line': '-2'},
+}
 
 
 # -------------------------------------------------------------------------------------------------------------------- #
