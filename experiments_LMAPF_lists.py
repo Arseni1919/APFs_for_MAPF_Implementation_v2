@@ -595,14 +595,14 @@ alg_list_sipps_params_gamma = [
 # APFs in PIBT
 # ------------------------------------------------------------------------------------------------------------ #
 """
-PIBT: w = 0.1, d_max = 2, gamma = 1.1
+PIBT: w = 0.1, d_max = 2, gamma = 3, k = 2
 """
 
 alg_list_pibt = [
     (run_lifelong_pibt, {
         'alg_name': f'L-PIBT',
         'to_render': False,
-        'k_limit': 5,
+        'k_limit': 2,
     }),
     (run_lifelong_pibt, {
         'alg_name': f'APF-L-PIBT',
@@ -632,26 +632,26 @@ alg_list_pibt = [
 
 alg_list_pibt_params_w = [
     (run_lifelong_pibt, {
-        'k_limit': (k_limit := 5),
+        'k_limit': (k_limit := 2),
         'alg_name': f'L-PIBT',
         'to_render': False,
     }),
     (run_lifelong_pibt, {
-        'k_limit': (k_limit := 5),
-        'w': (w := 0.1), 'd_max': (d_max := 2), 'gamma': (gamma := 2),
-        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'k_limit': (k_limit := 2),
+        'w': (w := 0.1), 'd_max': (d_max := 2), 'gamma': (gamma := 3),
+        'alg_name': f'{w=}',
         'to_render': False,
     }),
 (run_lifelong_pibt, {
-        'k_limit': (k_limit := 5),
-        'w': (w := 0.5), 'd_max': (d_max := 2), 'gamma': (gamma := 2),
-        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'k_limit': (k_limit := 2),
+        'w': (w := 0.5), 'd_max': (d_max := 2), 'gamma': (gamma := 3),
+        'alg_name': f'{w=}',
         'to_render': False,
     }),
 (run_lifelong_pibt, {
-        'k_limit': (k_limit := 5),
-        'w': (w := 1), 'd_max': (d_max := 2), 'gamma': (gamma := 2),
-        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'k_limit': (k_limit := 2),
+        'w': (w := 1), 'd_max': (d_max := 2), 'gamma': (gamma := 3),
+        'alg_name': f'{w=}',
         'to_render': False,
     }),
 # (run_lifelong_pibt, {
@@ -677,38 +677,38 @@ alg_list_pibt_params_w = [
 
 alg_list_pibt_params_d_max = [
     (run_lifelong_pibt, {
-        'k_limit': (k_limit := 5),
+        'k_limit': (k_limit := 2),
         'alg_name': f'L-PIBT',
         'to_render': False,
     }),
     (run_lifelong_pibt, {
-        'k_limit': (k_limit := 5),
-        'w': (w := 0.1), 'd_max': (d_max := 1), 'gamma': (gamma := 2),
-        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'k_limit': (k_limit := 2),
+        'w': (w := 0.1), 'd_max': (d_max := 1), 'gamma': (gamma := 3),
+        'alg_name': f'{d_max=}',
         'to_render': False,
     }),
     (run_lifelong_pibt, {
-        'k_limit': (k_limit := 5),
-        'w': (w := 0.1), 'd_max': (d_max := 2), 'gamma': (gamma := 2),
-        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'k_limit': (k_limit := 2),
+        'w': (w := 0.1), 'd_max': (d_max := 2), 'gamma': (gamma := 3),
+        'alg_name': f'{d_max=}',
         'to_render': False,
     }),
     (run_lifelong_pibt, {
-        'k_limit': (k_limit := 5),
-        'w': (w := 0.1), 'd_max': (d_max := 3), 'gamma': (gamma := 2),
-        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'k_limit': (k_limit := 2),
+        'w': (w := 0.1), 'd_max': (d_max := 3), 'gamma': (gamma := 3),
+        'alg_name': f'{d_max=}',
         'to_render': False,
     }),
     (run_lifelong_pibt, {
-        'k_limit': (k_limit := 5),
-        'w': (w := 0.1), 'd_max': (d_max := 4), 'gamma': (gamma := 2),
-        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'k_limit': (k_limit := 2),
+        'w': (w := 0.1), 'd_max': (d_max := 4), 'gamma': (gamma := 3),
+        'alg_name': f'{d_max=}',
         'to_render': False,
     }),
     # (run_lifelong_pibt, {
     #     'k_limit': (k_limit := 5),
     #     'w': (w := 0.1), 'd_max': (d_max := 5), 'gamma': (gamma := 2),
-    #     'alg_name': f'{w=},{d_max=},{gamma=}',
+    #     'alg_name': f'{d_max=}',
     #     'to_render': False,
     # }),
 ]
@@ -716,44 +716,44 @@ alg_list_pibt_params_d_max = [
 
 alg_list_pibt_params_gamma = [
     (run_lifelong_pibt, {
-        'k_limit': (k_limit := 5),
+        'k_limit': (k_limit := 2),
         'alg_name': f'L-PIBT',
         'to_render': False,
     }),
     (run_lifelong_pibt, {
-        'k_limit': (k_limit := 5),
+        'k_limit': (k_limit := 2),
         'w': (w := 0.1), 'd_max': (d_max := 2), 'gamma': (gamma := 1),
-        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'alg_name': f'{gamma=}',
         'to_render': False,
     }),
     (run_lifelong_pibt, {
-        'k_limit': (k_limit := 5),
+        'k_limit': (k_limit := 2),
         'w': (w := 0.1), 'd_max': (d_max := 2), 'gamma': (gamma := 1.1),
-        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'alg_name': f'{gamma=}',
         'to_render': False,
     }),
     (run_lifelong_pibt, {
-        'k_limit': (k_limit := 5),
+        'k_limit': (k_limit := 2),
         'w': (w := 0.1), 'd_max': (d_max := 2), 'gamma': (gamma := 1.5),
-        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'alg_name': f'{gamma=}',
         'to_render': False,
     }),
     (run_lifelong_pibt, {
-        'k_limit': (k_limit := 5),
+        'k_limit': (k_limit := 2),
         'w': (w := 0.1), 'd_max': (d_max := 2), 'gamma': (gamma := 2),
-        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'alg_name': f'{gamma=}',
         'to_render': False,
     }),
     (run_lifelong_pibt, {
-        'k_limit': (k_limit := 5),
+        'k_limit': (k_limit := 2),
         'w': (w := 0.1), 'd_max': (d_max := 2), 'gamma': (gamma := 3),
-        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'alg_name': f'{gamma=}',
         'to_render': False,
     }),
     (run_lifelong_pibt, {
-        'k_limit': (k_limit := 5),
+        'k_limit': (k_limit := 2),
         'w': (w := 0.1), 'd_max': (d_max := 2), 'gamma': (gamma := 5),
-        'alg_name': f'{w=},{d_max=},{gamma=}',
+        'alg_name': f'{gamma=}',
         'to_render': False,
     }),
 ]
@@ -761,7 +761,7 @@ alg_list_pibt_params_gamma = [
 
 alg_list_pibt_params_k = [
     (run_lifelong_pibt, {
-        'k_limit': (k_limit := 5),
+        'k_limit': (k_limit := 2),
         'alg_name': f'L-PIBT',
         'to_render': False,
     }),

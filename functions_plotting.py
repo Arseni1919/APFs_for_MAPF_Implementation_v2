@@ -11,20 +11,28 @@ from globals import *
 
 
 def get_marker_line(alg_name: str):
-    if alg_name not in mrc_dict:
+    if alg_name not in mrc_dict or 'marker-line' not in mrc_dict[alg_name]:
         marker_line = ''
         if 'APF' in alg_name:
             marker_line += '--'
         else:
             marker_line += '-'
         marker_line += next(markers_iter)
+        if alg_name not in mrc_dict:
+            mrc_dict[alg_name] = {'marker-line': marker_line}
+        else:
+            mrc_dict[alg_name]['marker-line'] = marker_line
         return marker_line
     return mrc_dict[alg_name]['marker-line']
 
 
 def get_alg_color(alg_name: str):
-    if alg_name not in mrc_dict:
+    if alg_name not in mrc_dict or 'color' not in mrc_dict[alg_name]:
         color = next(colors_iter)
+        if alg_name not in mrc_dict:
+            mrc_dict[alg_name] = {'color': color}
+        else:
+            mrc_dict[alg_name]['color'] = color
         return color
     return mrc_dict[alg_name]['color']
 
@@ -382,7 +390,7 @@ def plot_throughput(ax, info):
     labelsize = 20
     ax.xaxis.set_tick_params(labelsize=labelsize)
     ax.yaxis.set_tick_params(labelsize=labelsize)
-    # set_legend(ax, size=20)
+    set_legend(ax, size=20)
 
 
 def plot_rsoc(ax, info):

@@ -50,12 +50,13 @@ def run_mapf_experiments():
 
     # ------------------------------------------------- #
 
+    # i_problems = 2
     # i_problems = 3
     # i_problems = 5
     # i_problems = 10
-    # i_problems = 15
+    i_problems = 15
     # i_problems = 20
-    i_problems = 25
+    # i_problems = 25
 
     # ------------------------------------------------- #
 
@@ -75,7 +76,7 @@ def run_mapf_experiments():
     # alg_list = alg_list_general
     # alg_list = alg_list_a_star
     # alg_list = alg_list_sipps
-    alg_list = alg_list_pibt
+    # alg_list = alg_list_pibt
     # alg_list = [*alg_list_a_star, *alg_list_pibt]
     # alg_list = [*alg_list_a_star, *alg_list_sipps, *alg_list_pibt]
 
@@ -93,7 +94,7 @@ def run_mapf_experiments():
     # alg_list = alg_list_pibt_params_w
     # alg_list = alg_list_pibt_params_d_max
     # alg_list = alg_list_pibt_params_gamma
-    # alg_list = alg_list_pibt_params_k
+    alg_list = alg_list_pibt_params_k
 
     # ------------------------------------------------- #
 
@@ -102,8 +103,8 @@ def run_mapf_experiments():
     to_assert = False
 
     # rendering
-    to_render = True
-    # to_render = False
+    # to_render = True
+    to_render = False
 
     # saving
     # to_save = False
@@ -127,8 +128,8 @@ def run_mapf_experiments():
     # ------------------------------------------------------------------------------------------------------------ #
     # ------------------------------------------------------------------------------------------------------------ #
     # ------------------------------------------------------------------------------------------------------------ #
-
-    fig, ax = plt.subplots(1, 1, figsize=(8, 8))
+    if to_render:
+        fig, ax = plt.subplots(1, 1, figsize=(8, 8))
 
     path_to_maps: str = 'maps'
     path_to_heuristics: str = 'logs_for_heuristics'
@@ -162,8 +163,9 @@ def run_mapf_experiments():
                 print(f'\n{n_agents=}, {i_problem=}, {alg_name=}, throughput={alg_info["throughput"]}')
 
             # plot
-            plot_throughput(ax, info=logs_dict)
-            plt.pause(1)
+            if to_render:
+                plot_throughput(ax, info=logs_dict)
+                plt.pause(1)
 
     if to_save:
         save_results(logs_dict)

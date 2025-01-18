@@ -138,7 +138,7 @@ def main():
         'max_time': 1000,
         'alg_name': 'LaCAM',
         'to_render': to_render,
-        # 'w': 0.5, 'd_max': 3, 'gamma': 2,
+        'w': 0.5, 'd_max': 3, 'gamma': 2, 'k_limit': 2,
     }
     run_mapf_alg(alg=run_lacam, params=params)
 
