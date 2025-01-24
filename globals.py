@@ -85,29 +85,65 @@ colors_iter = iter(color_names)
 
 mrc_dict = {
     "L-PrP-A*":
-        {'color': 'blue', 'marker-line': '-^'},
+        {'color': 'blue',
+         'marker-line': '-^',
+         'marker': '^',
+         },
     "APF-L-PrP-A*":
-        {'color': 'blue', 'marker-line': '--^'},
+        {'color': 'blue',
+         'marker-line': '--^',
+         'marker': '^',
+         },
     "L-LNS2-A*":
-        {'color': 'teal', 'marker-line': '-X'},
+        {'color': 'teal',
+         'marker-line': '-X',
+         'marker': 'X',
+         },
     "APF-L-LNS2-A*":
-        {'color': 'teal', 'marker-line': '--X'},
+        {'color': 'teal',
+         'marker-line': '--X',
+         'marker': 'X',
+         },
     "L-PrP-SIPPS":
-        {'color': 'orange', 'marker-line': '-v'},
+        {'color': 'orange',
+         'marker-line': '-v',
+         'marker': 'v',
+         },
     "APF-L-PrP-SIPPS":
-        {'color': 'orange', 'marker-line': '--v'},
+        {'color': 'orange',
+         'marker-line': '--v',
+         'marker': 'v',
+         },
     "L-LNS2-SIPPS":
-        {'color': 'peru', 'marker-line': '-P'},
+        {'color': 'peru',
+         'marker-line': '-P',
+         'marker': 'P',
+         },
     "APF-L-LNS2-SIPPS":
-        {'color': 'peru', 'marker-line': '--P'},
+        {'color': 'peru',
+         'marker-line': '--P',
+         'marker': 'P',
+         },
     "L-PIBT":
-        {'color': 'salmon', 'marker-line': '-h'},
+        {'color': 'salmon',
+         'marker-line': '-h',
+         'marker': 'h',
+         },
     "APF-L-PIBT":
-        {'color': 'salmon', 'marker-line': '--h'},
+        {'color': 'salmon',
+         'marker-line': '--h',
+         'marker': 'h',
+         },
     "L-LaCAM":
-        {'color': 'indigo', 'marker-line': '-1'},
+        {'color': 'indigo',
+         'marker-line': '-1',
+         'marker': '1',
+         },
     "L-LaCAM*":
-        {'color': 'plum', 'marker-line': '-2'},
+        {'color': 'plum',
+         'marker-line': '-2',
+         'marker': '2',
+         },
 }
 
 
