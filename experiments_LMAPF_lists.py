@@ -599,16 +599,22 @@ PIBT: w = 0.1, d_max = 2, gamma = 3, k = 2
 """
 
 alg_list_pibt = [
+    # (run_lifelong_pibt, {
+    #     'alg_name': f'L-PIBT',
+    #     'to_render': False,
+    #     'k_limit': 2,
+    # }),
+    # (run_lifelong_pibt, {
+    #     'alg_name': f'APF-L-PIBT',
+    #     'to_render': False,
+    #     'k_limit': 2,
+    #     'w': 0.1, 'd_max': 2, 'gamma': 3,
+    # }),
     (run_lifelong_pibt, {
-        'alg_name': f'L-PIBT',
+        'alg_name': f'L-PIBT+GP',
         'to_render': False,
         'k_limit': 2,
-    }),
-    (run_lifelong_pibt, {
-        'alg_name': f'APF-L-PIBT',
-        'to_render': False,
-        'k_limit': 2,
-        'w': 0.1, 'd_max': 2, 'gamma': 3,
+        'w': 0.8, 'd_max': 1, 'gamma': 1,
     }),
     # (run_lifelong_lacam, {
     #     'alg_name': f'L-LaCAM',
@@ -795,6 +801,7 @@ alg_list_pibt_params_k = [
         'alg_name': f'{k_limit=}',
         'to_render': False,
     }),
+
 ]
 
 

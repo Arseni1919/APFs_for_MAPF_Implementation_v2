@@ -390,7 +390,7 @@ def plot_throughput(ax, info):
     labelsize = 20
     ax.xaxis.set_tick_params(labelsize=labelsize)
     ax.yaxis.set_tick_params(labelsize=labelsize)
-    set_legend(ax, size=20)
+    # set_legend(ax, size=20)
 
 
 def plot_rsoc(ax, info):

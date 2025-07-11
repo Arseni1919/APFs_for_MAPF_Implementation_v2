@@ -84,6 +84,7 @@ markers_iter = iter(markers)
 colors_iter = iter(color_names)
 
 mrc_dict = {
+
     "L-PrP-A*":
         {'color': 'blue',
          'marker-line': '-^',
@@ -133,6 +134,11 @@ mrc_dict = {
         {'color': 'salmon',
          'marker-line': '--h',
          'marker': 'h',
+         },
+    "L-PIBT+GP":
+        {'color': 'indigo',
+         'marker-line': '-1',
+         'marker': '1',
          },
     "L-LaCAM":
         {'color': 'indigo',
